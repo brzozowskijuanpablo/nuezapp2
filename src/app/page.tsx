@@ -81,7 +81,7 @@ export default function Home() {
       }
       acc[product.category].push(product);
       return acc;
-    }, {} as Record<string, Product[]>);
+    }, {} as Record<string, (Product & { id: string | number })[]>);
     
     return Object.keys(grouped).sort((a, b) => categories.indexOf(a) - categories.indexOf(b)).map(category => ({
       category,
