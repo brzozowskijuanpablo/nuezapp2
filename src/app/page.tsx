@@ -171,14 +171,14 @@ export default function Home() {
   const executeCheckout = async () => {
     if (items.length === 0) return;
     
-    // Obtener ubicación GPS en tiempo real si el usuario lo permite
+    // Obtener ubicación GPS fija actual
     const locationUrl = await getUserLocation();
 
     // Guardar pedido en base de datos
     await saveOrder({
       shippingAddress: user.address,
       phone: user.phone,
-      notes: locationUrl ? `Ubicación GPS: ${locationUrl}` : undefined
+      notes: locationUrl ? `Ubicación: ${locationUrl}` : undefined
     });
 
     let message = "Hola NuezApp! Quiero hacer el siguiente pedido:\n\n";
@@ -192,7 +192,7 @@ export default function Home() {
     }
 
     if (locationUrl) {
-      message += `\n📍 *Ubicación en tiempo real (GPS):*\n${locationUrl}\n`;
+      message += `📍 *Ubicación de entrega:*\n${locationUrl}\n`;
     }
 
     const whatsappUrl = `https://wa.me/${WHATSAPP_NUMBER}?text=${encodeURIComponent(message)}`;
