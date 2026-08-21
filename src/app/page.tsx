@@ -96,6 +96,7 @@ export default function Home() {
   const [profileLoading, setProfileLoading] = useState(false);
   const [profileError, setProfileError] = useState("");
   const [profileSuccess, setProfileSuccess] = useState(false);
+  const [isProcessingOrder, setIsProcessingOrder] = useState(false);
 
   useEffect(() => {
     if (user.isLoggedIn) {
@@ -169,34 +170,41 @@ export default function Home() {
   };
 
   const executeCheckout = async () => {
-    if (items.length === 0) return;
+    if (items.length === 0 || isProcessingOrder) return;
     
-    // Obtener ubicación GPS fija actual
-    const locationUrl = await getUserLocation();
+    setIsProcessingOrder(true);
+    try {
+      // Obtener ubicación GPS fija actual
+      const locationUrl = await getUserLocation();
 
-    // Guardar pedido en base de datos
-    await saveOrder({
-      shippingAddress: user.address,
-      phone: user.phone,
-      notes: locationUrl ? `Ubicación: ${locationUrl}` : undefined
-    });
+      // Guardar pedido en base de datos
+      await saveOrder({
+        shippingAddress: user.address,
+        phone: user.phone,
+        notes: locationUrl ? `Ubicación: ${locationUrl}` : undefined
+      });
 
-    let message = "Hola NuezApp! Quiero hacer el siguiente pedido:\n\n";
-    items.forEach(item => {
-      message += `- ${item.quantity}x ${item.name} ($${(item.price * item.quantity).toLocaleString("es-AR")})\n`;
-    });
-    message += `\n*Total:* $${getCartTotal().toLocaleString("es-AR")}\n\n`;
-    
-    if (user.isLoggedIn) {
-      message += `*Mis datos para el envío:*\nNombre: ${user.name}\nDirección: ${user.address}\nTeléfono: ${user.phone}\n`;
+      let message = "Hola NuezApp! Quiero hacer el siguiente pedido:\n\n";
+      items.forEach(item => {
+        message += `- ${item.quantity}x ${item.name} ($${(item.price * item.quantity).toLocaleString("es-AR")})\n`;
+      });
+      message += `\n*Total:* $${getCartTotal().toLocaleString("es-AR")}\n\n`;
+      
+      if (user.isLoggedIn) {
+        message += `*Mis datos para el envío:*\nNombre: ${user.name}\nDirección: ${user.address}\nTeléfono: ${user.phone}\n`;
+      }
+
+      if (locationUrl) {
+        message += `📍 *Ubicación de entrega:*\n${locationUrl}\n`;
+      }
+
+      const whatsappUrl = `https://wa.me/${WHATSAPP_NUMBER}?text=${encodeURIComponent(message)}`;
+      window.open(whatsappUrl, '_blank');
+    } catch (err) {
+      console.error('Error executing checkout:', err);
+    } finally {
+      setIsProcessingOrder(false);
     }
-
-    if (locationUrl) {
-      message += `📍 *Ubicación de entrega:*\n${locationUrl}\n`;
-    }
-
-    const whatsappUrl = `https://wa.me/${WHATSAPP_NUMBER}?text=${encodeURIComponent(message)}`;
-    window.open(whatsappUrl, '_blank');
   };
 
   const handleCheckout = () => {
@@ -903,9 +911,20 @@ export default function Home() {
                 </div>
                 <button 
                   onClick={handleCheckout}
-                  className="w-full bg-[#2B2118] text-white py-4 text-xs font-bold tracking-widest uppercase hover:opacity-90 transition flex justify-center items-center gap-2"
+                  disabled={isProcessingOrder}
+                  className="w-full bg-[#2B2118] text-white py-4 text-xs font-bold tracking-widest uppercase hover:bg-[#423325] transition flex justify-center items-center gap-2.5 disabled:opacity-75 disabled:cursor-not-allowed shadow-md hover:shadow-lg rounded-none"
                 >
-                  Confirmar Pedido <img src="https://upload.wikimedia.org/wikipedia/commons/6/6b/WhatsApp.svg" alt="WhatsApp" className="w-4 h-4 brightness-0 invert opacity-80" />
+                  {isProcessingOrder ? (
+                    <>
+                      <div className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin" />
+                      <span>Preparando tu pedido...</span>
+                    </>
+                  ) : (
+                    <>
+                      <span>Confirmar Pedido</span>
+                      <img src="https://upload.wikimedia.org/wikipedia/commons/6/6b/WhatsApp.svg" alt="WhatsApp" className="w-4 h-4 brightness-0 invert opacity-90" />
+                    </>
+                  )}
                 </button>
               </div>
             )}
