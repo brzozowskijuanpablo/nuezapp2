@@ -645,32 +645,34 @@ export default function Home() {
 
       <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         
-        {/* Menu Solapa / Tabs (Productos vs Nuez App) */}
-        <div className="flex justify-center mt-4 sm:mt-6 mb-6 sm:mb-8 border-b border-gray-200">
-          <div className="flex gap-2 sm:gap-8">
-            <button
-              onClick={() => setActiveMainTab('products')}
-              className={`pb-3.5 px-4 sm:px-8 text-sm sm:text-base font-bold uppercase tracking-wider transition-all relative flex items-center gap-2.5 ${
-                activeMainTab === 'products'
-                  ? 'text-[#2B2118] border-b-2 border-[#675B37]'
-                  : 'text-gray-400 hover:text-gray-700'
-              }`}
-            >
-              <ShoppingBag size={18} className={activeMainTab === 'products' ? 'text-[#675B37]' : 'text-gray-400'} />
-              <span>Productos</span>
-            </button>
+        {/* Menu Solapa / Tabs (Sticky) */}
+        <div className="sticky top-[69px] sm:top-[77px] z-30 bg-white/95 backdrop-blur-md pt-2.5 pb-0 border-b border-gray-200 shadow-[0_4px_12px_-6px_rgba(0,0,0,0.03)] -mx-4 px-4 sm:-mx-6 sm:px-6 lg:-mx-8 lg:px-8">
+          <div className="flex justify-center">
+            <div className="flex gap-2 sm:gap-8">
+              <button
+                onClick={() => setActiveMainTab('products')}
+                className={`pb-3 px-4 sm:px-8 text-sm sm:text-base font-bold uppercase tracking-wider transition-all relative flex items-center gap-2.5 ${
+                  activeMainTab === 'products'
+                    ? 'text-[#2B2118] border-b-2 border-[#675B37]'
+                    : 'text-gray-400 hover:text-gray-700'
+                }`}
+              >
+                <ShoppingBag size={18} className={activeMainTab === 'products' ? 'text-[#675B37]' : 'text-gray-400'} />
+                <span>Productos</span>
+              </button>
 
-            <button
-              onClick={() => setActiveMainTab('nuezapp')}
-              className={`pb-3.5 px-4 sm:px-8 text-sm sm:text-base font-bold uppercase tracking-wider transition-all relative flex items-center gap-2.5 ${
-                activeMainTab === 'nuezapp'
-                  ? 'text-[#2B2118] border-b-2 border-[#675B37]'
-                  : 'text-gray-400 hover:text-gray-700'
-              }`}
-            >
-              <img src="/icon.png" alt="Icon" className="w-5 h-5 object-contain" />
-              <span>Nuez App</span>
-            </button>
+              <button
+                onClick={() => setActiveMainTab('nuezapp')}
+                className={`pb-3 px-4 sm:px-8 text-sm sm:text-base font-bold uppercase tracking-wider transition-all relative flex items-center gap-2.5 ${
+                  activeMainTab === 'nuezapp'
+                    ? 'text-[#2B2118] border-b-2 border-[#675B37]'
+                    : 'text-gray-400 hover:text-gray-700'
+                }`}
+              >
+                <img src="/icon.png" alt="Icon" className="w-5 h-5 object-contain" />
+                <span>Nuez App</span>
+              </button>
+            </div>
           </div>
         </div>
 
@@ -678,7 +680,7 @@ export default function Home() {
         {activeMainTab === 'products' && (
           <section id="collection" className="mb-16 animate-in fade-in duration-200">
             {/* Search Mobile */}
-            <div className="md:hidden relative mb-6">
+            <div className="md:hidden relative mt-4 mb-2">
               <Search className="absolute left-4 top-1/2 -translate-y-1/2 text-[#828282]" size={18} strokeWidth={1.5} />
               <input 
                 type="text" 
@@ -689,21 +691,23 @@ export default function Home() {
               />
             </div>
 
-            {/* Categorías Clean Tabs */}
-            <div className="flex gap-6 overflow-x-auto whitespace-nowrap pb-4 scrollbar-hide justify-start md:justify-center border-b border-gray-100 mb-8">
-              {categories.map((cat, idx) => (
-                <button 
-                  key={idx} 
-                  onClick={() => setActiveCategory(cat)}
-                  className={`text-sm font-medium pb-4 border-b-2 transition-all ${
-                    activeCategory === cat 
-                      ? 'border-[#2B2118] text-[#2B2118]' 
-                      : 'border-transparent text-[#828282] hover:text-gray-700'
-                  }`}
-                >
-                  {cat}
-                </button>
-              ))}
+            {/* Categorías Submenú (Sticky debajo de las solapas) */}
+            <div className="sticky top-[117px] sm:top-[125px] z-20 bg-white/95 backdrop-blur-md border-b border-gray-100 py-3 -mx-4 px-4 sm:-mx-6 sm:px-6 lg:-mx-8 lg:px-8 mb-8 shadow-[0_4px_12px_-6px_rgba(0,0,0,0.03)]">
+              <div className="flex gap-2 sm:gap-3 overflow-x-auto whitespace-nowrap scrollbar-hide justify-start md:justify-center py-0.5">
+                {categories.map((cat, idx) => (
+                  <button 
+                    key={idx} 
+                    onClick={() => setActiveCategory(cat)}
+                    className={`text-xs sm:text-sm font-semibold px-3.5 py-1.5 rounded-full transition-all shrink-0 ${
+                      activeCategory === cat 
+                        ? 'bg-[#2B2118] text-white shadow-sm' 
+                        : 'bg-gray-100/80 text-[#828282] hover:text-[#2B2118] hover:bg-gray-200/70'
+                    }`}
+                  >
+                    {cat}
+                  </button>
+                ))}
+              </div>
             </div>
 
             {/* Product Grid (Editorial Style) */}
