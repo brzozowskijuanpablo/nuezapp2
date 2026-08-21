@@ -241,13 +241,23 @@ export default function Home() {
     }
   };
 
+  const handleAddToCart = (product: Product) => {
+    if (!user.isLoggedIn) {
+      setAuthMode("login");
+      setAuthError("Inicia sesión o regístrate para comenzar a comprar");
+      setIsLoginModalOpen(true);
+      return;
+    }
+    addItem(product);
+  };
+
   const handleCheckout = () => {
     if (items.length === 0) return;
     
     // Si el usuario no está logueado, priorizamos que inicie sesión o se registre
     if (!user.isLoggedIn) {
       setIsPendingCheckout(true);
-      setAuthError("");
+      setAuthError("Inicia sesión para completar tu pedido");
       setIsLoginModalOpen(true);
       return;
     }
@@ -559,17 +569,20 @@ export default function Home() {
               </button>
             )}
 
-            <button 
-              onClick={toggleCart}
-              className="relative text-gray-900 hover:text-[#CE6908] transition"
-            >
-              <ShoppingCart size={24} strokeWidth={1.5} />
-              {getCartCount() > 0 && (
-                <span className="absolute -top-1.5 -right-2 bg-[#CE6908] text-white text-[10px] font-bold w-4 h-4 flex items-center justify-center rounded-full">
-                  {getCartCount()}
-                </span>
-              )}
-            </button>
+            {user.isLoggedIn && (
+              <button 
+                onClick={toggleCart}
+                className="relative text-gray-900 hover:text-[#CE6908] transition p-1"
+                title="Ver carrito de compras"
+              >
+                <ShoppingCart size={24} strokeWidth={1.5} />
+                {getCartCount() > 0 && (
+                  <span className="absolute -top-1 -right-1.5 bg-[#CE6908] text-white text-[10px] font-bold w-4 h-4 flex items-center justify-center rounded-full">
+                    {getCartCount()}
+                  </span>
+                )}
+              </button>
+            )}
           </div>
         </div>
       </header>
@@ -675,7 +688,7 @@ export default function Home() {
                           
                           {/* Always visible buy button */}
                           <div className="absolute inset-x-0 bottom-0 p-3 z-10">
-                            {cartItem ? (
+                            {user.isLoggedIn && cartItem ? (
                               <div className="flex items-center justify-between bg-[#675B37] text-white shadow-lg rounded-full px-2 py-1.5 border border-[#675B37]">
                                 <button onClick={() => updateQuantity(p.id, cartItem.quantity - 1)} className="p-2 hover:bg-white/20 rounded-full transition">
                                   <Minus size={14} />
@@ -687,7 +700,7 @@ export default function Home() {
                               </div>
                             ) : (
                               <button 
-                                onClick={() => addItem(p)}
+                                onClick={() => handleAddToCart(p)}
                                 className="w-full bg-[#675B37] text-white py-3 rounded-full text-xs font-semibold tracking-wider hover:bg-[#2B2118] transition shadow-lg flex items-center justify-center gap-2"
                               >
                                 COMPRAR <ShoppingCart size={14} />
@@ -844,9 +857,16 @@ export default function Home() {
               <button onClick={() => {setIsMenuOpen(false); document.getElementById('collection')?.scrollIntoView({ behavior: 'smooth' });}} className="block text-left text-[#2B2118] font-serif text-2xl hover:text-[#CE6908] transition">
                 Catálogo
               </button>
-              <button onClick={() => {setIsMenuOpen(false); toggleCart();}} className="block text-left text-[#2B2118] font-serif text-2xl hover:text-[#CE6908] transition">
-                Mi Carrito
-              </button>
+              {user.isLoggedIn && (
+                <button onClick={() => {setIsMenuOpen(false); toggleCart();}} className="block text-left text-[#2B2118] font-serif text-2xl hover:text-[#CE6908] transition flex items-center justify-between w-full">
+                  <span>Mi Carrito</span>
+                  {getCartCount() > 0 && (
+                    <span className="text-xs bg-[#CE6908] text-white px-2 py-0.5 rounded-full font-sans">
+                      {getCartCount()}
+                    </span>
+                  )}
+                </button>
+              )}
               {user.isLoggedIn && (
                 <button onClick={() => {setIsMenuOpen(false); toggleOrders();}} className="block text-left text-[#2B2118] font-serif text-2xl hover:text-[#CE6908] transition flex items-center justify-between w-full">
                   <span>Mis Pedidos</span>
