@@ -97,6 +97,7 @@ export default function Home() {
   const [profileError, setProfileError] = useState("");
   const [profileSuccess, setProfileSuccess] = useState(false);
   const [isProcessingOrder, setIsProcessingOrder] = useState(false);
+  const [activeMainTab, setActiveMainTab] = useState<'products' | 'nuezapp'>('products');
 
   useEffect(() => {
     if (user.isLoggedIn) {
@@ -599,211 +600,303 @@ export default function Home() {
 
       <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         
-        {/* Search Mobile */}
-        <div className="md:hidden relative mt-6 mb-4">
-          <Search className="absolute left-4 top-1/2 -translate-y-1/2 text-[#828282]" size={18} strokeWidth={1.5} />
-          <input 
-            type="text" 
-            placeholder="Buscar productos..." 
-            value={searchQuery}
-            onChange={(e) => setSearchQuery(e.target.value)}
-            className="w-full p-3 pl-12 bg-white border border-gray-200 rounded-full shadow-sm outline-none text-sm focus:border-[#CE6908]"
-          />
+        {/* Menu Solapa / Tabs (Productos vs Nuez App) */}
+        <div className="flex justify-center mt-4 sm:mt-6 mb-6 sm:mb-8 border-b border-gray-200">
+          <div className="flex gap-2 sm:gap-8">
+            <button
+              onClick={() => setActiveMainTab('products')}
+              className={`pb-3.5 px-4 sm:px-8 text-sm sm:text-base font-bold uppercase tracking-wider transition-all relative flex items-center gap-2.5 ${
+                activeMainTab === 'products'
+                  ? 'text-[#2B2118] border-b-2 border-[#675B37]'
+                  : 'text-gray-400 hover:text-gray-700'
+              }`}
+            >
+              <ShoppingBag size={18} className={activeMainTab === 'products' ? 'text-[#675B37]' : 'text-gray-400'} />
+              <span>Productos</span>
+            </button>
+
+            <button
+              onClick={() => setActiveMainTab('nuezapp')}
+              className={`pb-3.5 px-4 sm:px-8 text-sm sm:text-base font-bold uppercase tracking-wider transition-all relative flex items-center gap-2.5 ${
+                activeMainTab === 'nuezapp'
+                  ? 'text-[#2B2118] border-b-2 border-[#675B37]'
+                  : 'text-gray-400 hover:text-gray-700'
+              }`}
+            >
+              <img src="/icon.png" alt="Icon" className="w-5 h-5 object-contain" />
+              <span>Nuez App</span>
+            </button>
+          </div>
         </div>
 
-        {/* Hero Section Editorial */}
-        <div className="mt-6 md:mt-10 bg-[#FAF7F2] rounded-2xl overflow-hidden flex flex-col md:flex-row shadow-sm border border-gray-100">
-          <div className="md:w-1/2 p-10 md:p-16 flex flex-col justify-center order-2 md:order-1">
-            <span className="text-[#CE6908] text-xs font-bold uppercase tracking-[0.2em] mb-4 block">NuezApp Store</span>
-            <h1 className="font-serif text-4xl md:text-5xl lg:text-6xl text-[#2B2118] leading-tight mb-6">
-              Eleva tu nutrición con un sabor atemporal.
-            </h1>
-            <p className="text-[#828282] text-sm md:text-base mb-8 max-w-md leading-relaxed">
-              Descubre nuestra selección de frutos secos y productos saludables, pensados para quienes viven intensamente sin descuidar su bienestar.
-            </p>
-            <div>
-              <button onClick={() => document.getElementById('collection')?.scrollIntoView({ behavior: 'smooth' })} className="bg-[#2B2118] text-white px-8 py-3.5 rounded-full text-sm font-semibold hover:opacity-90 transition shadow-lg">
-                Ver Colección
-              </button>
+        {/* CONTENIDO SOLAPA: PRODUCTOS */}
+        {activeMainTab === 'products' && (
+          <section id="collection" className="mb-16 animate-in fade-in duration-200">
+            {/* Search Mobile */}
+            <div className="md:hidden relative mb-6">
+              <Search className="absolute left-4 top-1/2 -translate-y-1/2 text-[#828282]" size={18} strokeWidth={1.5} />
+              <input 
+                type="text" 
+                placeholder="Buscar productos..." 
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+                className="w-full p-3 pl-12 bg-white border border-gray-200 rounded-full shadow-sm outline-none text-sm focus:border-[#CE6908]"
+              />
             </div>
-          </div>
-          <div className="md:w-1/2 h-64 md:h-auto relative order-1 md:order-2 overflow-hidden" ref={emblaRef}>
-            <div className="flex h-full">
-              {bannerImages.map((src, i) => (
-                <div className="flex-[0_0_100%] min-w-0 h-full relative" key={i}>
-                  <img src={src} alt="Hero" className="w-full h-full object-cover" />
-                </div>
+
+            {/* Categorías Clean Tabs */}
+            <div className="flex gap-6 overflow-x-auto whitespace-nowrap pb-4 scrollbar-hide justify-start md:justify-center border-b border-gray-100 mb-8">
+              {categories.map((cat, idx) => (
+                <button 
+                  key={idx} 
+                  onClick={() => setActiveCategory(cat)}
+                  className={`text-sm font-medium pb-4 border-b-2 transition-all ${
+                    activeCategory === cat 
+                      ? 'border-[#2B2118] text-[#2B2118]' 
+                      : 'border-transparent text-[#828282] hover:text-gray-700'
+                  }`}
+                >
+                  {cat}
+                </button>
               ))}
             </div>
-          </div>
-        </div>
 
-        <section id="collection" className="mb-16">
-          {/* Categorías Clean Tabs */}
-          <div className="flex gap-6 overflow-x-auto whitespace-nowrap pb-4 scrollbar-hide justify-start md:justify-center border-b border-gray-100 mb-8 mt-12">
-            {categories.map((cat, idx) => (
-              <button 
-                key={idx} 
-                onClick={() => setActiveCategory(cat)}
-                className={`text-sm font-medium pb-4 border-b-2 transition-all ${
-                  activeCategory === cat 
-                    ? 'border-[#2B2118] text-[#2B2118]' 
-                    : 'border-transparent text-[#828282] hover:text-gray-700'
-                }`}
-              >
-                {cat}
-              </button>
-            ))}
-          </div>
-
-          {/* Product Grid (Editorial Style) */}
-          <div 
-            className="h-[800px] max-h-[75vh] overflow-y-auto pr-2 custom-scrollbar"
-            onScroll={(e) => {
-              const target = e.currentTarget;
-              if (target.scrollHeight - target.scrollTop <= target.clientHeight + 200) {
-                if (visibleCount < filteredProducts.length) {
-                  setVisibleCount(prev => prev + 24);
+            {/* Product Grid (Editorial Style) */}
+            <div 
+              className="min-h-[400px] overflow-y-auto pr-2 custom-scrollbar"
+              onScroll={(e) => {
+                const target = e.currentTarget;
+                if (target.scrollHeight - target.scrollTop <= target.clientHeight + 200) {
+                  if (visibleCount < filteredProducts.length) {
+                    setVisibleCount(prev => prev + 24);
+                  }
                 }
-              }
-            }}
-          >
-          {productsByCategory.length === 0 ? (
-            <div className="text-center py-20 text-[#828282]">
-              <p className="text-lg">No encontramos resultados</p>
-            </div>
-          ) : (
-            productsByCategory.map((group) => (
-              <div key={group.category} className="mb-12">
-                {activeCategory === "Todos" && (
-                  <h3 className="font-serif text-xl mb-6 border-l-2 border-[#CE6908] pl-3">{group.category}</h3>
-                )}
-                
-                <div className="grid grid-cols-2 lg:grid-cols-4 gap-x-4 gap-y-10 sm:gap-x-6">
-                  {group.products.map((p) => {
-                    const cartItem = items.find(i => i.id === p.id);
-                    return (
-                      <div key={p.id} className="group relative">
-                        <div className="aspect-[3/4] bg-gray-100 rounded-lg overflow-hidden mb-4 relative transition-all">
-                          {p.image ? (
-                            <img 
-                              src={p.image} 
-                              alt={p.name} 
-                              className={`w-full h-full group-hover:scale-105 transition-transform duration-700 ease-out ${p.image === '/logo.png' ? 'object-contain p-10 opacity-30 grayscale' : 'object-cover'}`}
-                              loading="lazy"
-                            />
-                          ) : (
-                            <div className="w-full h-full flex items-center justify-center text-2xl">🌰</div>
-                          )}
-                          
-                          {/* Always visible buy button */}
-                          <div className="absolute inset-x-0 bottom-0 p-3 z-10">
-                            {user.isLoggedIn && cartItem ? (
-                              <div className="flex items-center justify-between bg-[#675B37] text-white shadow-lg rounded-full px-2 py-1.5 border border-[#675B37]">
-                                <button onClick={() => updateQuantity(p.id, cartItem.quantity - 1)} className="p-2 hover:bg-white/20 rounded-full transition">
-                                  <Minus size={14} />
-                                </button>
-                                <span className="text-sm font-bold w-6 text-center">{cartItem.quantity}</span>
-                                <button onClick={() => addItem(p)} className="p-2 hover:bg-white/20 rounded-full transition">
-                                  <Plus size={14} />
-                                </button>
-                              </div>
-                            ) : (
-                              <button 
-                                onClick={() => handleAddToCart(p)}
-                                className="w-full bg-[#675B37] text-white py-3 rounded-full text-xs font-semibold tracking-wider hover:bg-[#2B2118] transition shadow-lg flex items-center justify-center gap-2"
-                              >
-                                COMPRAR <ShoppingCart size={14} />
-                              </button>
-                            )}
-                          </div>
-                        </div>
-                        
-                        <div>
-                          <p className="text-xs text-[#828282] mb-1">{p.category}</p>
-                          <h3 className="font-medium text-[13px] leading-relaxed text-[#2B2118] line-clamp-2 pr-2" title={p.name}>
-                            {p.name}
-                          </h3>
-                          <div className="mt-2 flex items-center justify-between">
-                            <p className="font-bold text-sm text-[#2B2118]">${p.price.toLocaleString("es-AR")}</p>
-                          </div>
-                        </div>
-                      </div>
-                    );
-                  })}
-                </div>
+              }}
+            >
+            {productsByCategory.length === 0 ? (
+              <div className="text-center py-20 text-[#828282]">
+                <p className="text-lg">No encontramos resultados para tu búsqueda</p>
               </div>
-            ))
-          )}
-          </div>
-        </section>
-
-        {/* Promo Banner Split */}
-        <div className="mb-16 grid md:grid-cols-2 gap-0 rounded-2xl overflow-hidden shadow-sm">
-          <div className="bg-[#CE6908] text-white p-10 md:p-16 flex flex-col justify-center text-center md:text-left">
-            <h2 className="font-serif text-3xl md:text-4xl mb-4 leading-tight">Tu satisfacción es nuestra prioridad.</h2>
-            <p className="text-amber-50 text-sm md:text-base opacity-90 max-w-sm mx-auto md:mx-0">
-              Estamos aquí para entregarte la mejor experiencia. Calidad premium en cada grano.
-            </p>
-          </div>
-          <div className="h-64 md:h-auto">
-            <img src="https://images.unsplash.com/photo-1596040033229-a9821ebd058d?auto=format&fit=crop&w=800&q=80" alt="Quality" className="w-full h-full object-cover" />
-          </div>
-        </div>
-
-        {/* Instagram Visual Layout */}
-        <section className="mb-16">
-          <div className="text-center mb-10">
-            <h2 className="font-serif text-3xl text-[#2B2118] mb-2">Social Feed</h2>
-            <p className="text-sm text-[#828282]">Últimas Novedades en NuezApp</p>
-          </div>
-          
-          <div className="grid grid-cols-2 md:grid-cols-5 gap-1 mb-8">
-            {instagramFeed.slice(0, 5).map((img, i) => (
-              <a key={i} href="https://www.instagram.com/nuezapprio/" target="_blank" rel="noopener noreferrer" className="group relative aspect-square block overflow-hidden">
-                <img src={img} alt="Instagram" className="w-full h-full object-cover group-hover:scale-105 transition duration-700" loading="lazy" />
-                <div className="absolute inset-0 bg-black/20 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
-                  <span className="text-white text-xs font-semibold uppercase tracking-widest border border-white/50 px-4 py-2">Ver más</span>
-                </div>
-              </a>
-            ))}
-          </div>
-        </section>
-
-        {/* Recipes Vertical Scroll */}
-        <section className="mb-20">
-          <div className="mb-8 flex justify-between items-end">
-            <div>
-              <h2 className="font-serif text-3xl text-[#2B2118] mb-2">Recetas & Bienestar</h2>
-              <p className="text-sm text-[#828282] max-w-sm">Inspiración saludable para tu día a día.</p>
-            </div>
-            <a href="#" className="hidden md:flex text-xs font-bold uppercase tracking-widest text-[#CE6908] border-b border-[#CE6908]">Ver Todos</a>
-          </div>
-
-          <div className="flex gap-4 overflow-x-auto pb-4 scrollbar-hide snap-x">
-            {videoRecetas.map((video) => (
-              <a 
-                key={video.id} 
-                href={`https://www.youtube.com/results?search_query=${encodeURIComponent(video.title)}`}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="snap-start shrink-0 w-48 md:w-60 group block"
-              >
-                <div className="aspect-[4/5] rounded-xl overflow-hidden relative mb-4">
-                  <img src={video.img} alt={video.title} className="w-full h-full object-cover group-hover:scale-105 transition duration-700" loading="lazy"/>
-                  <div className="absolute inset-0 bg-black/10 group-hover:bg-black/30 transition-colors"></div>
-                  <div className="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity">
-                    <PlayCircle className="text-white" size={48} strokeWidth={1} />
+            ) : (
+              productsByCategory.map((group) => (
+                <div key={group.category} className="mb-12">
+                  {activeCategory === "Todos" && (
+                    <h3 className="font-serif text-xl mb-6 border-l-2 border-[#CE6908] pl-3">{group.category}</h3>
+                  )}
+                  
+                  <div className="grid grid-cols-2 lg:grid-cols-4 gap-x-4 gap-y-10 sm:gap-x-6">
+                    {group.products.map((p) => {
+                      const cartItem = items.find(i => i.id === p.id);
+                      return (
+                        <div key={p.id} className="group relative">
+                          <div className="aspect-[3/4] bg-gray-100 rounded-lg overflow-hidden mb-4 relative transition-all">
+                            {p.image ? (
+                              <img 
+                                src={p.image} 
+                                alt={p.name} 
+                                className={`w-full h-full group-hover:scale-105 transition-transform duration-700 ease-out ${p.image === '/logo.png' ? 'object-contain p-10 opacity-30 grayscale' : 'object-cover'}`}
+                                loading="lazy"
+                              />
+                            ) : (
+                              <div className="w-full h-full flex items-center justify-center text-2xl">🌰</div>
+                            )}
+                            
+                            {/* Always visible buy button */}
+                            <div className="absolute inset-x-0 bottom-0 p-3 z-10">
+                              {user.isLoggedIn && cartItem ? (
+                                <div className="flex items-center justify-between bg-[#675B37] text-white shadow-lg rounded-full px-2 py-1.5 border border-[#675B37]">
+                                  <button onClick={() => updateQuantity(p.id, cartItem.quantity - 1)} className="p-2 hover:bg-white/20 rounded-full transition">
+                                    <Minus size={14} />
+                                  </button>
+                                  <span className="text-sm font-bold w-6 text-center">{cartItem.quantity}</span>
+                                  <button onClick={() => addItem(p)} className="p-2 hover:bg-white/20 rounded-full transition">
+                                    <Plus size={14} />
+                                  </button>
+                                </div>
+                              ) : (
+                                <button 
+                                  onClick={() => handleAddToCart(p)}
+                                  className="w-full bg-[#675B37] text-white py-3 rounded-full text-xs font-semibold tracking-wider hover:bg-[#2B2118] transition shadow-lg flex items-center justify-center gap-2"
+                                >
+                                  COMPRAR <ShoppingCart size={14} />
+                                </button>
+                              )}
+                            </div>
+                          </div>
+                          
+                          <div>
+                            <p className="text-xs text-[#828282] mb-1">{p.category}</p>
+                            <h3 className="font-medium text-[13px] leading-relaxed text-[#2B2118] line-clamp-2 pr-2" title={p.name}>
+                              {p.name}
+                            </h3>
+                            <div className="mt-2 flex items-center justify-between">
+                              <p className="font-bold text-sm text-[#2B2118]">${p.price.toLocaleString("es-AR")}</p>
+                            </div>
+                          </div>
+                        </div>
+                      );
+                    })}
                   </div>
                 </div>
-                <p className="text-[10px] uppercase font-bold text-[#828282] tracking-wider mb-1">{video.tag}</p>
-                <h3 className="font-serif text-lg leading-tight text-[#2B2118] group-hover:text-[#CE6908] transition-colors line-clamp-2">
-                  {video.title}
-                </h3>
-              </a>
-            ))}
+              ))
+            )}
+            </div>
+          </section>
+        )}
+
+        {/* CONTENIDO SOLAPA: NUEZ APP */}
+        {activeMainTab === 'nuezapp' && (
+          <div className="animate-in fade-in duration-200">
+            {/* Hero Section Editorial con Carrusel */}
+            <div className="mb-14 bg-[#FAF7F2] rounded-2xl overflow-hidden flex flex-col md:flex-row shadow-sm border border-gray-100">
+              <div className="md:w-1/2 p-8 md:p-14 flex flex-col justify-center order-2 md:order-1">
+                <span className="text-[#CE6908] text-xs font-bold uppercase tracking-[0.2em] mb-3 block">NuezApp Store</span>
+                <h1 className="font-serif text-3xl md:text-5xl text-[#2B2118] leading-tight mb-5">
+                  Eleva tu nutrición con un sabor atemporal.
+                </h1>
+                <p className="text-[#828282] text-sm md:text-base mb-6 max-w-md leading-relaxed">
+                  Descubre nuestra selección de frutos secos y productos saludables, pensados para quienes viven intensamente sin descuidar su bienestar.
+                </p>
+                <div>
+                  <button 
+                    onClick={() => setActiveMainTab('products')} 
+                    className="bg-[#2B2118] text-white px-8 py-3.5 rounded-full text-xs font-bold tracking-widest uppercase hover:bg-[#675B37] transition shadow-md flex items-center gap-2"
+                  >
+                    <span>Ver Productos</span>
+                    <ChevronRight size={14} />
+                  </button>
+                </div>
+              </div>
+              <div className="md:w-1/2 h-64 md:h-auto relative order-1 md:order-2 overflow-hidden" ref={emblaRef}>
+                <div className="flex h-full">
+                  {bannerImages.map((src, i) => (
+                    <div className="flex-[0_0_100%] min-w-0 h-full relative" key={i}>
+                      <img src={src} alt="Hero" className="w-full h-full object-cover" />
+                    </div>
+                  ))}
+                </div>
+              </div>
+            </div>
+
+            {/* Promo Banner Split */}
+            <div className="mb-16 grid md:grid-cols-2 gap-0 rounded-2xl overflow-hidden shadow-sm">
+              <div className="bg-[#CE6908] text-white p-10 md:p-14 flex flex-col justify-center text-center md:text-left">
+                <h2 className="font-serif text-3xl md:text-4xl mb-4 leading-tight">Tu satisfacción es nuestra prioridad.</h2>
+                <p className="text-amber-50 text-sm md:text-base opacity-90 max-w-sm mx-auto md:mx-0">
+                  Estamos aquí para entregarte la mejor experiencia. Calidad premium en cada grano.
+                </p>
+              </div>
+              <div className="h-64 md:h-auto">
+                <img src="https://images.unsplash.com/photo-1596040033229-a9821ebd058d?auto=format&fit=crop&w=800&q=80" alt="Quality" className="w-full h-full object-cover" />
+              </div>
+            </div>
+
+            {/* Social Feed */}
+            <section className="mb-16">
+              <div className="text-center mb-10">
+                <h2 className="font-serif text-3xl text-[#2B2118] mb-2">Social Feed</h2>
+                <p className="text-sm text-[#828282]">Últimas Novedades en NuezApp</p>
+              </div>
+              
+              <div className="grid grid-cols-2 md:grid-cols-5 gap-2 mb-8">
+                {instagramFeed.slice(0, 5).map((img, i) => (
+                  <a key={i} href="https://www.instagram.com/nuezapprio/" target="_blank" rel="noopener noreferrer" className="group relative aspect-square block overflow-hidden rounded-xl">
+                    <img src={img} alt="Instagram" className="w-full h-full object-cover group-hover:scale-105 transition duration-700" loading="lazy" />
+                    <div className="absolute inset-0 bg-black/20 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
+                      <span className="text-white text-xs font-semibold uppercase tracking-widest border border-white/50 px-4 py-2 rounded">Ver más</span>
+                    </div>
+                  </a>
+                ))}
+              </div>
+            </section>
+
+            {/* Recipes Vertical Scroll */}
+            <section className="mb-16">
+              <div className="mb-8 flex justify-between items-end">
+                <div>
+                  <h2 className="font-serif text-3xl text-[#2B2118] mb-2">Recetas & Bienestar</h2>
+                  <p className="text-sm text-[#828282] max-w-sm">Inspiración saludable para tu día a día.</p>
+                </div>
+              </div>
+
+              <div className="flex gap-4 overflow-x-auto pb-4 scrollbar-hide snap-x">
+                {videoRecetas.map((video) => (
+                  <a 
+                    key={video.id} 
+                    href={`https://www.youtube.com/results?search_query=${encodeURIComponent(video.title)}`}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="snap-start shrink-0 w-48 md:w-60 group block"
+                  >
+                    <div className="aspect-[4/5] rounded-xl overflow-hidden relative mb-4">
+                      <img src={video.img} alt={video.title} className="w-full h-full object-cover group-hover:scale-105 transition duration-700" loading="lazy"/>
+                      <div className="absolute inset-0 bg-black/10 group-hover:bg-black/30 transition-colors"></div>
+                      <div className="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity">
+                        <PlayCircle className="text-white" size={48} strokeWidth={1} />
+                      </div>
+                    </div>
+                    <p className="text-[10px] uppercase font-bold text-[#828282] tracking-wider mb-1">{video.tag}</p>
+                    <h3 className="font-serif text-lg leading-tight text-[#2B2118] group-hover:text-[#CE6908] transition-colors line-clamp-2">
+                      {video.title}
+                    </h3>
+                  </a>
+                ))}
+              </div>
+            </section>
+
+            {/* Información de Contacto y Ubicación */}
+            <section className="mb-20 bg-gray-50/70 border border-gray-100 rounded-2xl p-6 md:p-10">
+              <div className="grid md:grid-cols-2 gap-8 items-center">
+                <div>
+                  <span className="text-[#CE6908] text-xs font-bold uppercase tracking-[0.2em] mb-2 block">Atención & Tienda</span>
+                  <h2 className="font-serif text-3xl text-[#2B2118] mb-4">Visítanos y Contáctanos</h2>
+                  <p className="text-[#828282] text-sm mb-6 leading-relaxed">
+                    Visítanos en nuestra tienda física para disfrutar de la experiencia completa y degustar nuestros productos frescos.
+                  </p>
+                  
+                  <div className="space-y-3 mb-8 text-sm text-[#2B2118]">
+                    <div className="flex items-start gap-3">
+                      <MapPin size={18} className="text-[#675B37] shrink-0 mt-0.5" />
+                      <div>
+                        <p className="font-semibold">Hipólito Yrigoyen y Sarmiento</p>
+                        <p className="text-xs text-gray-500">Río Colorado, Río Negro</p>
+                      </div>
+                    </div>
+                  </div>
+
+                  <div className="flex flex-col sm:flex-row gap-3">
+                    <button 
+                      onClick={handleContactWhatsApp} 
+                      className="bg-[#2B2118] text-white text-xs font-bold tracking-widest uppercase py-3.5 px-6 hover:bg-[#675B37] transition flex justify-center items-center gap-2 rounded-lg"
+                    >
+                      Escribir por WhatsApp <img src="https://upload.wikimedia.org/wikipedia/commons/6/6b/WhatsApp.svg" alt="WhatsApp" className="w-4 h-4 brightness-0 invert" />
+                    </button>
+                    <a 
+                      href="https://maps.google.com/?q=-38.99355688461547,-64.09578943096835" 
+                      target="_blank" 
+                      rel="noopener noreferrer" 
+                      className="border border-gray-300 text-[#2B2118] text-xs font-bold tracking-widest uppercase py-3.5 px-6 hover:bg-white transition text-center flex items-center justify-center gap-2 rounded-lg"
+                    >
+                      Ver en Google Maps
+                    </a>
+                  </div>
+                </div>
+
+                <div className="h-64 md:h-80 rounded-xl overflow-hidden shadow-sm border border-gray-200">
+                  <iframe 
+                    src="https://maps.google.com/maps?q=-38.99355688461547,-64.09578943096835&hl=es&z=16&output=embed" 
+                    width="100%" 
+                    height="100%" 
+                    style={{ border: 0 }} 
+                    allowFullScreen={true} 
+                    loading="lazy" 
+                    referrerPolicy="no-referrer-when-downgrade"
+                  />
+                </div>
+              </div>
+            </section>
           </div>
-        </section>
+        )}
 
       </main>
 
@@ -864,9 +957,30 @@ export default function Home() {
             </div>
 
             <nav className="flex-1 px-6 space-y-6">
-              <button onClick={() => {setIsMenuOpen(false); document.getElementById('collection')?.scrollIntoView({ behavior: 'smooth' });}} className="block text-left text-[#2B2118] font-serif text-2xl hover:text-[#CE6908] transition">
-                Catálogo
+              <button 
+                onClick={() => {
+                  setIsMenuOpen(false); 
+                  setActiveMainTab('products');
+                  window.scrollTo({ top: 0, behavior: 'smooth' });
+                }} 
+                className="block text-left text-[#2B2118] font-serif text-2xl hover:text-[#CE6908] transition flex items-center justify-between w-full"
+              >
+                <span>Productos</span>
+                <ShoppingBag size={20} className="text-[#675B37]" />
               </button>
+
+              <button 
+                onClick={() => {
+                  setIsMenuOpen(false); 
+                  setActiveMainTab('nuezapp');
+                  window.scrollTo({ top: 0, behavior: 'smooth' });
+                }} 
+                className="block text-left text-[#2B2118] font-serif text-2xl hover:text-[#CE6908] transition flex items-center justify-between w-full"
+              >
+                <span>Nuez App</span>
+                <img src="/icon.png" alt="Icon" className="w-5 h-5 object-contain" />
+              </button>
+
               {user.isLoggedIn && (
                 <button onClick={() => {setIsMenuOpen(false); toggleCart();}} className="block text-left text-[#2B2118] font-serif text-2xl hover:text-[#CE6908] transition flex items-center justify-between w-full">
                   <span>Mi Carrito</span>
@@ -883,8 +997,14 @@ export default function Home() {
                   <Package size={20} className="text-[#675B37]" />
                 </button>
               )}
-              <button onClick={() => {setIsMenuOpen(false); setIsContactOpen(true);}} className="block text-left text-[#2B2118] font-serif text-2xl hover:text-[#CE6908] transition">
-                Contacto
+              <button 
+                onClick={() => {
+                  setIsMenuOpen(false); 
+                  setActiveMainTab('nuezapp');
+                }} 
+                className="block text-left text-[#2B2118] font-serif text-2xl hover:text-[#CE6908] transition"
+              >
+                Contacto & Ubicación
               </button>
             </nav>
 
