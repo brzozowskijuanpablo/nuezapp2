@@ -397,17 +397,32 @@ export const useCartStore = create<CartStore>()(
 
       fetchOrders: async () => {
         const { token, user } = get();
-        if (!token || !user.isLoggedIn) return;
+        if (!user.isLoggedIn) return;
 
         set({ isLoadingOrders: true });
         try {
-          const res = await fetch('/api/orders', {
-            headers: { 'Authorization': `Bearer ${token}` }
-          });
+          const headers: Record<string, string> = {};
+          if (token) headers['Authorization'] = `Bearer ${token}`;
+
+          const query = user.email ? `?email=${encodeURIComponent(user.email)}` : '';
+          const res = await fetch(`/api/orders${query}`, { headers });
 
           if (res.ok) {
             const data = await res.json();
-            set({ orders: data.orders || [] });
+            if (data.orders) {
+              set((state) => {
+                // Merge DB orders with local orders without duplicates, capped at 100
+                const map = new Map<string, Order>();
+                data.orders.forEach((o: Order) => map.set(o.id, o));
+                state.orders.forEach((o: Order) => {
+                  if (!map.has(o.id)) map.set(o.id, o);
+                });
+                const combined = Array.from(map.values()).sort(
+                  (a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
+                );
+                return { orders: combined.slice(0, 100) };
+              });
+            }
           }
         } catch (err) {
           console.error('Error fetching orders:', err);
@@ -417,8 +432,11 @@ export const useCartStore = create<CartStore>()(
       },
 
       saveOrder: async (orderDetails) => {
-        const { token, items, getCartTotal, user } = get();
+        const { token, items, getCartTotal, user, clearCart } = get();
         if (items.length === 0) return { success: false, error: 'Carrito vacio' };
+
+        const currentItems = [...items];
+        const total = getCartTotal();
 
         try {
           const headers: Record<string, string> = { 'Content-Type': 'application/json' };
@@ -430,11 +448,13 @@ export const useCartStore = create<CartStore>()(
             method: 'POST',
             headers,
             body: JSON.stringify({
-              items,
-              total: getCartTotal(),
+              items: currentItems,
+              total,
               shippingAddress: orderDetails?.shippingAddress || user.address,
               phone: orderDetails?.phone || user.phone,
               notes: orderDetails?.notes,
+              userEmail: user.email,
+              userId: user.id,
               guestUser: !user.isLoggedIn ? {
                 name: user.name,
                 email: user.email,
@@ -444,9 +464,26 @@ export const useCartStore = create<CartStore>()(
 
           const data = await res.json();
           if (res.ok) {
-            if (token) {
-              get().fetchOrders();
-            }
+            // Registrar pedido en el historial local inmediatamente (hasta 100 pedidos)
+            const newOrder: Order = {
+              id: data.orderId || `ORD-${Date.now().toString().slice(-6)}`,
+              items: currentItems,
+              total,
+              status: 'confirmado',
+              shippingAddress: orderDetails?.shippingAddress || user.address,
+              phone: orderDetails?.phone || user.phone,
+              paymentMethod: 'Efectivo/Transferencia',
+              notes: orderDetails?.notes,
+              createdAt: new Date().toISOString()
+            };
+
+            set((state) => ({
+              orders: [newOrder, ...state.orders.filter(o => o.id !== newOrder.id)].slice(0, 100)
+            }));
+
+            // Vaciar carrito
+            clearCart();
+
             return { success: true, orderId: data.orderId };
           } else {
             return { success: false, error: data.error };
@@ -463,7 +500,8 @@ export const useCartStore = create<CartStore>()(
         token: state.token,
         sessionExpiresAt: state.sessionExpiresAt,
         user: state.user,
-        items: state.items
+        items: state.items,
+        orders: state.orders.slice(0, 100)
       })
     }
   )
