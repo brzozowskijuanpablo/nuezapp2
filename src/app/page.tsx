@@ -40,16 +40,11 @@ const bannerImages = [
 ];
 
 const instagramFeed = [
-  "https://images.unsplash.com/photo-1596040033229-a9821ebd058d?auto=format&fit=crop&w=400&q=80",
-  "https://images.unsplash.com/photo-1505253758473-96b7015fcd40?auto=format&fit=crop&w=400&q=80",
-  "https://images.unsplash.com/photo-1550828520-4cb496926fc9?auto=format&fit=crop&w=400&q=80",
-  "https://images.unsplash.com/photo-1606923829579-0cb981a83e2e?auto=format&fit=crop&w=400&q=80",
-  "https://images.unsplash.com/photo-1623910271019-35436666ba81?auto=format&fit=crop&w=400&q=80",
-  "https://images.unsplash.com/photo-1585828691566-f5d81db2b24f?auto=format&fit=crop&w=400&q=80",
-  "https://images.unsplash.com/photo-1600189020473-b31c19b48530?auto=format&fit=crop&w=400&q=80",
-  "https://images.unsplash.com/photo-1563636544-7744391696df?auto=format&fit=crop&w=400&q=80",
-  "https://images.unsplash.com/photo-1560155016-bd4879ae8f21?auto=format&fit=crop&w=400&q=80",
-  "https://images.unsplash.com/photo-1620600100793-19965d96a7eb?auto=format&fit=crop&w=400&q=80"
+  "/instagram/insta_0.jpg",
+  "/instagram/insta_1.jpg",
+  "/instagram/insta_2.jpg",
+  "/instagram/insta_3.jpg",
+  "/instagram/insta_4.jpg"
 ];
 
 const videoRecetas = [
