@@ -534,7 +534,7 @@ export default function Home() {
                     Escríbenos
                   </button>
                   <a 
-                    href="https://maps.google.com/?q=-38.9823136,-64.0898516" 
+                    href="https://maps.google.com/?q=-38.99355688461547,-64.09578943096835" 
                     target="_blank" 
                     rel="noopener noreferrer"
                     className="inline-flex items-center gap-2 bg-white text-blue-600 px-5 py-2.5 rounded-full font-bold shadow-sm hover:bg-blue-100 transition border border-blue-200"
@@ -546,7 +546,7 @@ export default function Home() {
 
                 <div className="w-full h-64 rounded-2xl overflow-hidden shadow-inner border border-blue-200">
                   <iframe 
-                    src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3101.4423405788487!2d-64.0898516!3d-38.9823136!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x95edbce8b7a67b4b%3A0xc3f8373bc0b8c9d0!2sSarmiento%20%26%20Hip%C3%B3lito%20Yrigoyen%2C%20R%C3%ADo%20Colorado%2C%20R%C3%ADo%20Negro!5e0!3m2!1ses!2sar!4v1700000000000!5m2!1ses!2sar" 
+                    src="https://maps.google.com/maps?q=-38.99355688461547,-64.09578943096835&hl=es&z=16&output=embed" 
                     width="100%" 
                     height="100%" 
                     style={{ border: 0 }} 
