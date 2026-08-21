@@ -713,16 +713,16 @@ export default function Home() {
       {isLoginModalOpen && (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
           <div className="absolute inset-0 bg-black/40 backdrop-blur-sm transition-opacity" onClick={() => setIsLoginModalOpen(false)} />
-          <div className="relative bg-white w-full max-w-md p-8 shadow-2xl animate-in fade-in zoom-in-95 duration-200">
-            <button onClick={() => setIsLoginModalOpen(false)} className="absolute top-4 right-4 text-[#828282] hover:text-black transition">
+          <div className="relative bg-white w-full max-w-md p-6 sm:p-8 shadow-2xl animate-in fade-in zoom-in-95 duration-200 max-h-[90vh] overflow-y-auto custom-scrollbar rounded-2xl">
+            <button onClick={() => setIsLoginModalOpen(false)} className="absolute top-4 right-4 text-[#828282] hover:text-black transition p-1">
               <X size={20} strokeWidth={1.5} />
             </button>
             
-            <div className="text-center mb-6">
-              <h3 className="font-serif text-3xl text-[#2B2118] mb-2">
+            <div className="text-center mb-5">
+              <h3 className="font-serif text-2xl sm:text-3xl text-[#2B2118] mb-1.5">
                 {authMode === "login" ? "Bienvenido" : "Crear Cuenta"}
               </h3>
-              <p className="text-[#828282] text-sm">
+              <p className="text-[#828282] text-xs sm:text-sm">
                 {authMode === "login" 
                   ? "Inicia sesión para guardar tu carrito y ver tus pedidos anteriores." 
                   : "Regístrate para guardar tu carrito y tener historial de pedidos."}
