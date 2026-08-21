@@ -42,6 +42,19 @@ const bannerImages = [
   "https://img.milocal.app/4340/919c98ad-0fee-33e9-9b16-26a8f3c29bf1.jpg"
 ];
 
+const instagramFeed = [
+  "https://images.unsplash.com/photo-1596040033229-a9821ebd058d?auto=format&fit=crop&w=400&q=80",
+  "https://images.unsplash.com/photo-1505253758473-96b7015fcd40?auto=format&fit=crop&w=400&q=80",
+  "https://images.unsplash.com/photo-1550828520-4cb496926fc9?auto=format&fit=crop&w=400&q=80",
+  "https://images.unsplash.com/photo-1606923829579-0cb981a83e2e?auto=format&fit=crop&w=400&q=80",
+  "https://images.unsplash.com/photo-1623910271019-35436666ba81?auto=format&fit=crop&w=400&q=80",
+  "https://images.unsplash.com/photo-1585828691566-f5d81db2b24f?auto=format&fit=crop&w=400&q=80",
+  "https://images.unsplash.com/photo-1600189020473-b31c19b48530?auto=format&fit=crop&w=400&q=80",
+  "https://images.unsplash.com/photo-1563636544-7744391696df?auto=format&fit=crop&w=400&q=80",
+  "https://images.unsplash.com/photo-1560155016-bd4879ae8f21?auto=format&fit=crop&w=400&q=80",
+  "https://images.unsplash.com/photo-1620600100793-19965d96a7eb?auto=format&fit=crop&w=400&q=80"
+];
+
 const WHATSAPP_NUMBER = "542916419224";
 
 export default function Home() {
@@ -280,6 +293,52 @@ export default function Home() {
             </div>
           ))
         )}
+      </div>
+
+      {/* Instagram Feed Section */}
+      <div className="max-w-4xl mx-auto px-4 mt-8 mb-12">
+        <div className="bg-white rounded-3xl p-6 sm:p-8 shadow-sm">
+          <div className="text-center mb-8">
+            <h2 className="text-2xl font-extrabold text-amber-900 flex items-center justify-center gap-2 mb-2">
+              <img src="https://upload.wikimedia.org/wikipedia/commons/e/e7/Instagram_logo_2016.svg" alt="Instagram" className="w-8 h-8" />
+              Novedades en NuezApp
+            </h2>
+            <p className="text-gray-600">¡Síguenos y entérate de nuestras ofertas, sorteos y recetas increíbles!</p>
+          </div>
+
+          <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-5 gap-3 mb-8">
+            {instagramFeed.map((img, i) => (
+              <a 
+                key={i} 
+                href="https://www.instagram.com/nuezapprio/" 
+                target="_blank" 
+                rel="noopener noreferrer"
+                className="group relative aspect-square rounded-2xl overflow-hidden shadow-sm block bg-gray-100"
+              >
+                <img 
+                  src={img} 
+                  alt={`Instagram Post ${i+1}`} 
+                  className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500" 
+                  loading="lazy"
+                />
+                <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center backdrop-blur-[2px]">
+                  <img src="https://upload.wikimedia.org/wikipedia/commons/e/e7/Instagram_logo_2016.svg" alt="Insta" className="w-8 h-8 brightness-0 invert" />
+                </div>
+              </a>
+            ))}
+          </div>
+
+          <div className="text-center">
+            <a 
+              href="https://www.instagram.com/nuezapprio/" 
+              target="_blank" 
+              rel="noopener noreferrer"
+              className="inline-flex items-center gap-2 bg-gradient-to-tr from-yellow-400 via-pink-500 to-purple-500 text-white px-8 py-3.5 rounded-full font-bold shadow-lg hover:shadow-xl hover:-translate-y-1 transition-all"
+            >
+              Ver más en @nuezapprio <ChevronRight size={18} />
+            </a>
+          </div>
+        </div>
       </div>
 
       {/* Sidebar Menu Drawer */}
