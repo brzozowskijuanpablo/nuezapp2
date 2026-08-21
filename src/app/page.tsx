@@ -49,10 +49,10 @@ const instagramFeed = [
 
 const videoRecetas = [
   { id: "1", title: "Desayuno Avena y Nueces", img: "https://images.unsplash.com/photo-1517673132405-a56a62b18caf?auto=format&fit=crop&w=400&q=80", tag: "Desayuno Sano" },
-  { id: "2", title: "Pan Keto de Almendras", img: "https://images.unsplash.com/photo-1584314777558-86d3897bc09c?auto=format&fit=crop&w=400&q=80", tag: "Keto" },
-  { id: "3", title: "Infusión de Hierbas Medicinales", img: "https://images.unsplash.com/photo-1597481499750-3e6b22687e12?auto=format&fit=crop&w=400&q=80", tag: "Medicinal" },
+  { id: "2", title: "Pan Keto de Almendras", img: "https://images.unsplash.com/photo-1542826438-bd32f43d626f?auto=format&fit=crop&w=400&q=80", tag: "Keto" },
+  { id: "3", title: "Infusión de Hierbas Medicinales", img: "https://images.unsplash.com/photo-1555529902-601e3895e4e2?auto=format&fit=crop&w=400&q=80", tag: "Medicinal" },
   { id: "4", title: "Granola Casera Saludable", img: "https://images.unsplash.com/photo-1512152272829-e3139592d56f?auto=format&fit=crop&w=400&q=80", tag: "Receta" },
-  { id: "5", title: "Beneficios de la Chía", img: "https://images.unsplash.com/photo-1593309605333-e7f0d0bd1c7b?auto=format&fit=crop&w=400&q=80", tag: "Nutrición" },
+  { id: "5", title: "Beneficios de la Chía", img: "https://images.unsplash.com/photo-1540420773420-3366772f4999?auto=format&fit=crop&w=400&q=80", tag: "Nutrición" },
   { id: "6", title: "Snack de Frutos Secos", img: "https://images.unsplash.com/photo-1536599018102-9f803c140fc1?auto=format&fit=crop&w=400&q=80", tag: "Snack" },
 ];
 
