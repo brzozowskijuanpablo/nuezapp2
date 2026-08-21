@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { Epilogue, Prata } from "next/font/google";
+import Script from "next/script";
 import "./globals.css";
 
 const epilogue = Epilogue({
@@ -24,7 +25,10 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
       lang="es"
       className={`${epilogue.variable} ${prata.variable} h-full antialiased`}
     >
-      <body className="min-h-full flex flex-col font-sans bg-[#FFFFFF]">{children}</body>
+      <body className="min-h-full flex flex-col font-sans bg-[#FFFFFF]">
+        {children}
+        <Script src="https://accounts.google.com/gsi/client" strategy="afterInteractive" />
+      </body>
     </html>
   );
 }

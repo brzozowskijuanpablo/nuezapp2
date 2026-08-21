@@ -297,19 +297,87 @@ export default function Home() {
     return () => window.removeEventListener('message', handleMessage);
   }, [isPendingCheckout, loginWithSSO]);
 
-  const handleSSOClick = (provider: 'google' | 'microsoft') => {
+  const handleSSOClick = async (provider: 'google' | 'microsoft') => {
     setAuthError("");
-    setIsLoginModalOpen(false);
-    const defaultEmail = provider === 'google' ? 'jpbrzmoto@gmail.com' : 'usuario@outlook.com';
-    const defaultName = defaultEmail.split('@')[0].replace(/[\._]/g, ' ');
-    const formattedName = defaultName.charAt(0).toUpperCase() + defaultName.slice(1);
 
-    setSsoConsentModal({
-      isOpen: true,
-      provider,
-      email: defaultEmail,
-      name: formattedName
-    });
+    if (provider === "google") {
+      // Usar Google Identity Services oficial
+      if (typeof window !== "undefined" && (window as any).google?.accounts?.oauth2) {
+        const googleClientId = process.env.NEXT_PUBLIC_GOOGLE_CLIENT_ID || "1058474268710-v6q8k1882u03hqu1365g73r10o18h929.apps.googleusercontent.com";
+        
+        try {
+          const client = (window as any).google.accounts.oauth2.initTokenClient({
+            client_id: googleClientId,
+            scope: 'email profile openid',
+            callback: async (tokenResponse: any) => {
+              if (tokenResponse.error) {
+                setAuthError("No se completó la autorización con Google.");
+                return;
+              }
+              if (tokenResponse.access_token) {
+                setAuthLoading(true);
+                try {
+                  const userInfoRes = await fetch('https://www.googleapis.com/oauth2/v3/userinfo', {
+                    headers: { Authorization: `Bearer ${tokenResponse.access_token}` }
+                  });
+                  const userData = await userInfoRes.json();
+                  if (userData.email) {
+                    const res = await loginWithSSO('google', {
+                      email: userData.email,
+                      name: userData.name || userData.email.split('@')[0]
+                    });
+                    setAuthLoading(false);
+                    if (res.success) {
+                      setIsLoginModalOpen(false);
+                      if (isPendingCheckout) {
+                        setIsPendingCheckout(false);
+                        setTimeout(() => executeCheckout(), 300);
+                      }
+                    } else {
+                      setAuthError(res.error || "Error al autenticar con Google");
+                    }
+                  }
+                } catch (err) {
+                  setAuthLoading(false);
+                  setAuthError("Error al obtener datos de Google");
+                }
+              }
+            },
+          });
+          client.requestAccessToken({ prompt: 'consent select_account' });
+          return;
+        } catch (e) {
+          console.warn("Google GIS init fallback:", e);
+        }
+      }
+    }
+
+    // Microsoft / Fallback OAuth popup
+    const redirectUri = encodeURIComponent(`${window.location.origin}/auth/callback/${provider}`);
+    const width = 500;
+    const height = 650;
+    const left = window.screen.width / 2 - width / 2;
+    const top = window.screen.height / 2 - height / 2;
+
+    let oauthUrl = "";
+    if (provider === "google") {
+      const googleClientId = process.env.NEXT_PUBLIC_GOOGLE_CLIENT_ID || "1058474268710-v6q8k1882u03hqu1365g73r10o18h929.apps.googleusercontent.com";
+      oauthUrl = `https://accounts.google.com/o/oauth2/v2/auth?client_id=${googleClientId}&redirect_uri=${redirectUri}&response_type=token&scope=email%20profile%20openid&prompt=consent%20select_account`;
+    } else {
+      const msClientId = process.env.NEXT_PUBLIC_MICROSOFT_CLIENT_ID || "common";
+      oauthUrl = `https://login.microsoftonline.com/common/oauth2/v2.0/authorize?client_id=${msClientId}&response_type=token&redirect_uri=${redirectUri}&scope=user.read%20openid%20profile%20email&prompt=select_account`;
+    }
+
+    const popup = window.open(
+      oauthUrl,
+      `${provider}_login`,
+      `width=${width},height=${height},top=${top},left=${left},toolbar=no,menubar=no,location=no,status=no`
+    );
+
+    if (!popup || popup.closed || typeof popup.closed === 'undefined') {
+      setAuthError("Por favor habilita las ventanas emergentes en tu navegador para continuar.");
+      return;
+    }
   };
 
   const handleConfirmSSOConsent = async (e: React.FormEvent) => {
