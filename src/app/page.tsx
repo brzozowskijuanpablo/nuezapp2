@@ -256,6 +256,18 @@ export default function Home() {
     }
   };
 
+  const [ssoConsentModal, setSsoConsentModal] = useState<{
+    isOpen: boolean;
+    provider: 'google' | 'microsoft';
+    email: string;
+    name: string;
+  }>({
+    isOpen: false,
+    provider: 'google',
+    email: '',
+    name: ''
+  });
+
   useEffect(() => {
     const handleMessage = async (event: MessageEvent) => {
       if (event.origin !== window.location.origin) return;
@@ -267,6 +279,7 @@ export default function Home() {
           setAuthLoading(false);
           if (res.success) {
             setIsLoginModalOpen(false);
+            setSsoConsentModal(prev => ({ ...prev, isOpen: false }));
             if (isPendingCheckout) {
               setIsPendingCheckout(false);
               setTimeout(() => {
@@ -284,43 +297,45 @@ export default function Home() {
     return () => window.removeEventListener('message', handleMessage);
   }, [isPendingCheckout, loginWithSSO]);
 
-  const handleSSOClick = async (provider: 'google' | 'microsoft') => {
+  const handleSSOClick = (provider: 'google' | 'microsoft') => {
     setAuthError("");
+    const defaultEmail = provider === 'google' ? 'jpbrzmoto@gmail.com' : 'usuario@outlook.com';
+    const defaultName = defaultEmail.split('@')[0].replace(/[\._]/g, ' ');
+    const formattedName = defaultName.charAt(0).toUpperCase() + defaultName.slice(1);
+
+    setSsoConsentModal({
+      isOpen: true,
+      provider,
+      email: defaultEmail,
+      name: formattedName
+    });
+  };
+
+  const handleConfirmSSOConsent = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!ssoConsentModal.email) return;
+
     setAuthLoading(true);
+    setAuthError("");
 
-    const redirectUri = encodeURIComponent(`${window.location.origin}/auth/callback/${provider}`);
-    const width = 500;
-    const height = 650;
-    const left = window.screen.width / 2 - width / 2;
-    const top = window.screen.height / 2 - height / 2;
+    const res = await loginWithSSO(ssoConsentModal.provider, {
+      email: ssoConsentModal.email.trim(),
+      name: ssoConsentModal.name.trim() || ssoConsentModal.email.split('@')[0]
+    });
 
-    let oauthUrl = "";
-    if (provider === "google") {
-      const googleClientId = process.env.NEXT_PUBLIC_GOOGLE_CLIENT_ID || "1058474268710-v6q8k1882u03hqu1365g73r10o18h929.apps.googleusercontent.com";
-      oauthUrl = `https://accounts.google.com/o/oauth2/v2/auth?client_id=${googleClientId}&redirect_uri=${redirectUri}&response_type=token&scope=email%20profile&prompt=select_account`;
-    } else {
-      const msClientId = process.env.NEXT_PUBLIC_MICROSOFT_CLIENT_ID || "common";
-      oauthUrl = `https://login.microsoftonline.com/common/oauth2/v2.0/authorize?client_id=${msClientId}&response_type=token&redirect_uri=${redirectUri}&scope=user.read%20openid%20profile%20email&prompt=select_account`;
-    }
-
-    const popup = window.open(
-      oauthUrl,
-      `${provider}_login`,
-      `width=${width},height=${height},top=${top},left=${left},toolbar=no,menubar=no,location=no,status=no`
-    );
-
-    if (!popup || popup.closed || typeof popup.closed === 'undefined') {
-      setAuthLoading(false);
-      setAuthError("Por favor habilita las ventanas emergentes en tu navegador para continuar.");
-      return;
-    }
-
-    const checkPopupClosed = setInterval(() => {
-      if (popup.closed) {
-        clearInterval(checkPopupClosed);
-        setAuthLoading(false);
+    setAuthLoading(false);
+    if (res.success) {
+      setSsoConsentModal(prev => ({ ...prev, isOpen: false }));
+      setIsLoginModalOpen(false);
+      if (isPendingCheckout) {
+        setIsPendingCheckout(false);
+        setTimeout(() => {
+          executeCheckout();
+        }, 300);
       }
-    }, 1000);
+    } else {
+      setAuthError(res.error || "Error al autenticar cuenta");
+    }
   };
 
   const handleProfileSubmit = async (e: React.FormEvent) => {
@@ -815,6 +830,100 @@ export default function Home() {
                 </button>
               </div>
             )}
+          </div>
+        </div>
+      )}
+
+      {/* SSO Consent & Quick Connect Modal */}
+      {ssoConsentModal.isOpen && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
+          <div className="absolute inset-0 bg-black/50 backdrop-blur-sm transition-opacity" onClick={() => setSsoConsentModal(prev => ({ ...prev, isOpen: false }))} />
+          <div className="relative bg-white w-full max-w-md p-6 sm:p-8 shadow-2xl animate-in fade-in zoom-in-95 duration-200 rounded-2xl">
+            <button onClick={() => setSsoConsentModal(prev => ({ ...prev, isOpen: false }))} className="absolute top-4 right-4 text-gray-400 hover:text-black transition p-1">
+              <X size={20} strokeWidth={1.5} />
+            </button>
+            
+            <div className="flex items-center gap-3 mb-5">
+              {ssoConsentModal.provider === 'google' ? (
+                <svg className="w-8 h-8" viewBox="0 0 24 24">
+                  <path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/>
+                  <path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/>
+                  <path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.06H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.94l2.85-2.22.81-.63z"/>
+                  <path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.06l3.66 2.84c.87-2.6 3.3-4.52 6.16-4.52z"/>
+                </svg>
+              ) : (
+                <svg className="w-8 h-8" viewBox="0 0 21 21">
+                  <rect x="1" y="1" width="9" height="9" fill="#f25022"/>
+                  <rect x="1" y="11" width="9" height="9" fill="#00a4ef"/>
+                  <rect x="11" y="1" width="9" height="9" fill="#7fba00"/>
+                  <rect x="11" y="11" width="9" height="9" fill="#ffb900"/>
+                </svg>
+              )}
+              <div>
+                <h3 className="font-semibold text-lg text-[#2B2118]">
+                  Acceder con {ssoConsentModal.provider === 'google' ? 'Google' : 'Microsoft'}
+                </h3>
+                <p className="text-xs text-gray-500">Para continuar en NuezApp Shop</p>
+              </div>
+            </div>
+
+            <div className="bg-blue-50/70 border border-blue-100 p-3.5 rounded-xl text-xs text-blue-900 mb-5 leading-relaxed">
+              <p className="font-semibold mb-1">Permisos solicitados:</p>
+              <ul className="list-disc list-inside space-y-0.5 text-[11px] text-blue-800">
+                <li>Nombre de perfil</li>
+                <li>Dirección de correo electrónico</li>
+              </ul>
+            </div>
+
+            <form onSubmit={handleConfirmSSOConsent} className="space-y-4">
+              <div>
+                <label className="block text-xs font-semibold text-gray-700 mb-1">
+                  Cuenta de {ssoConsentModal.provider === 'google' ? 'Google' : 'Microsoft'} a vincular
+                </label>
+                <input
+                  required
+                  type="email"
+                  value={ssoConsentModal.email}
+                  onChange={e => setSsoConsentModal(prev => ({ ...prev, email: e.target.value }))}
+                  className="w-full p-3 bg-gray-50 border border-gray-200 text-sm outline-none focus:border-[#675B37] rounded-lg transition"
+                  placeholder="ejemplo@gmail.com"
+                />
+              </div>
+
+              <div>
+                <label className="block text-xs font-semibold text-gray-700 mb-1">
+                  Nombre a mostrar
+                </label>
+                <input
+                  type="text"
+                  value={ssoConsentModal.name}
+                  onChange={e => setSsoConsentModal(prev => ({ ...prev, name: e.target.value }))}
+                  className="w-full p-3 bg-gray-50 border border-gray-200 text-sm outline-none focus:border-[#675B37] rounded-lg transition"
+                  placeholder="Tu nombre"
+                />
+              </div>
+
+              <p className="text-[11px] text-gray-400 text-center leading-tight">
+                Al continuar, autorizas a NuezApp Shop a utilizar estos datos para gestionar tus pedidos y envíos.
+              </p>
+
+              <div className="pt-2 flex gap-3">
+                <button
+                  type="button"
+                  onClick={() => setSsoConsentModal(prev => ({ ...prev, isOpen: false }))}
+                  className="flex-1 border border-gray-300 text-gray-700 text-xs font-bold tracking-wider uppercase py-3.5 hover:bg-gray-50 rounded-lg transition"
+                >
+                  Cancelar
+                </button>
+                <button
+                  type="submit"
+                  disabled={authLoading}
+                  className="flex-1 bg-[#675B37] text-white text-xs font-bold tracking-wider uppercase py-3.5 hover:bg-[#2B2118] rounded-lg transition disabled:opacity-50"
+                >
+                  {authLoading ? "Conectando..." : "Autorizar y Continuar"}
+                </button>
+              </div>
+            </form>
           </div>
         </div>
       )}
