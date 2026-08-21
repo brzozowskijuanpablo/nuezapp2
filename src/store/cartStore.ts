@@ -49,6 +49,8 @@ interface CartStore {
   clearCart: () => void;
   toggleCart: () => void;
   toggleOrders: () => void;
+  toggleProfile: () => void;
+  isProfileOpen: boolean;
   getCartTotal: () => number;
   getCartCount: () => number;
   setUser: (user: Partial<UserProfile>) => void;
@@ -57,6 +59,7 @@ interface CartStore {
   login: (email: string, password: string) => Promise<{ success: boolean; error?: string }>;
   register: (data: { name: string; email: string; password: string; phone?: string; address?: string }) => Promise<{ success: boolean; error?: string }>;
   loginWithSSO: (provider: 'google' | 'microsoft', ssoData: { email: string; name?: string; phone?: string; address?: string }) => Promise<{ success: boolean; error?: string }>;
+  updateProfile: (data: { name?: string; phone?: string; address?: string }) => Promise<{ success: boolean; error?: string }>;
   restoreSession: () => Promise<void>;
   logout: () => Promise<void>;
   syncCartWithDb: () => Promise<void>;
@@ -70,6 +73,7 @@ export const useCartStore = create<CartStore>()(
       items: [],
       isCartOpen: false,
       isOrdersOpen: false,
+      isProfileOpen: false,
       token: null,
       user: {
         id: '',
@@ -129,6 +133,7 @@ export const useCartStore = create<CartStore>()(
       
       toggleCart: () => set((state) => ({ isCartOpen: !state.isCartOpen })),
       toggleOrders: () => set((state) => ({ isOrdersOpen: !state.isOrdersOpen })),
+      toggleProfile: () => set((state) => ({ isProfileOpen: !state.isProfileOpen })),
       
       getCartTotal: () => {
         const { items } = get();
@@ -262,6 +267,35 @@ export const useCartStore = create<CartStore>()(
           return { success: true };
         } catch (err) {
           return { success: false, error: 'Error de conexión con el proveedor' };
+        }
+      },
+
+      updateProfile: async (profileData) => {
+        const { token } = get();
+        if (!token) return { success: false, error: 'No autorizado' };
+
+        try {
+          const res = await fetch('/api/auth/me', {
+            method: 'PUT',
+            headers: {
+              'Content-Type': 'application/json',
+              'Authorization': `Bearer ${token}`
+            },
+            body: JSON.stringify(profileData)
+          });
+
+          const data = await res.json();
+          if (!res.ok) {
+            return { success: false, error: data.error || 'Error al actualizar datos' };
+          }
+
+          set((state) => ({
+            user: { ...state.user, ...data.user }
+          }));
+
+          return { success: true };
+        } catch (err) {
+          return { success: false, error: 'Error al conectar con el servidor' };
         }
       },
 

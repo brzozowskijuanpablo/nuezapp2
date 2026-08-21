@@ -7,7 +7,8 @@ import Autoplay from 'embla-carousel-autoplay';
 import { 
   X, Plus, Minus, Trash2, ShoppingCart, Search, 
   MapPin, Menu, User, LogOut, ChevronRight, PlayCircle,
-  Package, Clock, CheckCircle2, AlertCircle, ShoppingBag
+  Package, Clock, CheckCircle2, AlertCircle, ShoppingBag,
+  Settings, Edit3
 } from "lucide-react";
 
 // Mocks & Constants
@@ -86,8 +87,25 @@ export default function Home() {
     items, isCartOpen, toggleCart, addItem, 
     removeItem, updateQuantity, getCartTotal, getCartCount,
     user, logout, login, register, loginWithSSO, restoreSession,
-    isOrdersOpen, toggleOrders, orders, fetchOrders, saveOrder, isLoadingOrders
+    isOrdersOpen, toggleOrders, orders, fetchOrders, saveOrder, isLoadingOrders,
+    isProfileOpen, toggleProfile, updateProfile
   } = useCartStore();
+
+  // Profile Form State
+  const [profileForm, setProfileForm] = useState({ name: "", phone: "", address: "" });
+  const [profileLoading, setProfileLoading] = useState(false);
+  const [profileError, setProfileError] = useState("");
+  const [profileSuccess, setProfileSuccess] = useState(false);
+
+  useEffect(() => {
+    if (user.isLoggedIn) {
+      setProfileForm({
+        name: user.name || "",
+        phone: user.phone || "",
+        address: user.address || ""
+      });
+    }
+  }, [user]);
 
   const [emblaRef] = useEmblaCarousel({ loop: true }, [Autoplay({ delay: 4500 })]);
 
@@ -244,6 +262,30 @@ export default function Home() {
     }
   };
 
+  const handleProfileSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setProfileError("");
+    setProfileSuccess(false);
+    setProfileLoading(true);
+
+    const res = await updateProfile({
+      name: profileForm.name,
+      phone: profileForm.phone,
+      address: profileForm.address
+    });
+
+    setProfileLoading(false);
+    if (res.success) {
+      setProfileSuccess(true);
+      setTimeout(() => {
+        setProfileSuccess(false);
+        toggleProfile();
+      }, 1200);
+    } else {
+      setProfileError(res.error || "Error al actualizar perfil");
+    }
+  };
+
   const handleContactWhatsApp = () => {
     window.open(`https://wa.me/${WHATSAPP_NUMBER}?text=Hola%20NuezApp!`, '_blank');
   };
@@ -315,10 +357,11 @@ export default function Home() {
                   <Package size={14} /> Mis Pedidos
                 </button>
                 <button 
-                  onClick={() => setIsMenuOpen(true)}
-                  className="text-sm font-medium border-b border-gray-900 pb-0.5 hover:text-[#CE6908] transition"
+                  onClick={toggleProfile}
+                  className="text-sm font-medium border-b border-gray-900 pb-0.5 hover:text-[#CE6908] transition flex items-center gap-1.5"
+                  title="Editar mis datos"
                 >
-                  Hola, {user.name.split(' ')[0]}
+                  Hola, {user.name.split(' ')[0]} <Edit3 size={13} className="text-[#675B37]" />
                 </button>
               </div>
             ) : (
@@ -596,7 +639,13 @@ export default function Home() {
               {user.isLoggedIn ? (
                 <div>
                   <p className="font-medium text-[#2B2118] text-lg">{user.name}</p>
-                  <p className="text-[#828282] text-xs">{user.email}</p>
+                  <p className="text-[#828282] text-xs mb-2">{user.email}</p>
+                  <button 
+                    onClick={() => { setIsMenuOpen(false); toggleProfile(); }}
+                    className="text-xs font-semibold text-[#675B37] hover:text-[#2B2118] flex items-center gap-1.5 transition py-1"
+                  >
+                    <Edit3 size={13} /> Editar mis datos
+                  </button>
                 </div>
               ) : (
                 <button onClick={() => {setIsMenuOpen(false); setIsLoginModalOpen(true);}} className="text-sm font-semibold border-b border-gray-900 pb-0.5">
@@ -951,6 +1000,105 @@ export default function Home() {
                 ))
               )}
             </div>
+          </div>
+        </div>
+      )}
+
+      {/* Profile Edit Modal */}
+      {isProfileOpen && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
+          <div className="absolute inset-0 bg-black/40 backdrop-blur-sm transition-opacity" onClick={toggleProfile} />
+          <div className="relative bg-white w-full max-w-md p-6 sm:p-8 shadow-2xl animate-in fade-in zoom-in-95 duration-200 max-h-[90vh] overflow-y-auto custom-scrollbar rounded-2xl">
+            <button onClick={toggleProfile} className="absolute top-4 right-4 text-[#828282] hover:text-black transition p-1">
+              <X size={20} strokeWidth={1.5} />
+            </button>
+            
+            <div className="flex items-center gap-3 mb-6">
+              <div className="p-3 bg-[#675B37]/10 text-[#675B37] rounded-full">
+                <User size={24} />
+              </div>
+              <div>
+                <h3 className="font-serif text-2xl text-[#2B2118]">Mi Perfil</h3>
+                <p className="text-[#828282] text-xs">Actualiza tus datos para tus compras y envíos.</p>
+              </div>
+            </div>
+
+            {profileSuccess && (
+              <div className="mb-4 p-3 bg-emerald-50 border border-emerald-200 text-emerald-800 text-xs rounded-lg flex items-center gap-2">
+                <CheckCircle2 size={16} className="shrink-0 text-emerald-600" />
+                <span><strong>¡Excelente!</strong> Tus datos han sido actualizados con éxito.</span>
+              </div>
+            )}
+
+            {profileError && (
+              <div className="mb-4 p-3 bg-red-50 border border-red-200 text-red-700 text-xs rounded-lg flex items-center gap-2">
+                <AlertCircle size={16} className="shrink-0" />
+                <span>{profileError}</span>
+              </div>
+            )}
+
+            <form onSubmit={handleProfileSubmit} className="space-y-4">
+              <div>
+                <label className="block text-xs font-semibold text-gray-600 mb-1">Nombre Completo *</label>
+                <input 
+                  required 
+                  type="text" 
+                  value={profileForm.name} 
+                  onChange={e => setProfileForm({...profileForm, name: e.target.value})} 
+                  className="w-full p-3 bg-gray-50 border border-gray-200 text-sm outline-none focus:border-[#675B37] transition" 
+                  placeholder="Tu nombre completo" 
+                />
+              </div>
+
+              <div>
+                <label className="block text-xs font-semibold text-gray-600 mb-1">Correo Electrónico (No editable)</label>
+                <input 
+                  disabled 
+                  type="email" 
+                  value={user.email} 
+                  className="w-full p-3 bg-gray-100/70 border border-gray-200 text-sm text-gray-500 cursor-not-allowed outline-none" 
+                />
+              </div>
+
+              <div>
+                <label className="block text-xs font-semibold text-gray-600 mb-1">Teléfono / WhatsApp</label>
+                <input 
+                  type="tel" 
+                  value={profileForm.phone} 
+                  onChange={e => setProfileForm({...profileForm, phone: e.target.value})} 
+                  className="w-full p-3 bg-gray-50 border border-gray-200 text-sm outline-none focus:border-[#675B37] transition" 
+                  placeholder="Ej: +54 9 2931 123456" 
+                />
+              </div>
+
+              <div>
+                <label className="block text-xs font-semibold text-gray-600 mb-1">Dirección de Entrega Predeterminada</label>
+                <input 
+                  type="text" 
+                  value={profileForm.address} 
+                  onChange={e => setProfileForm({...profileForm, address: e.target.value})} 
+                  className="w-full p-3 bg-gray-50 border border-gray-200 text-sm outline-none focus:border-[#675B37] transition" 
+                  placeholder="Calle, número, piso/depto" 
+                />
+              </div>
+
+              <div className="pt-2 flex gap-3">
+                <button 
+                  type="button" 
+                  onClick={toggleProfile}
+                  className="flex-1 border border-gray-300 text-gray-700 text-xs font-bold tracking-widest uppercase py-3.5 hover:bg-gray-50 transition"
+                >
+                  Cancelar
+                </button>
+                <button 
+                  type="submit" 
+                  disabled={profileLoading}
+                  className="flex-1 bg-[#675B37] text-white text-xs font-bold tracking-widest uppercase py-3.5 hover:bg-[#2B2118] transition disabled:opacity-50"
+                >
+                  {profileLoading ? "Guardando..." : "Guardar Cambios"}
+                </button>
+              </div>
+            </form>
           </div>
         </div>
       )}
