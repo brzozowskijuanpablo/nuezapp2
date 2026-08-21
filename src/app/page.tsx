@@ -8,7 +8,7 @@ import {
   X, Plus, Minus, Trash2, ShoppingCart, Search, 
   MapPin, Menu, User, LogOut, ChevronRight, PlayCircle,
   Package, Clock, CheckCircle2, AlertCircle, ShoppingBag,
-  Settings, Edit3
+  Settings, Edit3, RotateCcw
 } from "lucide-react";
 
 // Mocks & Constants
@@ -249,6 +249,16 @@ export default function Home() {
       return;
     }
     addItem(product);
+  };
+
+  const handleReorder = (orderItems: typeof items) => {
+    for (const item of orderItems) {
+      addItem(item);
+    }
+    toggleOrders();
+    setTimeout(() => {
+      toggleCart();
+    }, 250);
   };
 
   const handleCheckout = () => {
@@ -1314,10 +1324,19 @@ export default function Home() {
                       ))}
                     </ul>
 
-                    <div className="pt-2 border-t border-gray-100 flex justify-between items-center text-sm">
+                    <div className="pt-2 border-t border-gray-100 flex justify-between items-center text-sm mb-3">
                       <span className="font-medium text-gray-500 text-xs">Total abonado</span>
                       <span className="font-bold text-[#CE6908] text-base">${order.total.toLocaleString("es-AR")}</span>
                     </div>
+
+                    <button
+                      onClick={() => handleReorder(order.items)}
+                      className="w-full bg-[#675B37]/10 hover:bg-[#675B37] text-[#675B37] hover:text-white border border-[#675B37]/20 py-2.5 px-3 text-xs font-bold rounded-lg transition-colors flex items-center justify-center gap-2 group"
+                      title="Volver a agregar estos productos al carrito"
+                    >
+                      <RotateCcw size={13} className="group-hover:-rotate-45 transition-transform" />
+                      <span>Volver a pedir estos productos</span>
+                    </button>
                   </div>
                 ))
               )}
