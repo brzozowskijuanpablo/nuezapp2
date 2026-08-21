@@ -259,19 +259,8 @@ export default function Home() {
           </div>
         </div>
 
-        {/* Marquee Ticker */}
-        <div className="py-8 border-b border-gray-100 mb-12 overflow-hidden flex gap-8 whitespace-nowrap text-sm font-bold text-gray-300 uppercase tracking-widest">
-          <span>ALMENDRAS</span> • <span>NUECES</span> • <span>SEMILLAS</span> • <span>KETO</span> • <span>SALUDABLE</span> • <span>ALMENDRAS</span> • <span>NUECES</span> • <span>SEMILLAS</span>
-        </div>
-
-        {/* Our Collection */}
-        <section id="collection" className="mb-16">
-          <div className="text-center mb-10">
-            <h2 className="font-serif text-3xl text-[#2B2118]">Nuestra Colección</h2>
-          </div>
-
           {/* Categorías Clean Tabs */}
-          <div className="flex gap-6 overflow-x-auto whitespace-nowrap pb-4 scrollbar-hide justify-start md:justify-center border-b border-gray-100 mb-8">
+          <div className="flex gap-6 overflow-x-auto whitespace-nowrap pb-4 scrollbar-hide justify-start md:justify-center border-b border-gray-100 mb-8 mt-12">
             {categories.map((cat, idx) => (
               <button 
                 key={idx} 
