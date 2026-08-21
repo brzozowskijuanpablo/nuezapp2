@@ -6,15 +6,14 @@ import useEmblaCarousel from 'embla-carousel-react';
 import Autoplay from 'embla-carousel-autoplay';
 import { 
   X, Plus, Minus, Trash2, ShoppingCart, Search, 
-  MapPin, Menu, ShoppingBag, User, 
-  LogOut, Map, ChevronRight, Infinity, PlayCircle
+  MapPin, Menu, User, LogOut, ChevronRight, PlayCircle
 } from "lucide-react";
 
 // Mocks & Constants
 const categories = [
   "Todos",
-  "FRUTOS SECOS", "MEDICINAL", "ALMACEN", "ACEITES", "VINOS/CERVEZAS/ALCOHOL",
-  "CONFIT/GOLOS/BARRAS CEREAL", "CONDIMENTOS", "COSMETICA"
+  "FRUTOS SECOS", "MEDICINAL", "ALMACEN", "ACEITES", "VINOS/CERVEZAS",
+  "CONFIT/GOLOSINAS", "CONDIMENTOS", "COSMETICA"
 ];
 
 const mockProducts: Product[] = [
@@ -35,11 +34,9 @@ const mockProducts: Product[] = [
 ];
 
 const bannerImages = [
+  "https://images.unsplash.com/photo-1596040033229-a9821ebd058d?auto=format&fit=crop&w=1200&q=80",
   "https://img.milocal.app/4340/8acc2f16-02be-3122-93bd-15064be00e02.jpg",
-  "https://img.milocal.app/4340/966d9b72-557c-3fbb-a183-dabab8fc8d88.jpg",
-  "https://img.milocal.app/4340/572b0cd3-b157-3e7c-a5a1-3322c5a0288c.jpg",
-  "https://img.milocal.app/4340/f5222bdc-d7ba-3651-b46c-eaabfc9e8149.jpg",
-  "https://img.milocal.app/4340/919c98ad-0fee-33e9-9b16-26a8f3c29bf1.jpg"
+  "https://img.milocal.app/4340/966d9b72-557c-3fbb-a183-dabab8fc8d88.jpg"
 ];
 
 const instagramFeed = [
@@ -62,10 +59,6 @@ const videoRecetas = [
   { id: "4", title: "Granola Casera Saludable", img: "https://images.unsplash.com/photo-1512152272829-e3139592d56f?auto=format&fit=crop&w=400&q=80", tag: "Receta" },
   { id: "5", title: "Beneficios de la Chía", img: "https://images.unsplash.com/photo-1593309605333-e7f0d0bd1c7b?auto=format&fit=crop&w=400&q=80", tag: "Nutrición" },
   { id: "6", title: "Snack de Frutos Secos", img: "https://images.unsplash.com/photo-1536599018102-9f803c140fc1?auto=format&fit=crop&w=400&q=80", tag: "Snack" },
-  { id: "7", title: "Pudín de Chía y Frutos Rojos", img: "https://images.unsplash.com/photo-1490474504059-bf2dbf3f9b17?auto=format&fit=crop&w=400&q=80", tag: "Desayuno Sano" },
-  { id: "8", title: "Propiedades del Romero", img: "https://images.unsplash.com/photo-1590004953392-5aba2e72269a?auto=format&fit=crop&w=400&q=80", tag: "Medicinal" },
-  { id: "9", title: "Galletas Keto sin Harina", img: "https://images.unsplash.com/photo-1558961363-fa8fdf82db35?auto=format&fit=crop&w=400&q=80", tag: "Keto" },
-  { id: "10", title: "Leche de Almendras Casera", img: "https://images.unsplash.com/photo-1563636619-e9143da7973b?auto=format&fit=crop&w=400&q=80", tag: "Receta" }
 ];
 
 const WHATSAPP_NUMBER = "542916419224";
@@ -78,7 +71,6 @@ export default function Home() {
   const [isLoginModalOpen, setIsLoginModalOpen] = useState(false);
   const [isContactOpen, setIsContactOpen] = useState(false);
   
-  // Local state for login form
   const [formData, setFormData] = useState({ name: "", email: "", phone: "", address: "" });
 
   const { 
@@ -87,7 +79,7 @@ export default function Home() {
     user, setUser, logout
   } = useCartStore();
 
-  const [emblaRef] = useEmblaCarousel({ loop: true }, [Autoplay({ delay: 3500 })]);
+  const [emblaRef] = useEmblaCarousel({ loop: true }, [Autoplay({ delay: 4500 })]);
 
   useEffect(() => {
     setMounted(true);
@@ -143,330 +135,341 @@ export default function Home() {
     window.open(`https://wa.me/${WHATSAPP_NUMBER}?text=Hola%20NuezApp!`, '_blank');
   };
 
-  if (!mounted) return null; // Prevent hydration mismatch
+  if (!mounted) return null;
 
   return (
-    <div className="min-h-screen text-gray-900 pb-20 font-sans" style={{ backgroundColor: "#FFDCBF" }}>
-      {/* Header */}
-      <header className="bg-white p-4 flex justify-between items-center sticky top-0 z-40 shadow-sm border-b border-orange-100">
-        <div className="flex items-center gap-3">
-          <button onClick={() => setIsMenuOpen(true)} className="text-amber-800 hover:text-amber-600 transition">
-            <Menu size={28} />
-          </button>
-          <img src="/logo.png" alt="NuezApp" className="h-10 object-contain" />
-        </div>
-        <div className="flex items-center gap-3">
-          {!user.isLoggedIn ? (
-            <button 
-              onClick={() => setIsLoginModalOpen(true)}
-              className="text-amber-800 hover:bg-amber-100 p-2 rounded-full transition hidden sm:flex items-center gap-2"
-            >
-              <User size={20} />
-              <span className="text-sm font-semibold">Ingresar</span>
-            </button>
-          ) : (
-            <button 
-              onClick={() => setIsMenuOpen(true)}
-              className="text-amber-800 bg-amber-100 px-3 py-1.5 rounded-full font-semibold text-sm truncate max-w-[120px]"
-            >
-              Hola, {user.name.split(' ')[0]}
-            </button>
-          )}
+    <div className="min-h-screen text-[#222222] bg-[#FAFAFA] font-sans selection:bg-[#B68C5E] selection:text-white">
+      
+      {/* Top Banner */}
+      <div className="bg-[#222] text-white text-xs font-semibold py-2 px-4 text-center tracking-wider">
+        DISFRUTÁ DE UN 10% OFF EN TU PRIMERA COMPRA — ENVÍOS A TODO EL PAÍS
+      </div>
 
-          <button 
-            onClick={toggleCart}
-            className="relative flex items-center justify-center bg-amber-700 text-white w-10 h-10 rounded-full shadow-md hover:bg-amber-800 transition"
-          >
-            <ShoppingCart size={18} />
-            {getCartCount() > 0 && (
-              <span className="absolute -top-1 -right-1 bg-red-500 text-white text-[10px] font-bold w-5 h-5 flex items-center justify-center rounded-full shadow-sm border border-white">
-                {getCartCount()}
-              </span>
-            )}
+      {/* Header Minimalista */}
+      <header className="bg-white px-6 py-4 flex justify-between items-center sticky top-0 z-40 border-b border-gray-100/50 shadow-[0_4px_20px_-15px_rgba(0,0,0,0.05)]">
+        <div className="flex items-center gap-6">
+          <button onClick={() => setIsMenuOpen(true)} className="text-gray-900 hover:text-[#B68C5E] transition">
+            <Menu size={24} strokeWidth={1.5} />
           </button>
+          
+          {/* Logo Minimalista */}
+          <div className="hidden sm:flex font-serif text-2xl tracking-widest font-bold">
+            INFINITY
+          </div>
+        </div>
+
+        {/* Logo Mobile */}
+        <div className="flex sm:hidden font-serif text-xl tracking-widest font-bold">
+          INFINITY
+        </div>
+
+        <div className="flex items-center gap-6">
+          {/* Search Box Clean */}
+          <div className="hidden md:flex relative items-center">
+            <Search className="absolute left-3 text-gray-400" size={16} strokeWidth={1.5} />
+            <input 
+              type="text" 
+              placeholder="Buscar productos..." 
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+              className="pl-10 pr-4 py-2 bg-gray-50/50 border border-gray-200 rounded-full text-sm outline-none focus:border-[#B68C5E] transition-colors w-64"
+            />
+          </div>
+
+          <div className="flex items-center gap-4">
+            {!user.isLoggedIn ? (
+              <button 
+                onClick={() => setIsLoginModalOpen(true)}
+                className="text-gray-900 hover:text-[#B68C5E] transition hidden sm:flex items-center gap-2 text-sm font-medium"
+              >
+                Ingresar
+              </button>
+            ) : (
+              <button 
+                onClick={() => setIsMenuOpen(true)}
+                className="text-sm font-medium border-b border-gray-900 pb-0.5"
+              >
+                Hola, {user.name.split(' ')[0]}
+              </button>
+            )}
+
+            <button 
+              onClick={toggleCart}
+              className="relative text-gray-900 hover:text-[#B68C5E] transition"
+            >
+              <ShoppingCart size={24} strokeWidth={1.5} />
+              {getCartCount() > 0 && (
+                <span className="absolute -top-1.5 -right-2 bg-[#B68C5E] text-white text-[10px] font-bold w-4 h-4 flex items-center justify-center rounded-full">
+                  {getCartCount()}
+                </span>
+              )}
+            </button>
+          </div>
         </div>
       </header>
 
-      {/* Hero / Búsqueda */}
-      <div className="p-4" style={{ backgroundColor: "#FFDCBF" }}>
-        <div className="relative max-w-4xl mx-auto">
-          <Search className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400" size={20} />
+      <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        
+        {/* Search Mobile */}
+        <div className="md:hidden relative mt-6 mb-4">
+          <Search className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400" size={18} strokeWidth={1.5} />
           <input 
             type="text" 
-            placeholder="Busca en NuezApp..." 
+            placeholder="Buscar productos..." 
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
-            className="w-full p-3.5 pl-12 rounded-2xl shadow-sm outline-none text-gray-700 focus:ring-2 focus:ring-amber-500 transition border-none bg-white/90 backdrop-blur-sm"
+            className="w-full p-3 pl-12 bg-white border border-gray-200 rounded-full shadow-sm outline-none text-sm focus:border-[#B68C5E]"
           />
         </div>
-      </div>
 
-      {/* Banner Publicitario (Alto) */}
-      <div className="max-w-4xl mx-auto px-4 mb-4">
-        <div className="w-full h-48 sm:h-64 rounded-3xl overflow-hidden shadow-lg relative" ref={emblaRef}>
-          <div className="flex h-full">
-            {bannerImages.map((src, index) => (
-              <div className="flex-[0_0_100%] min-w-0 h-full relative" key={index}>
-                <img 
-                  src={src} 
-                  alt={`Promoción ${index + 1}`} 
-                  className="w-full h-full object-cover"
-                />
-              </div>
+        {/* Hero Section Editorial */}
+        <div className="mt-6 md:mt-10 bg-[#FAF7F2] rounded-2xl overflow-hidden flex flex-col md:flex-row shadow-sm border border-gray-100">
+          <div className="md:w-1/2 p-10 md:p-16 flex flex-col justify-center order-2 md:order-1">
+            <span className="text-[#B68C5E] text-xs font-bold uppercase tracking-[0.2em] mb-4 block">NuezApp Store</span>
+            <h1 className="font-serif text-4xl md:text-5xl lg:text-6xl text-[#1A1A1A] leading-tight mb-6">
+              Eleva tu nutrición con un sabor atemporal.
+            </h1>
+            <p className="text-gray-500 text-sm md:text-base mb-8 max-w-md leading-relaxed">
+              Descubre nuestra selección de frutos secos y productos saludables, pensados para quienes viven intensamente sin descuidar su bienestar.
+            </p>
+            <div>
+              <button onClick={() => document.getElementById('collection')?.scrollIntoView({ behavior: 'smooth' })} className="bg-[#1A1A1A] text-white px-8 py-3.5 rounded-full text-sm font-semibold hover:bg-[#333] transition shadow-lg">
+                Ver Colección
+              </button>
+            </div>
+          </div>
+          <div className="md:w-1/2 h-64 md:h-auto relative order-1 md:order-2 overflow-hidden" ref={emblaRef}>
+            <div className="flex h-full">
+              {bannerImages.map((src, i) => (
+                <div className="flex-[0_0_100%] min-w-0 h-full relative" key={i}>
+                  <img src={src} alt="Hero" className="w-full h-full object-cover" />
+                </div>
+              ))}
+            </div>
+          </div>
+        </div>
+
+        {/* Marquee Ticker */}
+        <div className="py-8 border-b border-gray-100 mb-12 overflow-hidden flex gap-8 whitespace-nowrap text-sm font-bold text-gray-300 uppercase tracking-widest">
+          <span>ALMENDRAS</span> • <span>NUECES</span> • <span>SEMILLAS</span> • <span>KETO</span> • <span>SALUDABLE</span> • <span>ALMENDRAS</span> • <span>NUECES</span> • <span>SEMILLAS</span>
+        </div>
+
+        {/* Our Collection */}
+        <section id="collection" className="mb-16">
+          <div className="text-center mb-10">
+            <h2 className="font-serif text-3xl text-[#1A1A1A]">Nuestra Colección</h2>
+          </div>
+
+          {/* Categorías Clean Tabs */}
+          <div className="flex gap-6 overflow-x-auto whitespace-nowrap pb-4 scrollbar-hide justify-start md:justify-center border-b border-gray-100 mb-8">
+            {categories.map((cat, idx) => (
+              <button 
+                key={idx} 
+                onClick={() => setActiveCategory(cat)}
+                className={`text-sm font-medium pb-4 border-b-2 transition-all ${
+                  activeCategory === cat 
+                    ? 'border-[#1A1A1A] text-[#1A1A1A]' 
+                    : 'border-transparent text-gray-400 hover:text-gray-700'
+                }`}
+              >
+                {cat}
+              </button>
             ))}
           </div>
-        </div>
-      </div>
 
-      {/* Categories */}
-      <div className="py-3 px-4 overflow-x-auto whitespace-nowrap sticky top-[73px] z-30 scrollbar-hide shadow-sm" style={{ backgroundColor: "#FFDCBF" }}>
-        <div className="max-w-4xl mx-auto flex gap-3">
-          {categories.map((cat, idx) => (
-            <button 
-              key={idx} 
-              onClick={() => setActiveCategory(cat)}
-              className={`px-5 py-2 rounded-full text-sm font-bold transition shrink-0 shadow-sm ${
-                activeCategory === cat 
-                  ? 'bg-amber-800 text-white' 
-                  : 'bg-white text-amber-900 hover:bg-amber-50'
-              }`}
-            >
-              {cat}
-            </button>
-          ))}
-        </div>
-      </div>
-
-      {/* Product List */}
-      <div className="p-4 max-w-4xl mx-auto mt-2">
-        {productsByCategory.length === 0 ? (
-          <div className="text-center py-20 text-amber-900/60 bg-white/40 rounded-3xl">
-            <p className="text-xl font-semibold mb-2">No encontramos resultados</p>
-            <p>Vuelve a probar, ¡tenemos novedades geniales para ofrecerte!</p>
-          </div>
-        ) : (
-          productsByCategory.map((group) => (
-            <div key={group.category} className="mb-8">
-              <div className="flex justify-between items-center mb-4 pb-2 border-b border-amber-900/10">
-                <h2 className="text-xl font-extrabold text-amber-900">{group.category}</h2>
-                <span className="text-xs bg-amber-900/10 text-amber-900 px-3 py-1 rounded-full font-bold">
-                  {group.products.length} {group.products.length === 1 ? 'producto' : 'productos'}
-                </span>
-              </div>
-              
-              <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
-                {group.products.map((p) => {
-                  const cartItem = items.find(i => i.id === p.id);
-                  return (
-                    <div key={p.id} className="bg-white p-3 rounded-3xl shadow-sm hover:shadow-lg flex flex-row sm:flex-col items-center sm:items-stretch gap-4 sm:gap-0 transition-all group overflow-hidden border border-white/50">
-                      <div className="w-24 h-24 sm:w-full sm:h-auto shrink-0">
-                        <div className="aspect-square bg-gray-50 rounded-2xl sm:mb-3 overflow-hidden relative">
+          {/* Product Grid (Editorial Style) */}
+          {productsByCategory.length === 0 ? (
+            <div className="text-center py-20 text-gray-500">
+              <p className="text-lg">No encontramos resultados</p>
+            </div>
+          ) : (
+            productsByCategory.map((group) => (
+              <div key={group.category} className="mb-12">
+                {activeCategory === "Todos" && (
+                  <h3 className="font-serif text-xl mb-6 border-l-2 border-[#B68C5E] pl-3">{group.category}</h3>
+                )}
+                
+                <div className="grid grid-cols-2 lg:grid-cols-4 gap-x-4 gap-y-10 sm:gap-x-6">
+                  {group.products.map((p) => {
+                    const cartItem = items.find(i => i.id === p.id);
+                    return (
+                      <div key={p.id} className="group relative">
+                        <div className="aspect-[3/4] bg-gray-100 rounded-lg overflow-hidden mb-4 relative transition-all">
                           {p.image ? (
                             <img 
                               src={p.image} 
                               alt={p.name} 
-                              className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+                              className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700 ease-out"
                               loading="lazy"
                             />
                           ) : (
-                            <div className="w-full h-full flex items-center justify-center text-4xl">🌰</div>
+                            <div className="w-full h-full flex items-center justify-center text-2xl">🌰</div>
                           )}
+                          
+                          {/* Hover overlay buy button */}
+                          <div className="absolute inset-x-0 bottom-0 p-4 translate-y-full opacity-0 group-hover:translate-y-0 group-hover:opacity-100 transition-all duration-300 ease-out z-10">
+                            {cartItem ? (
+                              <div className="flex items-center justify-between bg-white/95 backdrop-blur shadow-lg rounded-full px-2 py-1.5 border border-gray-100">
+                                <button onClick={() => updateQuantity(p.id, cartItem.quantity - 1)} className="p-2 hover:bg-gray-100 rounded-full transition">
+                                  <Minus size={14} />
+                                </button>
+                                <span className="text-sm font-bold w-6 text-center">{cartItem.quantity}</span>
+                                <button onClick={() => addItem(p)} className="p-2 hover:bg-gray-100 rounded-full transition">
+                                  <Plus size={14} />
+                                </button>
+                              </div>
+                            ) : (
+                              <button 
+                                onClick={() => addItem(p)}
+                                className="w-full bg-[#1A1A1A] text-white py-3 rounded-full text-xs font-semibold tracking-wider hover:bg-[#333] transition shadow-lg flex items-center justify-center gap-2"
+                              >
+                                COMPRAR <ShoppingCart size={14} />
+                              </button>
+                            )}
+                          </div>
+                        </div>
+                        
+                        <div>
+                          <p className="text-xs text-gray-500 mb-1">{p.category}</p>
+                          <h3 className="font-medium text-[13px] leading-relaxed text-[#1A1A1A] line-clamp-2 pr-2" title={p.name}>
+                            {p.name}
+                          </h3>
+                          <div className="mt-2 flex items-center justify-between">
+                            <p className="font-bold text-sm text-[#1A1A1A]">${p.price.toLocaleString("es-AR")}</p>
+                          </div>
                         </div>
                       </div>
-                      
-                      <div className="flex-1 flex flex-col justify-between h-full sm:h-auto py-1 sm:py-0">
-                        <h3 className="font-bold text-gray-800 text-[14px] leading-tight mb-2 line-clamp-2" title={p.name}>{p.name}</h3>
-                        <div className="flex justify-between items-center mt-auto sm:pt-2">
-                          <span className="font-extrabold text-[16px] text-amber-700">${p.price.toLocaleString("es-AR")}</span>
-                          {cartItem ? (
-                            <div className="flex items-center gap-1.5 bg-amber-50 rounded-xl p-1 shadow-inner shrink-0">
-                              <button onClick={() => updateQuantity(p.id, cartItem.quantity - 1)} className="text-amber-700 bg-white shadow-sm p-1.5 hover:bg-gray-50 rounded-lg active:scale-95 transition">
-                                <Minus size={14} />
-                              </button>
-                              <span className="text-sm font-bold w-4 text-center text-amber-900">{cartItem.quantity}</span>
-                              <button onClick={() => addItem(p)} className="text-white bg-amber-700 shadow-sm p-1.5 hover:bg-amber-800 rounded-lg active:scale-95 transition">
-                                <Plus size={14} />
-                              </button>
-                            </div>
-                          ) : (
-                            <button 
-                              onClick={() => addItem(p)}
-                              className="bg-amber-100 text-amber-800 w-10 h-10 rounded-xl font-bold flex items-center justify-center hover:bg-amber-700 hover:text-white transition shadow-sm active:scale-95 shrink-0" 
-                              title="Agregar al carrito"
-                            >
-                              <Plus size={18} />
-                            </button>
-                          )}
-                        </div>
-                      </div>
-                    </div>
-                  );
-                })}
+                    );
+                  })}
+                </div>
               </div>
-            </div>
-          ))
-        )}
-      </div>
+            ))
+          )}
+        </section>
 
-      {/* Instagram Feed Section */}
-      <div className="max-w-4xl mx-auto px-4 mt-8">
-        <div className="bg-white rounded-3xl p-6 sm:p-8 shadow-sm">
-          <div className="text-center mb-8">
-            <h2 className="text-2xl font-extrabold text-amber-900 flex items-center justify-center gap-2 mb-2">
-              <img src="https://upload.wikimedia.org/wikipedia/commons/e/e7/Instagram_logo_2016.svg" alt="Instagram" className="w-8 h-8" />
-              Novedades en NuezApp
-            </h2>
-            <p className="text-gray-600">¡Síguenos y entérate de nuestras ofertas, sorteos y recetas increíbles!</p>
+        {/* Promo Banner Split */}
+        <div className="mb-16 grid md:grid-cols-2 gap-0 rounded-2xl overflow-hidden shadow-sm">
+          <div className="bg-[#B68C5E] text-white p-10 md:p-16 flex flex-col justify-center text-center md:text-left">
+            <h2 className="font-serif text-3xl md:text-4xl mb-4 leading-tight">Tu satisfacción es nuestra prioridad.</h2>
+            <p className="text-amber-50 text-sm md:text-base opacity-90 max-w-sm mx-auto md:mx-0">
+              Estamos aquí para entregarte la mejor experiencia. Calidad premium en cada grano.
+            </p>
           </div>
+          <div className="h-64 md:h-auto">
+            <img src="https://images.unsplash.com/photo-1596040033229-a9821ebd058d?auto=format&fit=crop&w=800&q=80" alt="Quality" className="w-full h-full object-cover" />
+          </div>
+        </div>
 
-          <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-5 gap-3 mb-8">
-            {instagramFeed.map((img, i) => (
-              <a 
-                key={i} 
-                href="https://www.instagram.com/nuezapprio/" 
-                target="_blank" 
-                rel="noopener noreferrer"
-                className="group relative aspect-square rounded-2xl overflow-hidden shadow-sm block bg-gray-100"
-              >
-                <img 
-                  src={img} 
-                  alt={`Instagram Post ${i+1}`} 
-                  className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500" 
-                  loading="lazy"
-                />
-                <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center backdrop-blur-[2px]">
-                  <img src="https://upload.wikimedia.org/wikipedia/commons/e/e7/Instagram_logo_2016.svg" alt="Insta" className="w-8 h-8 brightness-0 invert" />
+        {/* Instagram Visual Layout */}
+        <section className="mb-16">
+          <div className="text-center mb-10">
+            <h2 className="font-serif text-3xl text-[#1A1A1A] mb-2">Social Feed</h2>
+            <p className="text-sm text-gray-500">Últimas Novedades en NuezApp</p>
+          </div>
+          
+          <div className="grid grid-cols-2 md:grid-cols-5 gap-1 mb-8">
+            {instagramFeed.slice(0, 5).map((img, i) => (
+              <a key={i} href="https://www.instagram.com/nuezapprio/" target="_blank" rel="noopener noreferrer" className="group relative aspect-square block overflow-hidden">
+                <img src={img} alt="Instagram" className="w-full h-full object-cover group-hover:scale-105 transition duration-700" loading="lazy" />
+                <div className="absolute inset-0 bg-black/20 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
+                  <span className="text-white text-xs font-semibold uppercase tracking-widest border border-white/50 px-4 py-2">Ver más</span>
                 </div>
               </a>
             ))}
           </div>
+        </section>
 
-          <div className="text-center">
-            <a 
-              href="https://www.instagram.com/nuezapprio/" 
-              target="_blank" 
-              rel="noopener noreferrer"
-              className="inline-flex items-center gap-2 bg-gradient-to-tr from-yellow-400 via-pink-500 to-purple-500 text-white px-8 py-3.5 rounded-full font-bold shadow-lg hover:shadow-xl hover:-translate-y-1 transition-all"
-            >
-              Ver más en @nuezapprio <ChevronRight size={18} />
-            </a>
-          </div>
-        </div>
-      </div>
-
-      {/* Recetas y Salud (Videos) Section */}
-      <div className="max-w-4xl mx-auto px-4 mt-8 mb-12">
-        <div className="bg-amber-900 rounded-3xl p-6 sm:p-8 shadow-xl text-white relative overflow-hidden">
-          <div className="absolute top-0 right-0 w-64 h-64 bg-amber-800 rounded-full blur-3xl opacity-50 -translate-y-1/2 translate-x-1/3"></div>
-          
-          <div className="relative z-10 mb-8 flex flex-col sm:flex-row sm:items-end justify-between gap-4">
+        {/* Recipes Vertical Scroll */}
+        <section className="mb-20">
+          <div className="mb-8 flex justify-between items-end">
             <div>
-              <h2 className="text-2xl font-extrabold flex items-center gap-2 mb-2 text-white">
-                <PlayCircle className="text-amber-400" size={28} /> Recetas y Salud
-              </h2>
-              <p className="text-amber-100/80 max-w-md">Descubre cómo preparar desayunos saludables, alimentación keto y los mejores usos de nuestras semillas.</p>
+              <h2 className="font-serif text-3xl text-[#1A1A1A] mb-2">Recetas & Bienestar</h2>
+              <p className="text-sm text-gray-500 max-w-sm">Inspiración saludable para tu día a día.</p>
             </div>
+            <a href="#" className="hidden md:flex text-xs font-bold uppercase tracking-widest text-[#B68C5E] border-b border-[#B68C5E]">Ver Todos</a>
           </div>
 
-          <div className="relative z-10 flex gap-4 overflow-x-auto pb-4 scrollbar-hide snap-x">
+          <div className="flex gap-4 overflow-x-auto pb-4 scrollbar-hide snap-x">
             {videoRecetas.map((video) => (
               <a 
                 key={video.id} 
                 href={`https://www.youtube.com/results?search_query=${encodeURIComponent(video.title)}`}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="snap-start shrink-0 w-40 sm:w-48 group cursor-pointer"
+                className="snap-start shrink-0 w-48 md:w-60 group block"
               >
-                <div className="relative aspect-[9/16] rounded-2xl overflow-hidden bg-amber-800 shadow-md border border-amber-800/50">
-                  <img 
-                    src={video.img} 
-                    alt={video.title} 
-                    className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700 opacity-90 group-hover:opacity-100"
-                    loading="lazy"
-                  />
-                  <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent"></div>
-                  
-                  {/* Play Button Overlay */}
-                  <div className="absolute inset-0 flex items-center justify-center">
-                    <div className="w-12 h-12 rounded-full bg-white/20 backdrop-blur-md flex items-center justify-center group-hover:bg-amber-500 transition-colors border border-white/30">
-                      <PlayCircle className="text-white ml-1" size={24} />
-                    </div>
-                  </div>
-
-                  {/* Content Overlay */}
-                  <div className="absolute bottom-0 left-0 right-0 p-3">
-                    <span className="inline-block bg-amber-500/90 backdrop-blur-sm text-white text-[10px] font-bold px-2 py-0.5 rounded-full mb-1.5 uppercase tracking-wide">
-                      {video.tag}
-                    </span>
-                    <h3 className="text-white font-bold text-sm leading-tight line-clamp-2 shadow-black drop-shadow-md">
-                      {video.title}
-                    </h3>
+                <div className="aspect-[4/5] rounded-xl overflow-hidden relative mb-4">
+                  <img src={video.img} alt={video.title} className="w-full h-full object-cover group-hover:scale-105 transition duration-700" loading="lazy"/>
+                  <div className="absolute inset-0 bg-black/10 group-hover:bg-black/30 transition-colors"></div>
+                  <div className="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity">
+                    <PlayCircle className="text-white" size={48} strokeWidth={1} />
                   </div>
                 </div>
+                <p className="text-[10px] uppercase font-bold text-gray-400 tracking-wider mb-1">{video.tag}</p>
+                <h3 className="font-serif text-lg leading-tight text-[#1A1A1A] group-hover:text-[#B68C5E] transition-colors line-clamp-2">
+                  {video.title}
+                </h3>
               </a>
             ))}
           </div>
-        </div>
-      </div>
+        </section>
 
-      {/* Sidebar Menu Drawer */}
+      </main>
+
+      {/* Footer Minimalista */}
+      <footer className="bg-white border-t border-gray-100 py-12 px-6">
+        <div className="max-w-7xl mx-auto flex flex-col md:flex-row justify-between items-center gap-6">
+          <div className="font-serif text-2xl tracking-widest font-bold">INFINITY</div>
+          <div className="flex gap-6 text-sm text-gray-500">
+            <button onClick={() => setIsContactOpen(true)} className="hover:text-gray-900 transition">Ubicación</button>
+            <a href="https://www.instagram.com/nuezapprio/" className="hover:text-gray-900 transition">Instagram</a>
+            <button onClick={handleContactWhatsApp} className="hover:text-gray-900 transition">Soporte</button>
+          </div>
+          <p className="text-xs text-gray-400">&copy; 2026 Infinity. Todos los derechos reservados.</p>
+        </div>
+      </footer>
+
+      {/* Sidebar Menu Drawer (Rediseñado) */}
       {isMenuOpen && (
         <div className="fixed inset-0 z-50 flex">
-          <div className="absolute inset-0 bg-black/60 backdrop-blur-sm transition-opacity" onClick={() => setIsMenuOpen(false)} />
-          <div className="relative w-[280px] max-w-[80vw] bg-white h-full flex flex-col shadow-2xl animate-in slide-in-from-left duration-300">
-            <div className="p-6 bg-[#FFDCBF] flex justify-between items-start">
-              <div>
-                <img src="/logo.png" alt="NuezApp" className="h-14 object-contain mb-4" />
-                {user.isLoggedIn ? (
-                  <div>
-                    <p className="font-bold text-amber-900 text-lg">{user.name}</p>
-                    <p className="text-amber-800/80 text-sm">{user.email}</p>
-                  </div>
-                ) : (
-                  <button onClick={() => {setIsMenuOpen(false); setIsLoginModalOpen(true);}} className="bg-white text-amber-900 px-4 py-2 rounded-full font-bold text-sm shadow-sm">
-                    Iniciar Sesión
-                  </button>
-                )}
-              </div>
-              <button onClick={() => setIsMenuOpen(false)} className="bg-white/50 text-amber-900 p-2 rounded-full hover:bg-white transition">
-                <X size={20} />
+          <div className="absolute inset-0 bg-black/40 backdrop-blur-sm transition-opacity" onClick={() => setIsMenuOpen(false)} />
+          <div className="relative w-[300px] max-w-[85vw] bg-white h-full flex flex-col shadow-2xl animate-in slide-in-from-left duration-300">
+            <div className="p-6 border-b border-gray-100 flex justify-between items-center">
+              <div className="font-serif text-xl font-bold tracking-widest">INFINITY</div>
+              <button onClick={() => setIsMenuOpen(false)} className="text-gray-400 hover:text-black transition">
+                <X size={20} strokeWidth={1.5} />
               </button>
             </div>
             
-            <nav className="flex-1 overflow-y-auto p-4 space-y-2">
-              <button onClick={() => {setIsMenuOpen(false); toggleCart();}} className="w-full flex items-center justify-between p-4 hover:bg-amber-50 rounded-2xl transition group">
-                <div className="flex items-center gap-4 text-amber-900 font-bold">
-                  <div className="bg-amber-100 p-2 rounded-xl group-hover:bg-amber-200 transition"><ShoppingBag size={22} className="text-amber-800" /></div>
-                  Mis Compras
+            <div className="p-6 bg-gray-50/50 mb-4 border-b border-gray-100">
+              {user.isLoggedIn ? (
+                <div>
+                  <p className="font-medium text-[#1A1A1A] text-lg">{user.name}</p>
+                  <p className="text-gray-500 text-xs">{user.email}</p>
                 </div>
-                <ChevronRight size={20} className="text-amber-300" />
+              ) : (
+                <button onClick={() => {setIsMenuOpen(false); setIsLoginModalOpen(true);}} className="text-sm font-semibold border-b border-gray-900 pb-0.5">
+                  Iniciar Sesión
+                </button>
+              )}
+            </div>
+
+            <nav className="flex-1 px-6 space-y-6">
+              <button onClick={() => {setIsMenuOpen(false); document.getElementById('collection')?.scrollIntoView({ behavior: 'smooth' });}} className="block text-left text-[#1A1A1A] font-serif text-2xl hover:text-[#B68C5E] transition">
+                Catálogo
               </button>
-              
-              <button onClick={() => {setIsMenuOpen(false); setIsContactOpen(true);}} className="w-full flex items-center justify-between p-4 hover:bg-amber-50 rounded-2xl transition group">
-                <div className="flex items-center gap-4 text-amber-900 font-bold">
-                  <div className="bg-amber-100 p-2 rounded-xl group-hover:bg-amber-200 transition"><MapPin size={22} className="text-amber-800" /></div>
-                  Ubicación y Contacto
-                </div>
-                <ChevronRight size={20} className="text-amber-300" />
+              <button onClick={() => {setIsMenuOpen(false); toggleCart();}} className="block text-left text-[#1A1A1A] font-serif text-2xl hover:text-[#B68C5E] transition">
+                Mi Carrito
+              </button>
+              <button onClick={() => {setIsMenuOpen(false); setIsContactOpen(true);}} className="block text-left text-[#1A1A1A] font-serif text-2xl hover:text-[#B68C5E] transition">
+                Contacto
               </button>
             </nav>
 
-            <div className="p-6 border-t border-gray-100 space-y-4">
-              <p className="text-xs text-gray-400 font-semibold uppercase tracking-wider">Creado con Infinity</p>
-              <button className="w-full flex items-center justify-between p-4 bg-gray-50 hover:bg-gray-100 rounded-2xl transition group">
-                <div className="flex items-center gap-4 text-gray-700 font-bold">
-                  <div className="bg-white p-2 rounded-xl shadow-sm"><Infinity size={22} className="text-amber-700" /></div>
-                  <div className="text-left">
-                    <p className="text-[15px]">Acerca de Infinity</p>
-                    <p className="text-xs font-normal text-gray-500">Digitaliza tu negocio hoy</p>
-                  </div>
-                </div>
-                <ChevronRight size={20} className="text-gray-300" />
-              </button>
-              
+            <div className="p-6">
               {user.isLoggedIn && (
-                <button onClick={() => {logout(); setIsMenuOpen(false);}} className="w-full flex items-center gap-3 p-3 text-red-500 hover:bg-red-50 rounded-xl font-bold transition justify-center mt-4">
-                  <LogOut size={18} /> Cerrar Sesión
+                <button onClick={() => {logout(); setIsMenuOpen(false);}} className="flex items-center gap-2 text-gray-400 hover:text-red-500 text-sm font-medium transition">
+                  <LogOut size={16} /> Cerrar Sesión
                 </button>
               )}
             </div>
@@ -474,57 +477,56 @@ export default function Home() {
         </div>
       )}
 
-      {/* Cart Drawer */}
+      {/* Cart Drawer (Rediseñado) */}
       {isCartOpen && (
         <div className="fixed inset-0 z-50 flex justify-end">
-          <div className="absolute inset-0 bg-black/60 backdrop-blur-sm transition-opacity" onClick={toggleCart} />
+          <div className="absolute inset-0 bg-black/40 backdrop-blur-sm transition-opacity" onClick={toggleCart} />
           
-          <div className="relative w-full max-w-md bg-white h-full flex flex-col shadow-2xl animate-in slide-in-from-right duration-300 rounded-l-3xl overflow-hidden">
-            <div className="p-5 border-b flex justify-between items-center bg-[#FFDCBF]">
-              <h2 className="text-xl font-extrabold flex items-center gap-3 text-amber-900">
-                <div className="bg-white p-2 rounded-xl shadow-sm"><ShoppingCart size={20} className="text-amber-700" /></div> 
-                Tu Pedido
-              </h2>
-              <button onClick={toggleCart} className="bg-white/50 text-amber-900 p-2 rounded-full hover:bg-white transition">
-                <X size={20} />
+          <div className="relative w-full max-w-md bg-white h-full flex flex-col shadow-2xl animate-in slide-in-from-right duration-300">
+            <div className="p-6 border-b border-gray-100 flex justify-between items-center">
+              <h2 className="font-serif text-2xl text-[#1A1A1A]">Mi Bolsa</h2>
+              <button onClick={toggleCart} className="text-gray-400 hover:text-black transition">
+                <X size={20} strokeWidth={1.5} />
               </button>
             </div>
             
-            <div className="flex-1 overflow-y-auto p-5 bg-gray-50">
+            <div className="flex-1 overflow-y-auto p-6 bg-white">
               {items.length === 0 ? (
-                <div className="h-full flex flex-col items-center justify-center text-gray-400 gap-4">
-                  <div className="w-24 h-24 bg-gray-100 rounded-full flex items-center justify-center mb-2">
-                    <ShoppingCart size={40} className="text-gray-300" />
-                  </div>
-                  <p className="font-semibold text-gray-500">Tu carrito está vacío</p>
-                  <button onClick={toggleCart} className="mt-2 bg-amber-700 text-white px-6 py-2 rounded-full font-bold shadow-sm active:scale-95 transition">
-                    Explorar catálogo
+                <div className="h-full flex flex-col items-center justify-center text-center">
+                  <ShoppingCart size={48} strokeWidth={1} className="text-gray-200 mb-4" />
+                  <p className="text-gray-500 text-sm">Tu bolsa de compras está vacía.</p>
+                  <button onClick={toggleCart} className="mt-6 border border-[#1A1A1A] text-[#1A1A1A] px-8 py-3 text-xs font-bold tracking-widest uppercase hover:bg-gray-50 transition">
+                    Ver Productos
                   </button>
                 </div>
               ) : (
-                <ul className="space-y-3">
+                <ul className="space-y-6">
                   {items.map(item => (
-                    <li key={item.id} className="flex gap-4 items-center bg-white border border-gray-100 p-3 rounded-2xl shadow-sm">
-                      <div className="w-20 h-20 rounded-xl overflow-hidden bg-gray-50 shrink-0">
+                    <li key={item.id} className="flex gap-4 items-center">
+                      <div className="w-20 h-24 bg-gray-100 overflow-hidden shrink-0">
                         <img src={item.image} alt={item.name} className="w-full h-full object-cover" />
                       </div>
                       <div className="flex-1 min-w-0">
-                        <h4 className="font-bold text-[13px] leading-tight line-clamp-2 text-gray-800 mb-1">{item.name}</h4>
-                        <div className="text-amber-700 font-extrabold text-[15px]">${(item.price * item.quantity).toLocaleString("es-AR")}</div>
-                      </div>
-                      <div className="flex flex-col items-end gap-3 justify-between h-full">
-                        <button onClick={() => removeItem(item.id)} className="text-gray-300 hover:text-red-500 transition p-1">
-                          <Trash2 size={16} />
-                        </button>
-                        <div className="flex items-center gap-1.5 bg-gray-50 rounded-lg p-1 border border-gray-100">
-                          <button onClick={() => updateQuantity(item.id, item.quantity - 1)} className="p-1 text-gray-500 hover:text-black bg-white rounded shadow-sm">
-                            <Minus size={14} />
-                          </button>
-                          <span className="text-sm font-bold w-5 text-center">{item.quantity}</span>
-                          <button onClick={() => addItem(item)} className="p-1 text-gray-500 hover:text-black bg-white rounded shadow-sm">
-                            <Plus size={14} />
+                        <h4 className="font-medium text-sm leading-tight text-[#1A1A1A] mb-1 line-clamp-2">{item.name}</h4>
+                        <div className="text-gray-500 text-sm mb-2">${item.price.toLocaleString("es-AR")} c/u</div>
+                        
+                        <div className="flex items-center gap-4">
+                          <div className="flex items-center border border-gray-200">
+                            <button onClick={() => updateQuantity(item.id, item.quantity - 1)} className="p-1 px-2 text-gray-500 hover:text-black">
+                              <Minus size={12} />
+                            </button>
+                            <span className="text-xs font-semibold w-6 text-center">{item.quantity}</span>
+                            <button onClick={() => addItem(item)} className="p-1 px-2 text-gray-500 hover:text-black">
+                              <Plus size={12} />
+                            </button>
+                          </div>
+                          <button onClick={() => removeItem(item.id)} className="text-xs text-gray-400 underline hover:text-red-500 transition">
+                            Remover
                           </button>
                         </div>
+                      </div>
+                      <div className="text-right self-start font-bold text-sm text-[#1A1A1A]">
+                        ${(item.price * item.quantity).toLocaleString("es-AR")}
                       </div>
                     </li>
                   ))}
@@ -533,156 +535,101 @@ export default function Home() {
             </div>
             
             {items.length > 0 && (
-              <div className="p-5 bg-white shadow-[0_-10px_20px_-10px_rgba(0,0,0,0.05)] z-10">
-                <div className="flex justify-between items-center mb-4 text-lg">
-                  <span className="text-gray-500 font-bold">Total a pagar</span>
-                  <span className="font-extrabold text-2xl text-amber-900">${getCartTotal().toLocaleString("es-AR")}</span>
+              <div className="p-6 bg-gray-50 border-t border-gray-100">
+                <div className="flex justify-between items-center mb-6">
+                  <span className="text-sm font-medium text-gray-600">Subtotal</span>
+                  <span className="font-serif text-2xl text-[#1A1A1A]">${getCartTotal().toLocaleString("es-AR")}</span>
                 </div>
                 <button 
                   onClick={handleCheckout}
-                  className="w-full bg-[#25D366] text-white py-4 rounded-2xl font-bold text-lg hover:bg-[#20b858] transition flex justify-center items-center gap-2 shadow-lg active:scale-[0.98]"
+                  className="w-full bg-[#1A1A1A] text-white py-4 text-xs font-bold tracking-widest uppercase hover:bg-[#333] transition flex justify-center items-center gap-2"
                 >
-                  Confirmar Pedido <img src="https://upload.wikimedia.org/wikipedia/commons/6/6b/WhatsApp.svg" alt="WhatsApp" className="w-5 h-5 brightness-0 invert" />
+                  Confirmar Pedido <img src="https://upload.wikimedia.org/wikipedia/commons/6/6b/WhatsApp.svg" alt="WhatsApp" className="w-4 h-4 brightness-0 invert opacity-80" />
                 </button>
-                {!user.isLoggedIn && (
-                  <p className="text-center text-xs text-gray-400 mt-3">
-                    <button onClick={() => {toggleCart(); setIsLoginModalOpen(true);}} className="text-amber-600 underline font-semibold">Inicia sesión</button> para agilizar tus envíos.
-                  </p>
-                )}
               </div>
             )}
           </div>
         </div>
       )}
 
-      {/* Login / Profile Modal */}
+      {/* Login Modal (Rediseñado) */}
       {isLoginModalOpen && (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
-          <div className="absolute inset-0 bg-black/60 backdrop-blur-sm transition-opacity" onClick={() => setIsLoginModalOpen(false)} />
-          <div className="relative bg-white w-full max-w-md rounded-3xl p-6 shadow-2xl animate-in fade-in zoom-in-95 duration-200 max-h-[90vh] overflow-y-auto">
-            <button onClick={() => setIsLoginModalOpen(false)} className="absolute top-4 right-4 bg-gray-100 text-gray-500 p-2 rounded-full hover:bg-gray-200 transition">
-              <X size={18} />
+          <div className="absolute inset-0 bg-black/40 backdrop-blur-sm transition-opacity" onClick={() => setIsLoginModalOpen(false)} />
+          <div className="relative bg-white w-full max-w-md p-8 shadow-2xl animate-in fade-in zoom-in-95 duration-200">
+            <button onClick={() => setIsLoginModalOpen(false)} className="absolute top-4 right-4 text-gray-400 hover:text-black transition">
+              <X size={20} strokeWidth={1.5} />
             </button>
-            <div className="text-center mb-6">
-              <div className="w-16 h-16 bg-amber-100 text-amber-700 rounded-full flex items-center justify-center mx-auto mb-3 shadow-inner">
-                <User size={32} />
-              </div>
-              <h3 className="text-2xl font-extrabold text-gray-800">Mi Perfil</h3>
-              <p className="text-gray-500 text-sm mt-1">Ingresa tus datos para agilizar el pedido</p>
+            
+            <div className="text-center mb-8">
+              <h3 className="font-serif text-3xl text-[#1A1A1A] mb-2">Bienvenido</h3>
+              <p className="text-gray-500 text-sm">Inicia sesión para una experiencia de compra más fluida.</p>
             </div>
 
-            {/* Mock SSO Buttons */}
-            <div className="space-y-3 mb-6">
-              <button 
-                type="button"
-                onClick={() => setFormData({...formData, name: "Juan Pablo", email: "juan@example.com"})}
-                className="w-full flex items-center justify-center gap-3 bg-white border border-gray-200 text-gray-700 font-bold py-3 rounded-xl hover:bg-gray-50 transition shadow-sm"
-              >
-                <img src="https://upload.wikimedia.org/wikipedia/commons/c/c1/Google_%22G%22_logo.svg" className="w-5 h-5" alt="Google" />
+            <div className="space-y-3 mb-8">
+              <button type="button" onClick={() => setFormData({...formData, name: "Juan Pablo", email: "juan@example.com"})} className="w-full flex items-center justify-center gap-3 border border-gray-200 text-gray-700 text-sm font-medium py-3 hover:bg-gray-50 transition">
+                <img src="https://upload.wikimedia.org/wikipedia/commons/c/c1/Google_%22G%22_logo.svg" className="w-4 h-4" alt="Google" />
                 Continuar con Google
               </button>
-              <button 
-                type="button"
-                className="w-full flex items-center justify-center gap-3 bg-[#00a4ef] text-white font-bold py-3 rounded-xl hover:bg-[#0092d6] transition shadow-sm"
-              >
-                <img src="https://upload.wikimedia.org/wikipedia/commons/4/44/Microsoft_logo.svg" className="w-5 h-5 brightness-0 invert" alt="Microsoft" />
-                Continuar con Microsoft
-              </button>
             </div>
 
-            <div className="relative flex items-center py-2 mb-4">
+            <div className="relative flex items-center mb-6">
               <div className="flex-grow border-t border-gray-200"></div>
-              <span className="flex-shrink-0 mx-4 text-gray-400 text-xs font-semibold uppercase">O completa tus datos</span>
+              <span className="mx-4 text-gray-400 text-xs font-semibold uppercase tracking-widest">Datos manuales</span>
               <div className="flex-grow border-t border-gray-200"></div>
             </div>
 
             <form onSubmit={handleLoginSubmit} className="space-y-4">
-              <div>
-                <label className="block text-xs font-bold text-gray-700 mb-1 uppercase tracking-wide">Nombre completo</label>
-                <input required type="text" value={formData.name} onChange={e => setFormData({...formData, name: e.target.value})} className="w-full p-3 bg-gray-50 border border-gray-200 rounded-xl outline-none focus:ring-2 focus:ring-amber-500 transition text-sm font-medium" placeholder="Ej: Juan Pérez" />
-              </div>
-              <div>
-                <label className="block text-xs font-bold text-gray-700 mb-1 uppercase tracking-wide">Email</label>
-                <input required type="email" value={formData.email} onChange={e => setFormData({...formData, email: e.target.value})} className="w-full p-3 bg-gray-50 border border-gray-200 rounded-xl outline-none focus:ring-2 focus:ring-amber-500 transition text-sm font-medium" placeholder="correo@ejemplo.com" />
-              </div>
-              <div>
-                <label className="block text-xs font-bold text-gray-700 mb-1 uppercase tracking-wide">Teléfono</label>
-                <input required type="tel" value={formData.phone} onChange={e => setFormData({...formData, phone: e.target.value})} className="w-full p-3 bg-gray-50 border border-gray-200 rounded-xl outline-none focus:ring-2 focus:ring-amber-500 transition text-sm font-medium" placeholder="Cod área + Número" />
-              </div>
-              <div>
-                <label className="block text-xs font-bold text-gray-700 mb-1 uppercase tracking-wide">Dirección de entrega</label>
-                <input required type="text" value={formData.address} onChange={e => setFormData({...formData, address: e.target.value})} className="w-full p-3 bg-gray-50 border border-gray-200 rounded-xl outline-none focus:ring-2 focus:ring-amber-500 transition text-sm font-medium" placeholder="Calle, Número, Piso/Depto" />
-              </div>
-              <button type="submit" className="w-full bg-amber-700 text-white font-bold py-3.5 rounded-xl shadow-lg hover:bg-amber-800 transition active:scale-[0.98] mt-2">
-                Guardar Datos
+              <input required type="text" value={formData.name} onChange={e => setFormData({...formData, name: e.target.value})} className="w-full p-3 bg-gray-50 border-none rounded-none outline-none focus:ring-1 focus:ring-[#1A1A1A] text-sm" placeholder="Nombre completo" />
+              <input required type="email" value={formData.email} onChange={e => setFormData({...formData, email: e.target.value})} className="w-full p-3 bg-gray-50 border-none rounded-none outline-none focus:ring-1 focus:ring-[#1A1A1A] text-sm" placeholder="Correo electrónico" />
+              <input required type="tel" value={formData.phone} onChange={e => setFormData({...formData, phone: e.target.value})} className="w-full p-3 bg-gray-50 border-none rounded-none outline-none focus:ring-1 focus:ring-[#1A1A1A] text-sm" placeholder="Teléfono" />
+              <input required type="text" value={formData.address} onChange={e => setFormData({...formData, address: e.target.value})} className="w-full p-3 bg-gray-50 border-none rounded-none outline-none focus:ring-1 focus:ring-[#1A1A1A] text-sm" placeholder="Dirección de envío" />
+              <button type="submit" className="w-full bg-[#1A1A1A] text-white text-xs font-bold tracking-widest uppercase py-4 hover:bg-[#333] transition mt-2">
+                Guardar y Continuar
               </button>
             </form>
           </div>
         </div>
       )}
 
-      {/* Contact Info Modal */}
+      {/* Contact Modal (Rediseñado) */}
       {isContactOpen && (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
-          <div className="absolute inset-0 bg-black/60 backdrop-blur-sm transition-opacity" onClick={() => setIsContactOpen(false)} />
-          <div className="relative bg-white w-full max-w-2xl rounded-3xl p-6 shadow-2xl animate-in fade-in zoom-in-95 duration-200 max-h-[90vh] overflow-y-auto">
-            <button onClick={() => setIsContactOpen(false)} className="absolute top-4 right-4 bg-gray-100 text-gray-500 p-2 rounded-full hover:bg-gray-200 transition z-10">
-              <X size={18} />
+          <div className="absolute inset-0 bg-black/40 backdrop-blur-sm transition-opacity" onClick={() => setIsContactOpen(false)} />
+          <div className="relative bg-white w-full max-w-3xl p-8 shadow-2xl animate-in fade-in zoom-in-95 duration-200 flex flex-col md:flex-row gap-8">
+            <button onClick={() => setIsContactOpen(false)} className="absolute top-4 right-4 text-gray-400 hover:text-black transition z-10">
+              <X size={20} strokeWidth={1.5} />
             </button>
             
-            <div className="space-y-6 pt-4">
-              <div className="bg-amber-50 rounded-3xl p-6 border border-amber-100">
-                <h2 className="text-xl font-bold text-amber-900 mb-4 flex items-center gap-2">
-                  <img src="https://upload.wikimedia.org/wikipedia/commons/e/e7/Instagram_logo_2016.svg" alt="Instagram" className="w-6 h-6" /> Síguenos en Instagram
-                </h2>
-                <p className="text-gray-700 text-sm mb-4">Entérate de todas nuestras novedades, sorteos y nuevos ingresos.</p>
-                <a 
-                  href="https://www.instagram.com/nuezapprio/" 
-                  target="_blank" 
-                  rel="noopener noreferrer"
-                  className="inline-flex items-center gap-2 bg-gradient-to-tr from-yellow-400 via-pink-500 to-purple-500 text-white px-6 py-3 rounded-full font-bold shadow-md hover:opacity-90 transition"
-                >
-                  @nuezapprio
+            <div className="md:w-1/2 flex flex-col justify-center">
+              <h2 className="font-serif text-3xl text-[#1A1A1A] mb-4">Nuestra Ubicación</h2>
+              <p className="text-gray-500 text-sm mb-8 leading-relaxed">
+                Visítanos en nuestra tienda física para disfrutar de la experiencia completa y degustar nuestros productos frescos.
+                <br /><br />
+                <strong>Hipólito Yrigoyen y Sarmiento</strong><br />
+                Río Colorado, Río Negro.
+              </p>
+              
+              <div className="flex flex-col gap-3">
+                <button onClick={handleContactWhatsApp} className="w-full bg-[#1A1A1A] text-white text-xs font-bold tracking-widest uppercase py-4 hover:bg-[#333] transition flex justify-center items-center gap-2">
+                  Escríbenos <img src="https://upload.wikimedia.org/wikipedia/commons/6/6b/WhatsApp.svg" alt="WhatsApp" className="w-4 h-4 brightness-0 invert" />
+                </button>
+                <a href="https://maps.google.com/?q=-38.99355688461547,-64.09578943096835" target="_blank" rel="noopener noreferrer" className="w-full border border-gray-300 text-[#1A1A1A] text-xs font-bold tracking-widest uppercase py-4 hover:bg-gray-50 transition text-center flex items-center justify-center gap-2">
+                  Abrir en Google Maps
                 </a>
               </div>
+            </div>
 
-              <div className="bg-blue-50 rounded-3xl p-6 border border-blue-100">
-                <h2 className="text-xl font-bold text-blue-900 mb-4 flex items-center gap-2">
-                  <MapPin className="text-red-500" /> Nuestra Ubicación
-                </h2>
-                <p className="text-gray-700 text-sm mb-4 font-medium">Hipólito Yrigoyen y Sarmiento, Río Colorado.</p>
-                
-                <div className="flex flex-wrap gap-3 mb-5">
-                  <button 
-                    onClick={handleContactWhatsApp}
-                    className="inline-flex items-center gap-2 bg-[#25D366] text-white px-5 py-2.5 rounded-full font-bold shadow-sm hover:bg-[#20b858] transition"
-                  >
-                    <img src="https://upload.wikimedia.org/wikipedia/commons/6/6b/WhatsApp.svg" alt="WhatsApp" className="w-5 h-5 brightness-0 invert" />
-                    Escríbenos
-                  </button>
-                  <a 
-                    href="https://maps.google.com/?q=-38.99355688461547,-64.09578943096835" 
-                    target="_blank" 
-                    rel="noopener noreferrer"
-                    className="inline-flex items-center gap-2 bg-white text-blue-600 px-5 py-2.5 rounded-full font-bold shadow-sm hover:bg-blue-100 transition border border-blue-200"
-                  >
-                    <Map size={18} />
-                    Abrir en Maps
-                  </a>
-                </div>
-
-                <div className="w-full h-64 rounded-2xl overflow-hidden shadow-inner border border-blue-200">
-                  <iframe 
-                    src="https://maps.google.com/maps?q=-38.99355688461547,-64.09578943096835&hl=es&z=16&output=embed" 
-                    width="100%" 
-                    height="100%" 
-                    style={{ border: 0 }} 
-                    allowFullScreen={true} 
-                    loading="lazy" 
-                    referrerPolicy="no-referrer-when-downgrade"
-                  ></iframe>
-                </div>
-              </div>
+            <div className="md:w-1/2 h-64 md:h-auto bg-gray-100">
+              <iframe 
+                src="https://maps.google.com/maps?q=-38.99355688461547,-64.09578943096835&hl=es&z=16&output=embed" 
+                width="100%" 
+                height="100%" 
+                style={{ border: 0 }} 
+                allowFullScreen={true} 
+                loading="lazy" 
+                referrerPolicy="no-referrer-when-downgrade"
+              ></iframe>
             </div>
           </div>
         </div>
