@@ -256,39 +256,71 @@ export default function Home() {
     }
   };
 
+  useEffect(() => {
+    const handleMessage = async (event: MessageEvent) => {
+      if (event.origin !== window.location.origin) return;
+      if (event.data?.type === 'SSO_AUTH_SUCCESS') {
+        const { provider, email, name } = event.data;
+        if (email) {
+          setAuthLoading(true);
+          const res = await loginWithSSO(provider, { email, name });
+          setAuthLoading(false);
+          if (res.success) {
+            setIsLoginModalOpen(false);
+            if (isPendingCheckout) {
+              setIsPendingCheckout(false);
+              setTimeout(() => {
+                executeCheckout();
+              }, 300);
+            }
+          } else {
+            setAuthError(res.error || `Error al autenticar con ${provider}`);
+          }
+        }
+      }
+    };
+
+    window.addEventListener('message', handleMessage);
+    return () => window.removeEventListener('message', handleMessage);
+  }, [isPendingCheckout, loginWithSSO]);
+
   const handleSSOClick = async (provider: 'google' | 'microsoft') => {
     setAuthError("");
     setAuthLoading(true);
 
-    const providerName = provider === 'google' ? 'Google' : 'Microsoft';
-    const defaultAccount = provider === 'google' ? 'usuario.google@gmail.com' : 'usuario.microsoft@outlook.com';
-    const emailPrompt = window.prompt(`Ingresa tu cuenta de ${providerName}:`, defaultAccount);
+    const redirectUri = encodeURIComponent(`${window.location.origin}/auth/callback/${provider}`);
+    const width = 500;
+    const height = 650;
+    const left = window.screen.width / 2 - width / 2;
+    const top = window.screen.height / 2 - height / 2;
 
-    if (!emailPrompt) {
+    let oauthUrl = "";
+    if (provider === "google") {
+      const googleClientId = process.env.NEXT_PUBLIC_GOOGLE_CLIENT_ID || "1058474268710-v6q8k1882u03hqu1365g73r10o18h929.apps.googleusercontent.com";
+      oauthUrl = `https://accounts.google.com/o/oauth2/v2/auth?client_id=${googleClientId}&redirect_uri=${redirectUri}&response_type=token&scope=email%20profile&prompt=select_account`;
+    } else {
+      const msClientId = process.env.NEXT_PUBLIC_MICROSOFT_CLIENT_ID || "common";
+      oauthUrl = `https://login.microsoftonline.com/common/oauth2/v2.0/authorize?client_id=${msClientId}&response_type=token&redirect_uri=${redirectUri}&scope=user.read%20openid%20profile%20email&prompt=select_account`;
+    }
+
+    const popup = window.open(
+      oauthUrl,
+      `${provider}_login`,
+      `width=${width},height=${height},top=${top},left=${left},toolbar=no,menubar=no,location=no,status=no`
+    );
+
+    if (!popup || popup.closed || typeof popup.closed === 'undefined') {
       setAuthLoading(false);
+      setAuthError("Por favor habilita las ventanas emergentes en tu navegador para continuar.");
       return;
     }
 
-    const namePart = emailPrompt.split('@')[0].replace(/[\._]/g, ' ');
-    const formattedName = namePart.charAt(0).toUpperCase() + namePart.slice(1);
-
-    const res = await loginWithSSO(provider, {
-      email: emailPrompt.trim(),
-      name: formattedName
-    });
-
-    setAuthLoading(false);
-    if (res.success) {
-      setIsLoginModalOpen(false);
-      if (isPendingCheckout) {
-        setIsPendingCheckout(false);
-        setTimeout(() => {
-          executeCheckout();
-        }, 300);
+    const checkPopupClosed = setInterval(() => {
+      if (popup.closed) {
+        clearInterval(checkPopupClosed);
+        setAuthLoading(false);
       }
-    } else {
-      setAuthError(res.error || `Error al autenticar con ${providerName}`);
-    }
+    }, 1000);
   };
 
   const handleProfileSubmit = async (e: React.FormEvent) => {
