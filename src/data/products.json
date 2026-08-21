@@ -3439,7 +3439,7 @@
   {
     "id": "182982",
     "name": "Stevia Dulri en polvo 100 sobres",
-    "price": null,
+    "price": 0,
     "category": "ALMACEN",
     "image": "https://img.milocal.app/global/producto-default.png"
   },
@@ -8955,7 +8955,7 @@
   {
     "id": "182101",
     "name": "Kefir PURA VIDA de frambuesa/limon 1lt",
-    "price": null,
+    "price": 0,
     "category": "BEBIDAS/JUGOS/LECHES/YOGURT",
     "image": "https://img.milocal.app/global/producto-default.png"
   },
@@ -13351,7 +13351,7 @@
   {
     "id": "184691",
     "name": "Semillas de zapallo SEGUNDA CALIDAD 0.500g",
-    "price": null,
+    "price": 0,
     "category": "SEMILLAS",
     "image": "https://img.milocal.app/global/producto-default.png"
   },
@@ -15759,7 +15759,7 @@
   {
     "id": "181761",
     "name": "FILTRO INFUSOR COLADOR TE EN HEBRAS",
-    "price": null,
+    "price": 0,
     "category": "ANEXOS",
     "image": "https://img.milocal.app/global/producto-default.png"
   },
@@ -15969,7 +15969,7 @@
   {
     "id": "182487",
     "name": "Organizador de 10 divisiones",
-    "price": null,
+    "price": 0,
     "category": "ANEXOS",
     "image": "https://img.milocal.app/global/producto-default.png"
   },

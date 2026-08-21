@@ -26,8 +26,8 @@ interface CartStore {
   isCartOpen: boolean;
   user: UserProfile;
   addItem: (product: Product) => void;
-  removeItem: (productId: number) => void;
-  updateQuantity: (productId: number, quantity: number) => void;
+  removeItem: (productId: string | number) => void;
+  updateQuantity: (productId: string | number, quantity: number) => void;
   clearCart: () => void;
   toggleCart: () => void;
   getCartTotal: () => number;
