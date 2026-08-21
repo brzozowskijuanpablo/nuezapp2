@@ -572,7 +572,7 @@ export default function Home() {
             <img src="/icon.png" alt="Logo" className="h-12 object-contain" />
             <div className="flex flex-col justify-center">
               <span className="font-serif font-bold text-[#675B37] text-xl leading-none">Nuez App</span>
-              <span className="font-sans text-[10px] tracking-[0.2em] text-[#675B37] uppercase mt-0.5">Shopp</span>
+              <span className="font-sans text-[10px] tracking-[0.2em] text-[#675B37] uppercase mt-0.5">Shop</span>
             </div>
           </div>
         </div>
@@ -582,7 +582,7 @@ export default function Home() {
           <img src="/icon.png" alt="Logo" className="h-10 object-contain" />
           <div className="flex flex-col justify-center">
             <span className="font-serif font-bold text-[#675B37] text-lg leading-none">Nuez App</span>
-            <span className="font-sans text-[9px] tracking-[0.2em] text-[#675B37] uppercase mt-0.5">Shopp</span>
+            <span className="font-sans text-[9px] tracking-[0.2em] text-[#675B37] uppercase mt-0.5">Shop</span>
           </div>
         </div>
 
@@ -968,7 +968,7 @@ export default function Home() {
             <img src="/icon.png" alt="Logo" className="h-14 object-contain" />
             <div className="flex flex-col justify-center">
               <span className="font-serif font-bold text-[#675B37] text-2xl leading-none">Nuez App</span>
-              <span className="font-sans text-[11px] tracking-[0.2em] text-[#675B37] uppercase mt-1">Shopp</span>
+              <span className="font-sans text-[11px] tracking-[0.2em] text-[#675B37] uppercase mt-1">Shop</span>
             </div>
           </div>
           <div className="flex gap-6 text-sm text-[#828282]">
@@ -990,7 +990,7 @@ export default function Home() {
                 <img src="/icon.png" alt="Logo" className="h-10 object-contain" />
                 <div className="flex flex-col justify-center">
                   <span className="font-serif font-bold text-[#675B37] text-lg leading-none">Nuez App</span>
-                  <span className="font-sans text-[9px] tracking-[0.2em] text-[#675B37] uppercase mt-0.5">Shopp</span>
+                  <span className="font-sans text-[9px] tracking-[0.2em] text-[#675B37] uppercase mt-0.5">Shop</span>
                 </div>
               </div>
               <button onClick={() => setIsMenuOpen(false)} className="text-[#828282] hover:text-black transition">

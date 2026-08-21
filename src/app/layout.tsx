@@ -16,8 +16,8 @@ const jakarta = Plus_Jakarta_Sans({
 });
 
 export const metadata: Metadata = {
-  title: "NuezApp",
-  description: "Digitaliza tu negocio hoy",
+  title: "Nuez App Shop",
+  description: "Nuez App Shop - Frutos secos, productos saludables y nutrición consciente",
 };
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
