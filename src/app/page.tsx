@@ -147,13 +147,38 @@ export default function Home() {
     }));
   }, [displayedProducts]);
 
+  const getUserLocation = (): Promise<string | null> => {
+    return new Promise((resolve) => {
+      if (typeof window === "undefined" || !navigator.geolocation) {
+        resolve(null);
+        return;
+      }
+
+      navigator.geolocation.getCurrentPosition(
+        (position) => {
+          const { latitude, longitude } = position.coords;
+          resolve(`https://maps.google.com/?q=${latitude},${longitude}`);
+        },
+        (err) => {
+          console.warn("Geolocation not available or denied:", err);
+          resolve(null);
+        },
+        { enableHighAccuracy: true, timeout: 4000, maximumAge: 60000 }
+      );
+    });
+  };
+
   const executeCheckout = async () => {
     if (items.length === 0) return;
     
+    // Obtener ubicación GPS en tiempo real si el usuario lo permite
+    const locationUrl = await getUserLocation();
+
     // Guardar pedido en base de datos
     await saveOrder({
       shippingAddress: user.address,
-      phone: user.phone
+      phone: user.phone,
+      notes: locationUrl ? `Ubicación GPS: ${locationUrl}` : undefined
     });
 
     let message = "Hola NuezApp! Quiero hacer el siguiente pedido:\n\n";
@@ -163,7 +188,11 @@ export default function Home() {
     message += `\n*Total:* $${getCartTotal().toLocaleString("es-AR")}\n\n`;
     
     if (user.isLoggedIn) {
-      message += `*Mis datos para el envío:*\nNombre: ${user.name}\nDirección: ${user.address}\nTeléfono: ${user.phone}`;
+      message += `*Mis datos para el envío:*\nNombre: ${user.name}\nDirección: ${user.address}\nTeléfono: ${user.phone}\n`;
+    }
+
+    if (locationUrl) {
+      message += `\n📍 *Ubicación en tiempo real (GPS):*\n${locationUrl}\n`;
     }
 
     const whatsappUrl = `https://wa.me/${WHATSAPP_NUMBER}?text=${encodeURIComponent(message)}`;
