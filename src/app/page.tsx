@@ -48,7 +48,7 @@ const videoRecetas = [
   { id: "6", title: "Snack de Frutos Secos", img: "https://images.unsplash.com/photo-1536599018102-9f803c140fc1?auto=format&fit=crop&w=400&q=80", tag: "Snack" },
 ];
 
-const WHATSAPP_NUMBER = "542916419224";
+const WHATSAPP_NUMBER = "5492920321634";
 
 export default function Home() {
   const [mounted, setMounted] = useState(false);
