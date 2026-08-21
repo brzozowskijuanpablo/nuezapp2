@@ -1,17 +1,18 @@
 import type { Metadata } from "next";
-import { Epilogue, Prata } from "next/font/google";
+import { Inter, Plus_Jakarta_Sans } from "next/font/google";
 import Script from "next/script";
 import "./globals.css";
 
-const epilogue = Epilogue({
+const inter = Inter({
   subsets: ["latin"],
-  variable: "--font-epilogue",
+  variable: "--font-inter",
+  display: "swap",
 });
 
-const prata = Prata({
-  weight: "400",
+const jakarta = Plus_Jakarta_Sans({
   subsets: ["latin"],
-  variable: "--font-prata",
+  variable: "--font-jakarta",
+  display: "swap",
 });
 
 export const metadata: Metadata = {
@@ -23,12 +24,9 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
   return (
     <html
       lang="es"
-      className={`${epilogue.variable} ${prata.variable} h-full antialiased`}
+      className={`${inter.variable} ${jakarta.variable} h-full antialiased`}
     >
-      <body className="min-h-full flex flex-col font-sans bg-[#FFFFFF]">
-        {children}
-        <Script src="https://accounts.google.com/gsi/client" strategy="afterInteractive" />
-      </body>
+      <body className="min-h-full flex flex-col font-sans bg-[#FFFFFF] text-[#2B2118]">{children}</body>
     </html>
   );
 }
