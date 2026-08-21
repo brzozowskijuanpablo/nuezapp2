@@ -299,6 +299,7 @@ export default function Home() {
 
   const handleSSOClick = (provider: 'google' | 'microsoft') => {
     setAuthError("");
+    setIsLoginModalOpen(false);
     const defaultEmail = provider === 'google' ? 'jpbrzmoto@gmail.com' : 'usuario@outlook.com';
     const defaultName = defaultEmail.split('@')[0].replace(/[\._]/g, ' ');
     const formattedName = defaultName.charAt(0).toUpperCase() + defaultName.slice(1);
@@ -836,10 +837,10 @@ export default function Home() {
 
       {/* SSO Consent & Quick Connect Modal */}
       {ssoConsentModal.isOpen && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
-          <div className="absolute inset-0 bg-black/50 backdrop-blur-sm transition-opacity" onClick={() => setSsoConsentModal(prev => ({ ...prev, isOpen: false }))} />
+        <div className="fixed inset-0 z-[80] flex items-center justify-center p-4">
+          <div className="absolute inset-0 bg-black/60 backdrop-blur-sm transition-opacity" onClick={() => { setSsoConsentModal(prev => ({ ...prev, isOpen: false })); setIsLoginModalOpen(true); }} />
           <div className="relative bg-white w-full max-w-md p-6 sm:p-8 shadow-2xl animate-in fade-in zoom-in-95 duration-200 rounded-2xl">
-            <button onClick={() => setSsoConsentModal(prev => ({ ...prev, isOpen: false }))} className="absolute top-4 right-4 text-gray-400 hover:text-black transition p-1">
+            <button onClick={() => { setSsoConsentModal(prev => ({ ...prev, isOpen: false })); setIsLoginModalOpen(true); }} className="absolute top-4 right-4 text-gray-400 hover:text-black transition p-1">
               <X size={20} strokeWidth={1.5} />
             </button>
             
@@ -910,7 +911,7 @@ export default function Home() {
               <div className="pt-2 flex gap-3">
                 <button
                   type="button"
-                  onClick={() => setSsoConsentModal(prev => ({ ...prev, isOpen: false }))}
+                  onClick={() => { setSsoConsentModal(prev => ({ ...prev, isOpen: false })); setIsLoginModalOpen(true); }}
                   className="flex-1 border border-gray-300 text-gray-700 text-xs font-bold tracking-wider uppercase py-3.5 hover:bg-gray-50 rounded-lg transition"
                 >
                   Cancelar

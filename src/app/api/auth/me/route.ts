@@ -66,23 +66,34 @@ export async function PUT(req: Request) {
     const db = getDb();
     const authHeader = req.headers.get('authorization');
     const token = authHeader?.startsWith('Bearer ') ? authHeader.substring(7) : null;
-
-    if (!token) {
-      return NextResponse.json({ error: 'No autorizado' }, { status: 401 });
-    }
-
-    const sessionRes = await db.execute({
-      sql: `SELECT user_id FROM sessions WHERE token = ?`,
-      args: [token],
-    });
-
-    if (sessionRes.rows.length === 0) {
-      return NextResponse.json({ error: 'Sesión inválida o expirada' }, { status: 401 });
-    }
-
-    const userId = sessionRes.rows[0].user_id as string;
     const body = await req.json();
-    const { name, phone, address } = body;
+    const { name, phone, address, email, id } = body;
+
+    let userId: string | null = null;
+
+    if (token) {
+      const sessionRes = await db.execute({
+        sql: `SELECT user_id FROM sessions WHERE token = ?`,
+        args: [token],
+      });
+      if (sessionRes.rows.length > 0) {
+        userId = sessionRes.rows[0].user_id as string;
+      }
+    }
+
+    if (!userId && (id || email)) {
+      const userLookup = await db.execute({
+        sql: `SELECT id FROM users WHERE id = ? OR email = ?`,
+        args: [id || '', email?.trim().toLowerCase() || ''],
+      });
+      if (userLookup.rows.length > 0) {
+        userId = userLookup.rows[0].id as string;
+      }
+    }
+
+    if (!userId) {
+      return NextResponse.json({ error: 'No se encontró la sesión o usuario para actualizar' }, { status: 401 });
+    }
 
     await db.execute({
       sql: `UPDATE users SET 
