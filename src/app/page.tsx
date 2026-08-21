@@ -85,7 +85,7 @@ export default function Home() {
 
   const { 
     items, isCartOpen, toggleCart, addItem, 
-    removeItem, updateQuantity, getCartTotal, getCartCount,
+    removeItem, updateQuantity, clearCart, getCartTotal, getCartCount,
     user, logout, login, register, loginWithSSO, restoreSession,
     isOrdersOpen, toggleOrders, orders, fetchOrders, saveOrder, isLoadingOrders,
     isProfileOpen, toggleProfile, updateProfile
@@ -834,7 +834,18 @@ export default function Home() {
           
           <div className="relative w-full max-w-md bg-white h-full flex flex-col shadow-2xl animate-in slide-in-from-right duration-300">
             <div className="p-6 border-b border-gray-100 flex justify-between items-center">
-              <h2 className="font-serif text-2xl text-[#2B2118]">Mi Bolsa</h2>
+              <div className="flex items-center gap-3">
+                <h2 className="font-serif text-2xl text-[#2B2118]">Mi Bolsa</h2>
+                {items.length > 0 && (
+                  <button 
+                    onClick={clearCart}
+                    className="text-xs text-red-500 hover:text-red-700 font-semibold flex items-center gap-1.5 transition px-2.5 py-1 rounded-md hover:bg-red-50"
+                    title="Vaciar todo el carrito"
+                  >
+                    <Trash2 size={13} /> Vaciar
+                  </button>
+                )}
+              </div>
               <button onClick={toggleCart} className="text-[#828282] hover:text-black transition">
                 <X size={20} strokeWidth={1.5} />
               </button>
