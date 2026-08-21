@@ -278,8 +278,8 @@ export default function Home() {
         )}
       </div>
 
-      {/* Info Section (Map & Instagram) */}
-      <div className="max-w-4xl mx-auto px-4 mt-8 pb-8 space-y-6">
+      {/* Info Section (Map, WhatsApp & Instagram) */}
+      <div id="contacto" className="max-w-4xl mx-auto px-4 mt-8 pb-8 space-y-6">
         <div className="bg-white rounded-3xl p-6 shadow-sm">
           <h2 className="text-xl font-bold text-amber-900 mb-4 flex items-center gap-2">
             <img src="https://upload.wikimedia.org/wikipedia/commons/e/e7/Instagram_logo_2016.svg" alt="Instagram" className="w-6 h-6" /> Síguenos en Instagram
@@ -300,6 +300,26 @@ export default function Home() {
             <MapPin className="text-red-500" /> Nuestra Ubicación
           </h2>
           <p className="text-gray-600 text-sm mb-4">Hipólito Yrigoyen y Sarmiento, Río Colorado.</p>
+          
+          <div className="flex gap-3 mb-5">
+            <button 
+              onClick={handleContactWhatsApp}
+              className="inline-flex items-center gap-2 bg-[#25D366] text-white px-5 py-2.5 rounded-full font-bold shadow-sm hover:bg-[#20b858] transition"
+            >
+              <img src="https://upload.wikimedia.org/wikipedia/commons/6/6b/WhatsApp.svg" alt="WhatsApp" className="w-5 h-5 brightness-0 invert" />
+              Escríbenos
+            </button>
+            <a 
+              href="https://maps.google.com/?q=-38.9823136,-64.0898516" 
+              target="_blank" 
+              rel="noopener noreferrer"
+              className="inline-flex items-center gap-2 bg-blue-50 text-blue-600 px-5 py-2.5 rounded-full font-bold shadow-sm hover:bg-blue-100 transition"
+            >
+              <Map size={18} />
+              Abrir en Maps
+            </a>
+          </div>
+
           <div className="w-full h-64 rounded-2xl overflow-hidden shadow-inner border border-gray-100">
             <iframe 
               src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3101.4423405788487!2d-64.0898516!3d-38.9823136!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x95edbce8b7a67b4b%3A0xc3f8373bc0b8c9d0!2sSarmiento%20%26%20Hip%C3%B3lito%20Yrigoyen%2C%20R%C3%ADo%20Colorado%2C%20R%C3%ADo%20Negro!5e0!3m2!1ses!2sar!4v1700000000000!5m2!1ses!2sar" 
@@ -318,7 +338,7 @@ export default function Home() {
       {isMenuOpen && (
         <div className="fixed inset-0 z-50 flex">
           <div className="absolute inset-0 bg-black/60 backdrop-blur-sm transition-opacity" onClick={() => setIsMenuOpen(false)} />
-          <div className="relative w-[85%] max-w-sm bg-white h-full flex flex-col shadow-2xl animate-in slide-in-from-left duration-300">
+          <div className="relative w-[280px] max-w-[80vw] bg-white h-full flex flex-col shadow-2xl animate-in slide-in-from-left duration-300">
             <div className="p-6 bg-[#FFDCBF] flex justify-between items-start">
               <div>
                 <img src="/logo.png" alt="NuezApp" className="h-14 object-contain mb-4" />
@@ -333,7 +353,7 @@ export default function Home() {
                   </button>
                 )}
               </div>
-              <button onClick={() => setIsMenuOpen(false)} className="bg-white/50 text-amber-900 p-2 rounded-full">
+              <button onClick={() => setIsMenuOpen(false)} className="bg-white/50 text-amber-900 p-2 rounded-full hover:bg-white transition">
                 <X size={20} />
               </button>
             </div>
@@ -347,7 +367,7 @@ export default function Home() {
                 <ChevronRight size={20} className="text-amber-300" />
               </button>
               
-              <button onClick={() => {setIsMenuOpen(false); handleContactWhatsApp();}} className="w-full flex items-center justify-between p-4 hover:bg-amber-50 rounded-2xl transition group">
+              <button onClick={() => {setIsMenuOpen(false); document.getElementById('contacto')?.scrollIntoView({ behavior: 'smooth' });}} className="w-full flex items-center justify-between p-4 hover:bg-amber-50 rounded-2xl transition group">
                 <div className="flex items-center gap-4 text-amber-900 font-bold">
                   <div className="bg-amber-100 p-2 rounded-xl group-hover:bg-amber-200 transition"><MapPin size={22} className="text-amber-800" /></div>
                   Ubicación y Contacto
