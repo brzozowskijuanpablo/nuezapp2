@@ -1,13 +1,13 @@
 "use client";
 
-import { useState, useMemo, useEffect, useCallback } from "react";
+import { useState, useMemo, useEffect } from "react";
 import { useCartStore, Product } from "@/store/cartStore";
 import useEmblaCarousel from 'embla-carousel-react';
 import Autoplay from 'embla-carousel-autoplay';
 import { 
   X, Plus, Minus, Trash2, ShoppingCart, Search, 
-  MapPin, Menu, ShoppingBag, Store, User, 
-  LogOut, Phone, Map, ChevronRight, Infinity
+  MapPin, Menu, ShoppingBag, User, 
+  LogOut, Map, ChevronRight, Infinity
 } from "lucide-react";
 
 // Mocks & Constants
@@ -50,6 +50,7 @@ export default function Home() {
   const [searchQuery, setSearchQuery] = useState("");
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [isLoginModalOpen, setIsLoginModalOpen] = useState(false);
+  const [isContactOpen, setIsContactOpen] = useState(false);
   
   // Local state for login form
   const [formData, setFormData] = useState({ name: "", email: "", phone: "", address: "" });
@@ -227,13 +228,13 @@ export default function Home() {
                 </span>
               </div>
               
-              <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
+              <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
                 {group.products.map((p) => {
                   const cartItem = items.find(i => i.id === p.id);
                   return (
-                    <div key={p.id} className="bg-white p-3 rounded-3xl shadow-sm hover:shadow-lg flex flex-col justify-between transition-all group overflow-hidden border border-white/50">
-                      <div>
-                        <div className="aspect-square bg-gray-50 rounded-2xl mb-3 overflow-hidden relative">
+                    <div key={p.id} className="bg-white p-3 rounded-3xl shadow-sm hover:shadow-lg flex flex-row sm:flex-col items-center sm:items-stretch gap-4 sm:gap-0 transition-all group overflow-hidden border border-white/50">
+                      <div className="w-24 h-24 sm:w-full sm:h-auto shrink-0">
+                        <div className="aspect-square bg-gray-50 rounded-2xl sm:mb-3 overflow-hidden relative">
                           {p.image ? (
                             <img 
                               src={p.image} 
@@ -245,29 +246,32 @@ export default function Home() {
                             <div className="w-full h-full flex items-center justify-center text-4xl">🌰</div>
                           )}
                         </div>
-                        <h3 className="font-bold text-gray-800 text-[13px] leading-tight mb-2 line-clamp-2" title={p.name}>{p.name}</h3>
                       </div>
-                      <div className="flex justify-between items-center mt-auto pt-2">
-                        <span className="font-extrabold text-[15px] text-amber-700">${p.price.toLocaleString("es-AR")}</span>
-                        {cartItem ? (
-                          <div className="flex items-center gap-1.5 bg-amber-50 rounded-xl p-1 shadow-inner">
-                            <button onClick={() => updateQuantity(p.id, cartItem.quantity - 1)} className="text-amber-700 bg-white shadow-sm p-1 hover:bg-gray-50 rounded-lg active:scale-95 transition">
-                              <Minus size={14} />
+                      
+                      <div className="flex-1 flex flex-col justify-between h-full sm:h-auto py-1 sm:py-0">
+                        <h3 className="font-bold text-gray-800 text-[14px] leading-tight mb-2 line-clamp-2" title={p.name}>{p.name}</h3>
+                        <div className="flex justify-between items-center mt-auto sm:pt-2">
+                          <span className="font-extrabold text-[16px] text-amber-700">${p.price.toLocaleString("es-AR")}</span>
+                          {cartItem ? (
+                            <div className="flex items-center gap-1.5 bg-amber-50 rounded-xl p-1 shadow-inner shrink-0">
+                              <button onClick={() => updateQuantity(p.id, cartItem.quantity - 1)} className="text-amber-700 bg-white shadow-sm p-1.5 hover:bg-gray-50 rounded-lg active:scale-95 transition">
+                                <Minus size={14} />
+                              </button>
+                              <span className="text-sm font-bold w-4 text-center text-amber-900">{cartItem.quantity}</span>
+                              <button onClick={() => addItem(p)} className="text-white bg-amber-700 shadow-sm p-1.5 hover:bg-amber-800 rounded-lg active:scale-95 transition">
+                                <Plus size={14} />
+                              </button>
+                            </div>
+                          ) : (
+                            <button 
+                              onClick={() => addItem(p)}
+                              className="bg-amber-100 text-amber-800 w-10 h-10 rounded-xl font-bold flex items-center justify-center hover:bg-amber-700 hover:text-white transition shadow-sm active:scale-95 shrink-0" 
+                              title="Agregar al carrito"
+                            >
+                              <Plus size={18} />
                             </button>
-                            <span className="text-sm font-bold w-4 text-center text-amber-900">{cartItem.quantity}</span>
-                            <button onClick={() => addItem(p)} className="text-white bg-amber-700 shadow-sm p-1 hover:bg-amber-800 rounded-lg active:scale-95 transition">
-                              <Plus size={14} />
-                            </button>
-                          </div>
-                        ) : (
-                          <button 
-                            onClick={() => addItem(p)}
-                            className="bg-amber-100 text-amber-800 w-9 h-9 rounded-xl font-bold flex items-center justify-center hover:bg-amber-700 hover:text-white transition shadow-sm active:scale-95" 
-                            title="Agregar al carrito"
-                          >
-                            <Plus size={18} />
-                          </button>
-                        )}
+                          )}
+                        </div>
                       </div>
                     </div>
                   );
@@ -276,62 +280,6 @@ export default function Home() {
             </div>
           ))
         )}
-      </div>
-
-      {/* Info Section (Map, WhatsApp & Instagram) */}
-      <div id="contacto" className="max-w-4xl mx-auto px-4 mt-8 pb-8 space-y-6">
-        <div className="bg-white rounded-3xl p-6 shadow-sm">
-          <h2 className="text-xl font-bold text-amber-900 mb-4 flex items-center gap-2">
-            <img src="https://upload.wikimedia.org/wikipedia/commons/e/e7/Instagram_logo_2016.svg" alt="Instagram" className="w-6 h-6" /> Síguenos en Instagram
-          </h2>
-          <p className="text-gray-600 text-sm mb-4">Entérate de todas nuestras novedades, sorteos y nuevos ingresos.</p>
-          <a 
-            href="https://www.instagram.com/nuezapprio/" 
-            target="_blank" 
-            rel="noopener noreferrer"
-            className="inline-flex items-center gap-2 bg-gradient-to-tr from-yellow-400 via-pink-500 to-purple-500 text-white px-6 py-3 rounded-full font-bold shadow-md hover:opacity-90 transition"
-          >
-            @nuezapprio
-          </a>
-        </div>
-
-        <div className="bg-white rounded-3xl p-6 shadow-sm">
-          <h2 className="text-xl font-bold text-amber-900 mb-4 flex items-center gap-2">
-            <MapPin className="text-red-500" /> Nuestra Ubicación
-          </h2>
-          <p className="text-gray-600 text-sm mb-4">Hipólito Yrigoyen y Sarmiento, Río Colorado.</p>
-          
-          <div className="flex gap-3 mb-5">
-            <button 
-              onClick={handleContactWhatsApp}
-              className="inline-flex items-center gap-2 bg-[#25D366] text-white px-5 py-2.5 rounded-full font-bold shadow-sm hover:bg-[#20b858] transition"
-            >
-              <img src="https://upload.wikimedia.org/wikipedia/commons/6/6b/WhatsApp.svg" alt="WhatsApp" className="w-5 h-5 brightness-0 invert" />
-              Escríbenos
-            </button>
-            <a 
-              href="https://maps.google.com/?q=-38.9823136,-64.0898516" 
-              target="_blank" 
-              rel="noopener noreferrer"
-              className="inline-flex items-center gap-2 bg-blue-50 text-blue-600 px-5 py-2.5 rounded-full font-bold shadow-sm hover:bg-blue-100 transition"
-            >
-              <Map size={18} />
-              Abrir en Maps
-            </a>
-          </div>
-
-          <div className="w-full h-64 rounded-2xl overflow-hidden shadow-inner border border-gray-100">
-            <iframe 
-              src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3101.4423405788487!2d-64.0898516!3d-38.9823136!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x95edbce8b7a67b4b%3A0xc3f8373bc0b8c9d0!2sSarmiento%20%26%20Hip%C3%B3lito%20Yrigoyen%2C%20R%C3%ADo%20Colorado%2C%20R%C3%ADo%20Negro!5e0!3m2!1ses!2sar!4v1700000000000!5m2!1ses!2sar" 
-              width="100%" 
-              height="100%" 
-              style={{ border: 0 }} 
-              allowFullScreen={true} 
-              loading="lazy" 
-              referrerPolicy="no-referrer-when-downgrade"
-            ></iframe>
-          </div>
-        </div>
       </div>
 
       {/* Sidebar Menu Drawer */}
@@ -367,7 +315,7 @@ export default function Home() {
                 <ChevronRight size={20} className="text-amber-300" />
               </button>
               
-              <button onClick={() => {setIsMenuOpen(false); document.getElementById('contacto')?.scrollIntoView({ behavior: 'smooth' });}} className="w-full flex items-center justify-between p-4 hover:bg-amber-50 rounded-2xl transition group">
+              <button onClick={() => {setIsMenuOpen(false); setIsContactOpen(true);}} className="w-full flex items-center justify-between p-4 hover:bg-amber-50 rounded-2xl transition group">
                 <div className="flex items-center gap-4 text-amber-900 font-bold">
                   <div className="bg-amber-100 p-2 rounded-xl group-hover:bg-amber-200 transition"><MapPin size={22} className="text-amber-800" /></div>
                   Ubicación y Contacto
@@ -484,7 +432,7 @@ export default function Home() {
       {isLoginModalOpen && (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
           <div className="absolute inset-0 bg-black/60 backdrop-blur-sm transition-opacity" onClick={() => setIsLoginModalOpen(false)} />
-          <div className="relative bg-white w-full max-w-md rounded-3xl p-6 shadow-2xl animate-in fade-in zoom-in-95 duration-200">
+          <div className="relative bg-white w-full max-w-md rounded-3xl p-6 shadow-2xl animate-in fade-in zoom-in-95 duration-200 max-h-[90vh] overflow-y-auto">
             <button onClick={() => setIsLoginModalOpen(false)} className="absolute top-4 right-4 bg-gray-100 text-gray-500 p-2 rounded-full hover:bg-gray-200 transition">
               <X size={18} />
             </button>
@@ -542,6 +490,73 @@ export default function Home() {
                 Guardar Datos
               </button>
             </form>
+          </div>
+        </div>
+      )}
+
+      {/* Contact Info Modal */}
+      {isContactOpen && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
+          <div className="absolute inset-0 bg-black/60 backdrop-blur-sm transition-opacity" onClick={() => setIsContactOpen(false)} />
+          <div className="relative bg-white w-full max-w-2xl rounded-3xl p-6 shadow-2xl animate-in fade-in zoom-in-95 duration-200 max-h-[90vh] overflow-y-auto">
+            <button onClick={() => setIsContactOpen(false)} className="absolute top-4 right-4 bg-gray-100 text-gray-500 p-2 rounded-full hover:bg-gray-200 transition z-10">
+              <X size={18} />
+            </button>
+            
+            <div className="space-y-6 pt-4">
+              <div className="bg-amber-50 rounded-3xl p-6 border border-amber-100">
+                <h2 className="text-xl font-bold text-amber-900 mb-4 flex items-center gap-2">
+                  <img src="https://upload.wikimedia.org/wikipedia/commons/e/e7/Instagram_logo_2016.svg" alt="Instagram" className="w-6 h-6" /> Síguenos en Instagram
+                </h2>
+                <p className="text-gray-700 text-sm mb-4">Entérate de todas nuestras novedades, sorteos y nuevos ingresos.</p>
+                <a 
+                  href="https://www.instagram.com/nuezapprio/" 
+                  target="_blank" 
+                  rel="noopener noreferrer"
+                  className="inline-flex items-center gap-2 bg-gradient-to-tr from-yellow-400 via-pink-500 to-purple-500 text-white px-6 py-3 rounded-full font-bold shadow-md hover:opacity-90 transition"
+                >
+                  @nuezapprio
+                </a>
+              </div>
+
+              <div className="bg-blue-50 rounded-3xl p-6 border border-blue-100">
+                <h2 className="text-xl font-bold text-blue-900 mb-4 flex items-center gap-2">
+                  <MapPin className="text-red-500" /> Nuestra Ubicación
+                </h2>
+                <p className="text-gray-700 text-sm mb-4 font-medium">Hipólito Yrigoyen y Sarmiento, Río Colorado.</p>
+                
+                <div className="flex flex-wrap gap-3 mb-5">
+                  <button 
+                    onClick={handleContactWhatsApp}
+                    className="inline-flex items-center gap-2 bg-[#25D366] text-white px-5 py-2.5 rounded-full font-bold shadow-sm hover:bg-[#20b858] transition"
+                  >
+                    <img src="https://upload.wikimedia.org/wikipedia/commons/6/6b/WhatsApp.svg" alt="WhatsApp" className="w-5 h-5 brightness-0 invert" />
+                    Escríbenos
+                  </button>
+                  <a 
+                    href="https://maps.google.com/?q=-38.9823136,-64.0898516" 
+                    target="_blank" 
+                    rel="noopener noreferrer"
+                    className="inline-flex items-center gap-2 bg-white text-blue-600 px-5 py-2.5 rounded-full font-bold shadow-sm hover:bg-blue-100 transition border border-blue-200"
+                  >
+                    <Map size={18} />
+                    Abrir en Maps
+                  </a>
+                </div>
+
+                <div className="w-full h-64 rounded-2xl overflow-hidden shadow-inner border border-blue-200">
+                  <iframe 
+                    src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3101.4423405788487!2d-64.0898516!3d-38.9823136!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x95edbce8b7a67b4b%3A0xc3f8373bc0b8c9d0!2sSarmiento%20%26%20Hip%C3%B3lito%20Yrigoyen%2C%20R%C3%ADo%20Colorado%2C%20R%C3%ADo%20Negro!5e0!3m2!1ses!2sar!4v1700000000000!5m2!1ses!2sar" 
+                    width="100%" 
+                    height="100%" 
+                    style={{ border: 0 }} 
+                    allowFullScreen={true} 
+                    loading="lazy" 
+                    referrerPolicy="no-referrer-when-downgrade"
+                  ></iframe>
+                </div>
+              </div>
+            </div>
           </div>
         </div>
       )}
