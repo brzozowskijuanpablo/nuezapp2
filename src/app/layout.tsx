@@ -1,15 +1,16 @@
 import type { Metadata } from "next";
-import { Inter, Playfair_Display } from "next/font/google";
+import { Epilogue, Prata } from "next/font/google";
 import "./globals.css";
 
-const inter = Inter({
+const epilogue = Epilogue({
   subsets: ["latin"],
-  variable: "--font-inter",
+  variable: "--font-epilogue",
 });
 
-const playfair = Playfair_Display({
+const prata = Prata({
+  weight: "400",
   subsets: ["latin"],
-  variable: "--font-playfair",
+  variable: "--font-prata",
 });
 
 export const metadata: Metadata = {
@@ -21,9 +22,9 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
   return (
     <html
       lang="es"
-      className={`${inter.variable} ${playfair.variable} h-full antialiased`}
+      className={`${epilogue.variable} ${prata.variable} h-full antialiased`}
     >
-      <body className="min-h-full flex flex-col font-sans bg-[#FAFAFA]">{children}</body>
+      <body className="min-h-full flex flex-col font-sans bg-[#FFFFFF]">{children}</body>
     </html>
   );
 }

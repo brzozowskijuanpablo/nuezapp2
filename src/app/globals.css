@@ -1,8 +1,14 @@
 @import "tailwindcss";
 
 @theme {
-  --font-sans: var(--font-inter), ui-sans-serif, system-ui, sans-serif;
-  --font-serif: var(--font-playfair), ui-serif, Georgia, serif;
+  --font-sans: var(--font-epilogue), ui-sans-serif, system-ui, sans-serif;
+  --font-serif: var(--font-prata), ui-serif, Georgia, serif;
+  
+  --color-brand: #CE6908;
+  --color-accent-yellow: #FBD023;
+  --color-accent-red: #DD3000;
+  --color-dark: #2B2118;
+  --color-medium-gray: #828282;
 }
 
 @layer utilities {

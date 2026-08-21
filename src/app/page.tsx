@@ -138,17 +138,17 @@ export default function Home() {
   if (!mounted) return null;
 
   return (
-    <div className="min-h-screen text-[#222222] bg-[#FAFAFA] font-sans selection:bg-[#B68C5E] selection:text-white">
+    <div className="min-h-screen text-[#2B2118] bg-white font-sans selection:bg-[#CE6908] selection:text-white">
       
       {/* Top Banner */}
-      <div className="bg-[#222] text-white text-xs font-semibold py-2 px-4 text-center tracking-wider">
+      <div className="bg-[#2B2118] text-white text-xs font-semibold py-2 px-4 text-center tracking-wider">
         DISFRUTÁ DE UN 10% OFF EN TU PRIMERA COMPRA — ENVÍOS A TODO EL PAÍS
       </div>
 
       {/* Header Minimalista */}
       <header className="bg-white px-6 py-4 flex justify-between items-center sticky top-0 z-40 border-b border-gray-100/50 shadow-[0_4px_20px_-15px_rgba(0,0,0,0.05)]">
         <div className="flex items-center gap-6">
-          <button onClick={() => setIsMenuOpen(true)} className="text-gray-900 hover:text-[#B68C5E] transition">
+          <button onClick={() => setIsMenuOpen(true)} className="text-gray-900 hover:text-[#CE6908] transition">
             <Menu size={24} strokeWidth={1.5} />
           </button>
           
@@ -166,13 +166,13 @@ export default function Home() {
         <div className="flex items-center gap-6">
           {/* Search Box Clean */}
           <div className="hidden md:flex relative items-center">
-            <Search className="absolute left-3 text-gray-400" size={16} strokeWidth={1.5} />
+            <Search className="absolute left-3 text-[#828282]" size={16} strokeWidth={1.5} />
             <input 
               type="text" 
               placeholder="Buscar productos..." 
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
-              className="pl-10 pr-4 py-2 bg-gray-50/50 border border-gray-200 rounded-full text-sm outline-none focus:border-[#B68C5E] transition-colors w-64"
+              className="pl-10 pr-4 py-2 bg-gray-50/50 border border-gray-200 rounded-full text-sm outline-none focus:border-[#CE6908] transition-colors w-64"
             />
           </div>
 
@@ -180,7 +180,7 @@ export default function Home() {
             {!user.isLoggedIn ? (
               <button 
                 onClick={() => setIsLoginModalOpen(true)}
-                className="text-gray-900 hover:text-[#B68C5E] transition hidden sm:flex items-center gap-2 text-sm font-medium"
+                className="text-gray-900 hover:text-[#CE6908] transition hidden sm:flex items-center gap-2 text-sm font-medium"
               >
                 Ingresar
               </button>
@@ -195,11 +195,11 @@ export default function Home() {
 
             <button 
               onClick={toggleCart}
-              className="relative text-gray-900 hover:text-[#B68C5E] transition"
+              className="relative text-gray-900 hover:text-[#CE6908] transition"
             >
               <ShoppingCart size={24} strokeWidth={1.5} />
               {getCartCount() > 0 && (
-                <span className="absolute -top-1.5 -right-2 bg-[#B68C5E] text-white text-[10px] font-bold w-4 h-4 flex items-center justify-center rounded-full">
+                <span className="absolute -top-1.5 -right-2 bg-[#CE6908] text-white text-[10px] font-bold w-4 h-4 flex items-center justify-center rounded-full">
                   {getCartCount()}
                 </span>
               )}
@@ -212,28 +212,28 @@ export default function Home() {
         
         {/* Search Mobile */}
         <div className="md:hidden relative mt-6 mb-4">
-          <Search className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400" size={18} strokeWidth={1.5} />
+          <Search className="absolute left-4 top-1/2 -translate-y-1/2 text-[#828282]" size={18} strokeWidth={1.5} />
           <input 
             type="text" 
             placeholder="Buscar productos..." 
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
-            className="w-full p-3 pl-12 bg-white border border-gray-200 rounded-full shadow-sm outline-none text-sm focus:border-[#B68C5E]"
+            className="w-full p-3 pl-12 bg-white border border-gray-200 rounded-full shadow-sm outline-none text-sm focus:border-[#CE6908]"
           />
         </div>
 
         {/* Hero Section Editorial */}
         <div className="mt-6 md:mt-10 bg-[#FAF7F2] rounded-2xl overflow-hidden flex flex-col md:flex-row shadow-sm border border-gray-100">
           <div className="md:w-1/2 p-10 md:p-16 flex flex-col justify-center order-2 md:order-1">
-            <span className="text-[#B68C5E] text-xs font-bold uppercase tracking-[0.2em] mb-4 block">NuezApp Store</span>
-            <h1 className="font-serif text-4xl md:text-5xl lg:text-6xl text-[#1A1A1A] leading-tight mb-6">
+            <span className="text-[#CE6908] text-xs font-bold uppercase tracking-[0.2em] mb-4 block">NuezApp Store</span>
+            <h1 className="font-serif text-4xl md:text-5xl lg:text-6xl text-[#2B2118] leading-tight mb-6">
               Eleva tu nutrición con un sabor atemporal.
             </h1>
-            <p className="text-gray-500 text-sm md:text-base mb-8 max-w-md leading-relaxed">
+            <p className="text-[#828282] text-sm md:text-base mb-8 max-w-md leading-relaxed">
               Descubre nuestra selección de frutos secos y productos saludables, pensados para quienes viven intensamente sin descuidar su bienestar.
             </p>
             <div>
-              <button onClick={() => document.getElementById('collection')?.scrollIntoView({ behavior: 'smooth' })} className="bg-[#1A1A1A] text-white px-8 py-3.5 rounded-full text-sm font-semibold hover:bg-[#333] transition shadow-lg">
+              <button onClick={() => document.getElementById('collection')?.scrollIntoView({ behavior: 'smooth' })} className="bg-[#2B2118] text-white px-8 py-3.5 rounded-full text-sm font-semibold hover:opacity-90 transition shadow-lg">
                 Ver Colección
               </button>
             </div>
@@ -257,7 +257,7 @@ export default function Home() {
         {/* Our Collection */}
         <section id="collection" className="mb-16">
           <div className="text-center mb-10">
-            <h2 className="font-serif text-3xl text-[#1A1A1A]">Nuestra Colección</h2>
+            <h2 className="font-serif text-3xl text-[#2B2118]">Nuestra Colección</h2>
           </div>
 
           {/* Categorías Clean Tabs */}
@@ -268,8 +268,8 @@ export default function Home() {
                 onClick={() => setActiveCategory(cat)}
                 className={`text-sm font-medium pb-4 border-b-2 transition-all ${
                   activeCategory === cat 
-                    ? 'border-[#1A1A1A] text-[#1A1A1A]' 
-                    : 'border-transparent text-gray-400 hover:text-gray-700'
+                    ? 'border-[#2B2118] text-[#2B2118]' 
+                    : 'border-transparent text-[#828282] hover:text-gray-700'
                 }`}
               >
                 {cat}
@@ -279,14 +279,14 @@ export default function Home() {
 
           {/* Product Grid (Editorial Style) */}
           {productsByCategory.length === 0 ? (
-            <div className="text-center py-20 text-gray-500">
+            <div className="text-center py-20 text-[#828282]">
               <p className="text-lg">No encontramos resultados</p>
             </div>
           ) : (
             productsByCategory.map((group) => (
               <div key={group.category} className="mb-12">
                 {activeCategory === "Todos" && (
-                  <h3 className="font-serif text-xl mb-6 border-l-2 border-[#B68C5E] pl-3">{group.category}</h3>
+                  <h3 className="font-serif text-xl mb-6 border-l-2 border-[#CE6908] pl-3">{group.category}</h3>
                 )}
                 
                 <div className="grid grid-cols-2 lg:grid-cols-4 gap-x-4 gap-y-10 sm:gap-x-6">
@@ -321,7 +321,7 @@ export default function Home() {
                             ) : (
                               <button 
                                 onClick={() => addItem(p)}
-                                className="w-full bg-[#1A1A1A] text-white py-3 rounded-full text-xs font-semibold tracking-wider hover:bg-[#333] transition shadow-lg flex items-center justify-center gap-2"
+                                className="w-full bg-[#2B2118] text-white py-3 rounded-full text-xs font-semibold tracking-wider hover:opacity-90 transition shadow-lg flex items-center justify-center gap-2"
                               >
                                 COMPRAR <ShoppingCart size={14} />
                               </button>
@@ -330,12 +330,12 @@ export default function Home() {
                         </div>
                         
                         <div>
-                          <p className="text-xs text-gray-500 mb-1">{p.category}</p>
-                          <h3 className="font-medium text-[13px] leading-relaxed text-[#1A1A1A] line-clamp-2 pr-2" title={p.name}>
+                          <p className="text-xs text-[#828282] mb-1">{p.category}</p>
+                          <h3 className="font-medium text-[13px] leading-relaxed text-[#2B2118] line-clamp-2 pr-2" title={p.name}>
                             {p.name}
                           </h3>
                           <div className="mt-2 flex items-center justify-between">
-                            <p className="font-bold text-sm text-[#1A1A1A]">${p.price.toLocaleString("es-AR")}</p>
+                            <p className="font-bold text-sm text-[#2B2118]">${p.price.toLocaleString("es-AR")}</p>
                           </div>
                         </div>
                       </div>
@@ -349,7 +349,7 @@ export default function Home() {
 
         {/* Promo Banner Split */}
         <div className="mb-16 grid md:grid-cols-2 gap-0 rounded-2xl overflow-hidden shadow-sm">
-          <div className="bg-[#B68C5E] text-white p-10 md:p-16 flex flex-col justify-center text-center md:text-left">
+          <div className="bg-[#CE6908] text-white p-10 md:p-16 flex flex-col justify-center text-center md:text-left">
             <h2 className="font-serif text-3xl md:text-4xl mb-4 leading-tight">Tu satisfacción es nuestra prioridad.</h2>
             <p className="text-amber-50 text-sm md:text-base opacity-90 max-w-sm mx-auto md:mx-0">
               Estamos aquí para entregarte la mejor experiencia. Calidad premium en cada grano.
@@ -363,8 +363,8 @@ export default function Home() {
         {/* Instagram Visual Layout */}
         <section className="mb-16">
           <div className="text-center mb-10">
-            <h2 className="font-serif text-3xl text-[#1A1A1A] mb-2">Social Feed</h2>
-            <p className="text-sm text-gray-500">Últimas Novedades en NuezApp</p>
+            <h2 className="font-serif text-3xl text-[#2B2118] mb-2">Social Feed</h2>
+            <p className="text-sm text-[#828282]">Últimas Novedades en NuezApp</p>
           </div>
           
           <div className="grid grid-cols-2 md:grid-cols-5 gap-1 mb-8">
@@ -383,10 +383,10 @@ export default function Home() {
         <section className="mb-20">
           <div className="mb-8 flex justify-between items-end">
             <div>
-              <h2 className="font-serif text-3xl text-[#1A1A1A] mb-2">Recetas & Bienestar</h2>
-              <p className="text-sm text-gray-500 max-w-sm">Inspiración saludable para tu día a día.</p>
+              <h2 className="font-serif text-3xl text-[#2B2118] mb-2">Recetas & Bienestar</h2>
+              <p className="text-sm text-[#828282] max-w-sm">Inspiración saludable para tu día a día.</p>
             </div>
-            <a href="#" className="hidden md:flex text-xs font-bold uppercase tracking-widest text-[#B68C5E] border-b border-[#B68C5E]">Ver Todos</a>
+            <a href="#" className="hidden md:flex text-xs font-bold uppercase tracking-widest text-[#CE6908] border-b border-[#CE6908]">Ver Todos</a>
           </div>
 
           <div className="flex gap-4 overflow-x-auto pb-4 scrollbar-hide snap-x">
@@ -405,8 +405,8 @@ export default function Home() {
                     <PlayCircle className="text-white" size={48} strokeWidth={1} />
                   </div>
                 </div>
-                <p className="text-[10px] uppercase font-bold text-gray-400 tracking-wider mb-1">{video.tag}</p>
-                <h3 className="font-serif text-lg leading-tight text-[#1A1A1A] group-hover:text-[#B68C5E] transition-colors line-clamp-2">
+                <p className="text-[10px] uppercase font-bold text-[#828282] tracking-wider mb-1">{video.tag}</p>
+                <h3 className="font-serif text-lg leading-tight text-[#2B2118] group-hover:text-[#CE6908] transition-colors line-clamp-2">
                   {video.title}
                 </h3>
               </a>
@@ -420,12 +420,12 @@ export default function Home() {
       <footer className="bg-white border-t border-gray-100 py-12 px-6">
         <div className="max-w-7xl mx-auto flex flex-col md:flex-row justify-between items-center gap-6">
           <div className="font-serif text-2xl tracking-widest font-bold">INFINITY</div>
-          <div className="flex gap-6 text-sm text-gray-500">
+          <div className="flex gap-6 text-sm text-[#828282]">
             <button onClick={() => setIsContactOpen(true)} className="hover:text-gray-900 transition">Ubicación</button>
             <a href="https://www.instagram.com/nuezapprio/" className="hover:text-gray-900 transition">Instagram</a>
             <button onClick={handleContactWhatsApp} className="hover:text-gray-900 transition">Soporte</button>
           </div>
-          <p className="text-xs text-gray-400">&copy; 2026 Infinity. Todos los derechos reservados.</p>
+          <p className="text-xs text-[#828282]">&copy; 2026 Infinity. Todos los derechos reservados.</p>
         </div>
       </footer>
 
@@ -436,7 +436,7 @@ export default function Home() {
           <div className="relative w-[300px] max-w-[85vw] bg-white h-full flex flex-col shadow-2xl animate-in slide-in-from-left duration-300">
             <div className="p-6 border-b border-gray-100 flex justify-between items-center">
               <div className="font-serif text-xl font-bold tracking-widest">INFINITY</div>
-              <button onClick={() => setIsMenuOpen(false)} className="text-gray-400 hover:text-black transition">
+              <button onClick={() => setIsMenuOpen(false)} className="text-[#828282] hover:text-black transition">
                 <X size={20} strokeWidth={1.5} />
               </button>
             </div>
@@ -444,8 +444,8 @@ export default function Home() {
             <div className="p-6 bg-gray-50/50 mb-4 border-b border-gray-100">
               {user.isLoggedIn ? (
                 <div>
-                  <p className="font-medium text-[#1A1A1A] text-lg">{user.name}</p>
-                  <p className="text-gray-500 text-xs">{user.email}</p>
+                  <p className="font-medium text-[#2B2118] text-lg">{user.name}</p>
+                  <p className="text-[#828282] text-xs">{user.email}</p>
                 </div>
               ) : (
                 <button onClick={() => {setIsMenuOpen(false); setIsLoginModalOpen(true);}} className="text-sm font-semibold border-b border-gray-900 pb-0.5">
@@ -455,20 +455,20 @@ export default function Home() {
             </div>
 
             <nav className="flex-1 px-6 space-y-6">
-              <button onClick={() => {setIsMenuOpen(false); document.getElementById('collection')?.scrollIntoView({ behavior: 'smooth' });}} className="block text-left text-[#1A1A1A] font-serif text-2xl hover:text-[#B68C5E] transition">
+              <button onClick={() => {setIsMenuOpen(false); document.getElementById('collection')?.scrollIntoView({ behavior: 'smooth' });}} className="block text-left text-[#2B2118] font-serif text-2xl hover:text-[#CE6908] transition">
                 Catálogo
               </button>
-              <button onClick={() => {setIsMenuOpen(false); toggleCart();}} className="block text-left text-[#1A1A1A] font-serif text-2xl hover:text-[#B68C5E] transition">
+              <button onClick={() => {setIsMenuOpen(false); toggleCart();}} className="block text-left text-[#2B2118] font-serif text-2xl hover:text-[#CE6908] transition">
                 Mi Carrito
               </button>
-              <button onClick={() => {setIsMenuOpen(false); setIsContactOpen(true);}} className="block text-left text-[#1A1A1A] font-serif text-2xl hover:text-[#B68C5E] transition">
+              <button onClick={() => {setIsMenuOpen(false); setIsContactOpen(true);}} className="block text-left text-[#2B2118] font-serif text-2xl hover:text-[#CE6908] transition">
                 Contacto
               </button>
             </nav>
 
             <div className="p-6">
               {user.isLoggedIn && (
-                <button onClick={() => {logout(); setIsMenuOpen(false);}} className="flex items-center gap-2 text-gray-400 hover:text-red-500 text-sm font-medium transition">
+                <button onClick={() => {logout(); setIsMenuOpen(false);}} className="flex items-center gap-2 text-[#828282] hover:text-red-500 text-sm font-medium transition">
                   <LogOut size={16} /> Cerrar Sesión
                 </button>
               )}
@@ -484,8 +484,8 @@ export default function Home() {
           
           <div className="relative w-full max-w-md bg-white h-full flex flex-col shadow-2xl animate-in slide-in-from-right duration-300">
             <div className="p-6 border-b border-gray-100 flex justify-between items-center">
-              <h2 className="font-serif text-2xl text-[#1A1A1A]">Mi Bolsa</h2>
-              <button onClick={toggleCart} className="text-gray-400 hover:text-black transition">
+              <h2 className="font-serif text-2xl text-[#2B2118]">Mi Bolsa</h2>
+              <button onClick={toggleCart} className="text-[#828282] hover:text-black transition">
                 <X size={20} strokeWidth={1.5} />
               </button>
             </div>
@@ -494,8 +494,8 @@ export default function Home() {
               {items.length === 0 ? (
                 <div className="h-full flex flex-col items-center justify-center text-center">
                   <ShoppingCart size={48} strokeWidth={1} className="text-gray-200 mb-4" />
-                  <p className="text-gray-500 text-sm">Tu bolsa de compras está vacía.</p>
-                  <button onClick={toggleCart} className="mt-6 border border-[#1A1A1A] text-[#1A1A1A] px-8 py-3 text-xs font-bold tracking-widest uppercase hover:bg-gray-50 transition">
+                  <p className="text-[#828282] text-sm">Tu bolsa de compras está vacía.</p>
+                  <button onClick={toggleCart} className="mt-6 border border-[#2B2118] text-[#2B2118] px-8 py-3 text-xs font-bold tracking-widest uppercase hover:bg-gray-50 transition">
                     Ver Productos
                   </button>
                 </div>
@@ -507,25 +507,25 @@ export default function Home() {
                         <img src={item.image} alt={item.name} className="w-full h-full object-cover" />
                       </div>
                       <div className="flex-1 min-w-0">
-                        <h4 className="font-medium text-sm leading-tight text-[#1A1A1A] mb-1 line-clamp-2">{item.name}</h4>
-                        <div className="text-gray-500 text-sm mb-2">${item.price.toLocaleString("es-AR")} c/u</div>
+                        <h4 className="font-medium text-sm leading-tight text-[#2B2118] mb-1 line-clamp-2">{item.name}</h4>
+                        <div className="text-[#828282] text-sm mb-2">${item.price.toLocaleString("es-AR")} c/u</div>
                         
                         <div className="flex items-center gap-4">
                           <div className="flex items-center border border-gray-200">
-                            <button onClick={() => updateQuantity(item.id, item.quantity - 1)} className="p-1 px-2 text-gray-500 hover:text-black">
+                            <button onClick={() => updateQuantity(item.id, item.quantity - 1)} className="p-1 px-2 text-[#828282] hover:text-black">
                               <Minus size={12} />
                             </button>
                             <span className="text-xs font-semibold w-6 text-center">{item.quantity}</span>
-                            <button onClick={() => addItem(item)} className="p-1 px-2 text-gray-500 hover:text-black">
+                            <button onClick={() => addItem(item)} className="p-1 px-2 text-[#828282] hover:text-black">
                               <Plus size={12} />
                             </button>
                           </div>
-                          <button onClick={() => removeItem(item.id)} className="text-xs text-gray-400 underline hover:text-red-500 transition">
+                          <button onClick={() => removeItem(item.id)} className="text-xs text-[#828282] underline hover:text-red-500 transition">
                             Remover
                           </button>
                         </div>
                       </div>
-                      <div className="text-right self-start font-bold text-sm text-[#1A1A1A]">
+                      <div className="text-right self-start font-bold text-sm text-[#2B2118]">
                         ${(item.price * item.quantity).toLocaleString("es-AR")}
                       </div>
                     </li>
@@ -538,11 +538,11 @@ export default function Home() {
               <div className="p-6 bg-gray-50 border-t border-gray-100">
                 <div className="flex justify-between items-center mb-6">
                   <span className="text-sm font-medium text-gray-600">Subtotal</span>
-                  <span className="font-serif text-2xl text-[#1A1A1A]">${getCartTotal().toLocaleString("es-AR")}</span>
+                  <span className="font-serif text-2xl text-[#2B2118]">${getCartTotal().toLocaleString("es-AR")}</span>
                 </div>
                 <button 
                   onClick={handleCheckout}
-                  className="w-full bg-[#1A1A1A] text-white py-4 text-xs font-bold tracking-widest uppercase hover:bg-[#333] transition flex justify-center items-center gap-2"
+                  className="w-full bg-[#2B2118] text-white py-4 text-xs font-bold tracking-widest uppercase hover:opacity-90 transition flex justify-center items-center gap-2"
                 >
                   Confirmar Pedido <img src="https://upload.wikimedia.org/wikipedia/commons/6/6b/WhatsApp.svg" alt="WhatsApp" className="w-4 h-4 brightness-0 invert opacity-80" />
                 </button>
@@ -557,13 +557,13 @@ export default function Home() {
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
           <div className="absolute inset-0 bg-black/40 backdrop-blur-sm transition-opacity" onClick={() => setIsLoginModalOpen(false)} />
           <div className="relative bg-white w-full max-w-md p-8 shadow-2xl animate-in fade-in zoom-in-95 duration-200">
-            <button onClick={() => setIsLoginModalOpen(false)} className="absolute top-4 right-4 text-gray-400 hover:text-black transition">
+            <button onClick={() => setIsLoginModalOpen(false)} className="absolute top-4 right-4 text-[#828282] hover:text-black transition">
               <X size={20} strokeWidth={1.5} />
             </button>
             
             <div className="text-center mb-8">
-              <h3 className="font-serif text-3xl text-[#1A1A1A] mb-2">Bienvenido</h3>
-              <p className="text-gray-500 text-sm">Inicia sesión para una experiencia de compra más fluida.</p>
+              <h3 className="font-serif text-3xl text-[#2B2118] mb-2">Bienvenido</h3>
+              <p className="text-[#828282] text-sm">Inicia sesión para una experiencia de compra más fluida.</p>
             </div>
 
             <div className="space-y-3 mb-8">
@@ -575,16 +575,16 @@ export default function Home() {
 
             <div className="relative flex items-center mb-6">
               <div className="flex-grow border-t border-gray-200"></div>
-              <span className="mx-4 text-gray-400 text-xs font-semibold uppercase tracking-widest">Datos manuales</span>
+              <span className="mx-4 text-[#828282] text-xs font-semibold uppercase tracking-widest">Datos manuales</span>
               <div className="flex-grow border-t border-gray-200"></div>
             </div>
 
             <form onSubmit={handleLoginSubmit} className="space-y-4">
-              <input required type="text" value={formData.name} onChange={e => setFormData({...formData, name: e.target.value})} className="w-full p-3 bg-gray-50 border-none rounded-none outline-none focus:ring-1 focus:ring-[#1A1A1A] text-sm" placeholder="Nombre completo" />
-              <input required type="email" value={formData.email} onChange={e => setFormData({...formData, email: e.target.value})} className="w-full p-3 bg-gray-50 border-none rounded-none outline-none focus:ring-1 focus:ring-[#1A1A1A] text-sm" placeholder="Correo electrónico" />
-              <input required type="tel" value={formData.phone} onChange={e => setFormData({...formData, phone: e.target.value})} className="w-full p-3 bg-gray-50 border-none rounded-none outline-none focus:ring-1 focus:ring-[#1A1A1A] text-sm" placeholder="Teléfono" />
-              <input required type="text" value={formData.address} onChange={e => setFormData({...formData, address: e.target.value})} className="w-full p-3 bg-gray-50 border-none rounded-none outline-none focus:ring-1 focus:ring-[#1A1A1A] text-sm" placeholder="Dirección de envío" />
-              <button type="submit" className="w-full bg-[#1A1A1A] text-white text-xs font-bold tracking-widest uppercase py-4 hover:bg-[#333] transition mt-2">
+              <input required type="text" value={formData.name} onChange={e => setFormData({...formData, name: e.target.value})} className="w-full p-3 bg-gray-50 border-none rounded-none outline-none focus:ring-1 focus:ring-[#2B2118] text-sm" placeholder="Nombre completo" />
+              <input required type="email" value={formData.email} onChange={e => setFormData({...formData, email: e.target.value})} className="w-full p-3 bg-gray-50 border-none rounded-none outline-none focus:ring-1 focus:ring-[#2B2118] text-sm" placeholder="Correo electrónico" />
+              <input required type="tel" value={formData.phone} onChange={e => setFormData({...formData, phone: e.target.value})} className="w-full p-3 bg-gray-50 border-none rounded-none outline-none focus:ring-1 focus:ring-[#2B2118] text-sm" placeholder="Teléfono" />
+              <input required type="text" value={formData.address} onChange={e => setFormData({...formData, address: e.target.value})} className="w-full p-3 bg-gray-50 border-none rounded-none outline-none focus:ring-1 focus:ring-[#2B2118] text-sm" placeholder="Dirección de envío" />
+              <button type="submit" className="w-full bg-[#2B2118] text-white text-xs font-bold tracking-widest uppercase py-4 hover:opacity-90 transition mt-2">
                 Guardar y Continuar
               </button>
             </form>
@@ -597,13 +597,13 @@ export default function Home() {
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
           <div className="absolute inset-0 bg-black/40 backdrop-blur-sm transition-opacity" onClick={() => setIsContactOpen(false)} />
           <div className="relative bg-white w-full max-w-3xl p-8 shadow-2xl animate-in fade-in zoom-in-95 duration-200 flex flex-col md:flex-row gap-8">
-            <button onClick={() => setIsContactOpen(false)} className="absolute top-4 right-4 text-gray-400 hover:text-black transition z-10">
+            <button onClick={() => setIsContactOpen(false)} className="absolute top-4 right-4 text-[#828282] hover:text-black transition z-10">
               <X size={20} strokeWidth={1.5} />
             </button>
             
             <div className="md:w-1/2 flex flex-col justify-center">
-              <h2 className="font-serif text-3xl text-[#1A1A1A] mb-4">Nuestra Ubicación</h2>
-              <p className="text-gray-500 text-sm mb-8 leading-relaxed">
+              <h2 className="font-serif text-3xl text-[#2B2118] mb-4">Nuestra Ubicación</h2>
+              <p className="text-[#828282] text-sm mb-8 leading-relaxed">
                 Visítanos en nuestra tienda física para disfrutar de la experiencia completa y degustar nuestros productos frescos.
                 <br /><br />
                 <strong>Hipólito Yrigoyen y Sarmiento</strong><br />
@@ -611,10 +611,10 @@ export default function Home() {
               </p>
               
               <div className="flex flex-col gap-3">
-                <button onClick={handleContactWhatsApp} className="w-full bg-[#1A1A1A] text-white text-xs font-bold tracking-widest uppercase py-4 hover:bg-[#333] transition flex justify-center items-center gap-2">
+                <button onClick={handleContactWhatsApp} className="w-full bg-[#2B2118] text-white text-xs font-bold tracking-widest uppercase py-4 hover:opacity-90 transition flex justify-center items-center gap-2">
                   Escríbenos <img src="https://upload.wikimedia.org/wikipedia/commons/6/6b/WhatsApp.svg" alt="WhatsApp" className="w-4 h-4 brightness-0 invert" />
                 </button>
-                <a href="https://maps.google.com/?q=-38.99355688461547,-64.09578943096835" target="_blank" rel="noopener noreferrer" className="w-full border border-gray-300 text-[#1A1A1A] text-xs font-bold tracking-widest uppercase py-4 hover:bg-gray-50 transition text-center flex items-center justify-center gap-2">
+                <a href="https://maps.google.com/?q=-38.99355688461547,-64.09578943096835" target="_blank" rel="noopener noreferrer" className="w-full border border-gray-300 text-[#2B2118] text-xs font-bold tracking-widest uppercase py-4 hover:bg-gray-50 transition text-center flex items-center justify-center gap-2">
                   Abrir en Google Maps
                 </a>
               </div>
