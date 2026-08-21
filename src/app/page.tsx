@@ -6,7 +6,8 @@ import useEmblaCarousel from 'embla-carousel-react';
 import Autoplay from 'embla-carousel-autoplay';
 import { 
   X, Plus, Minus, Trash2, ShoppingCart, Search, 
-  MapPin, Menu, User, LogOut, ChevronRight, PlayCircle
+  MapPin, Menu, User, LogOut, ChevronRight, PlayCircle,
+  Package, Clock, CheckCircle2, AlertCircle, ShoppingBag
 } from "lucide-react";
 
 // Mocks & Constants
@@ -68,19 +69,31 @@ export default function Home() {
   const [isContactOpen, setIsContactOpen] = useState(false);
   const [isBannerVisible, setIsBannerVisible] = useState(true);
   
-  const [formData, setFormData] = useState({ name: "", email: "", phone: "", address: "" });
+  // Auth Form State
+  const [authMode, setAuthMode] = useState<"login" | "register">("login");
+  const [authError, setAuthError] = useState("");
+  const [authLoading, setAuthLoading] = useState(false);
+  const [authForm, setAuthForm] = useState({
+    name: "",
+    email: "",
+    password: "",
+    phone: "",
+    address: ""
+  });
 
   const { 
     items, isCartOpen, toggleCart, addItem, 
     removeItem, updateQuantity, getCartTotal, getCartCount,
-    user, setUser, logout
+    user, logout, login, register, restoreSession,
+    isOrdersOpen, toggleOrders, orders, fetchOrders, saveOrder, isLoadingOrders
   } = useCartStore();
 
   const [emblaRef] = useEmblaCarousel({ loop: true }, [Autoplay({ delay: 4500 })]);
 
   useEffect(() => {
     setMounted(true);
-  }, []);
+    restoreSession();
+  }, [restoreSession]);
 
   const [visibleCount, setVisibleCount] = useState(24);
 
@@ -115,9 +128,15 @@ export default function Home() {
     }));
   }, [displayedProducts]);
 
-  const handleCheckout = () => {
+  const handleCheckout = async () => {
     if (items.length === 0) return;
     
+    // Guardar pedido en base de datos
+    await saveOrder({
+      shippingAddress: user.address,
+      phone: user.phone
+    });
+
     let message = "Hola NuezApp! Quiero hacer el siguiente pedido:\n\n";
     items.forEach(item => {
       message += `- ${item.quantity}x ${item.name} ($${(item.price * item.quantity).toLocaleString("es-AR")})\n`;
@@ -132,10 +151,40 @@ export default function Home() {
     window.open(whatsappUrl, '_blank');
   };
 
-  const handleLoginSubmit = (e: React.FormEvent) => {
+  const handleAuthSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    setUser(formData);
-    setIsLoginModalOpen(false);
+    setAuthError("");
+    setAuthLoading(true);
+
+    try {
+      if (authMode === "login") {
+        const res = await login(authForm.email, authForm.password);
+        if (!res.success) {
+          setAuthError(res.error || "Error al iniciar sesión");
+          setAuthLoading(false);
+          return;
+        }
+      } else {
+        const res = await register({
+          name: authForm.name,
+          email: authForm.email,
+          password: authForm.password,
+          phone: authForm.phone,
+          address: authForm.address
+        });
+        if (!res.success) {
+          setAuthError(res.error || "Error al registrar usuario");
+          setAuthLoading(false);
+          return;
+        }
+      }
+      setIsLoginModalOpen(false);
+      setAuthForm({ name: "", email: "", password: "", phone: "", address: "" });
+    } catch (err) {
+      setAuthError("Ocurrió un error inesperado");
+    } finally {
+      setAuthLoading(false);
+    }
   };
 
   const handleContactWhatsApp = () => {
@@ -200,19 +249,27 @@ export default function Home() {
           </div>
 
           <div className="flex items-center gap-4">
-            {!user.isLoggedIn ? (
+            {user.isLoggedIn ? (
+              <div className="hidden sm:flex items-center gap-3">
+                <button 
+                  onClick={toggleOrders}
+                  className="text-xs font-semibold text-[#675B37] hover:text-[#2B2118] bg-[#675B37]/10 px-3 py-1.5 rounded-full flex items-center gap-1.5 transition"
+                >
+                  <Package size={14} /> Mis Pedidos
+                </button>
+                <button 
+                  onClick={() => setIsMenuOpen(true)}
+                  className="text-sm font-medium border-b border-gray-900 pb-0.5 hover:text-[#CE6908] transition"
+                >
+                  Hola, {user.name.split(' ')[0]}
+                </button>
+              </div>
+            ) : (
               <button 
-                onClick={() => setIsLoginModalOpen(true)}
+                onClick={() => { setAuthMode("login"); setAuthError(""); setIsLoginModalOpen(true); }}
                 className="text-gray-900 hover:text-[#CE6908] transition hidden sm:flex items-center gap-2 text-sm font-medium"
               >
                 Ingresar
-              </button>
-            ) : (
-              <button 
-                onClick={() => setIsMenuOpen(true)}
-                className="text-sm font-medium border-b border-gray-900 pb-0.5"
-              >
-                Hola, {user.name.split(' ')[0]}
               </button>
             )}
 
@@ -498,6 +555,12 @@ export default function Home() {
               <button onClick={() => {setIsMenuOpen(false); toggleCart();}} className="block text-left text-[#2B2118] font-serif text-2xl hover:text-[#CE6908] transition">
                 Mi Carrito
               </button>
+              {user.isLoggedIn && (
+                <button onClick={() => {setIsMenuOpen(false); toggleOrders();}} className="block text-left text-[#2B2118] font-serif text-2xl hover:text-[#CE6908] transition flex items-center justify-between w-full">
+                  <span>Mis Pedidos</span>
+                  <Package size={20} className="text-[#675B37]" />
+                </button>
+              )}
               <button onClick={() => {setIsMenuOpen(false); setIsContactOpen(true);}} className="block text-left text-[#2B2118] font-serif text-2xl hover:text-[#CE6908] transition">
                 Contacto
               </button>
@@ -589,7 +652,7 @@ export default function Home() {
         </div>
       )}
 
-      {/* Login Modal (Rediseñado) */}
+      {/* Auth Modal (Login / Register con SQLite) */}
       {isLoginModalOpen && (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
           <div className="absolute inset-0 bg-black/40 backdrop-blur-sm transition-opacity" onClick={() => setIsLoginModalOpen(false)} />
@@ -598,33 +661,190 @@ export default function Home() {
               <X size={20} strokeWidth={1.5} />
             </button>
             
-            <div className="text-center mb-8">
-              <h3 className="font-serif text-3xl text-[#2B2118] mb-2">Bienvenido</h3>
-              <p className="text-[#828282] text-sm">Inicia sesión para una experiencia de compra más fluida.</p>
+            <div className="text-center mb-6">
+              <h3 className="font-serif text-3xl text-[#2B2118] mb-2">
+                {authMode === "login" ? "Bienvenido" : "Crear Cuenta"}
+              </h3>
+              <p className="text-[#828282] text-sm">
+                {authMode === "login" 
+                  ? "Inicia sesión para guardar tu carrito y ver tus pedidos anteriores." 
+                  : "Regístrate para guardar tu carrito y tener historial de pedidos."}
+              </p>
             </div>
 
-            <div className="space-y-3 mb-8">
-              <button type="button" onClick={() => setFormData({...formData, name: "Juan Pablo", email: "juan@example.com"})} className="w-full flex items-center justify-center gap-3 border border-gray-200 text-gray-700 text-sm font-medium py-3 hover:bg-gray-50 transition">
-                <img src="https://upload.wikimedia.org/wikipedia/commons/c/c1/Google_%22G%22_logo.svg" className="w-4 h-4" alt="Google" />
-                Continuar con Google
+            {/* Selector de modo Login / Register */}
+            <div className="flex border-b border-gray-200 mb-6">
+              <button
+                type="button"
+                onClick={() => { setAuthMode("login"); setAuthError(""); }}
+                className={`flex-1 pb-3 text-sm font-semibold transition border-b-2 ${
+                  authMode === "login" 
+                    ? "border-[#675B37] text-[#675B37]" 
+                    : "border-transparent text-gray-400 hover:text-gray-600"
+                }`}
+              >
+                Iniciar Sesión
+              </button>
+              <button
+                type="button"
+                onClick={() => { setAuthMode("register"); setAuthError(""); }}
+                className={`flex-1 pb-3 text-sm font-semibold transition border-b-2 ${
+                  authMode === "register" 
+                    ? "border-[#675B37] text-[#675B37]" 
+                    : "border-transparent text-gray-400 hover:text-gray-600"
+                }`}
+              >
+                Registrarse
               </button>
             </div>
 
-            <div className="relative flex items-center mb-6">
-              <div className="flex-grow border-t border-gray-200"></div>
-              <span className="mx-4 text-[#828282] text-xs font-semibold uppercase tracking-widest">Datos manuales</span>
-              <div className="flex-grow border-t border-gray-200"></div>
-            </div>
+            {authError && (
+              <div className="mb-4 p-3 bg-red-50 border border-red-200 text-red-700 text-xs rounded flex items-center gap-2">
+                <AlertCircle size={16} className="shrink-0" />
+                <span>{authError}</span>
+              </div>
+            )}
 
-            <form onSubmit={handleLoginSubmit} className="space-y-4">
-              <input required type="text" value={formData.name} onChange={e => setFormData({...formData, name: e.target.value})} className="w-full p-3 bg-gray-50 border-none rounded-none outline-none focus:ring-1 focus:ring-[#2B2118] text-sm" placeholder="Nombre completo" />
-              <input required type="email" value={formData.email} onChange={e => setFormData({...formData, email: e.target.value})} className="w-full p-3 bg-gray-50 border-none rounded-none outline-none focus:ring-1 focus:ring-[#2B2118] text-sm" placeholder="Correo electrónico" />
-              <input required type="tel" value={formData.phone} onChange={e => setFormData({...formData, phone: e.target.value})} className="w-full p-3 bg-gray-50 border-none rounded-none outline-none focus:ring-1 focus:ring-[#2B2118] text-sm" placeholder="Teléfono" />
-              <input required type="text" value={formData.address} onChange={e => setFormData({...formData, address: e.target.value})} className="w-full p-3 bg-gray-50 border-none rounded-none outline-none focus:ring-1 focus:ring-[#2B2118] text-sm" placeholder="Dirección de envío" />
-              <button type="submit" className="w-full bg-[#2B2118] text-white text-xs font-bold tracking-widest uppercase py-4 hover:opacity-90 transition mt-2">
-                Guardar y Continuar
+            <form onSubmit={handleAuthSubmit} className="space-y-3.5">
+              {authMode === "register" && (
+                <div>
+                  <label className="block text-xs font-semibold text-gray-600 mb-1">Nombre Completo *</label>
+                  <input 
+                    required 
+                    type="text" 
+                    value={authForm.name} 
+                    onChange={e => setAuthForm({...authForm, name: e.target.value})} 
+                    className="w-full p-3 bg-gray-50 border border-gray-200 text-sm outline-none focus:border-[#675B37] transition" 
+                    placeholder="Ej: Juan Pérez" 
+                  />
+                </div>
+              )}
+
+              <div>
+                <label className="block text-xs font-semibold text-gray-600 mb-1">Correo Electrónico *</label>
+                <input 
+                  required 
+                  type="email" 
+                  value={authForm.email} 
+                  onChange={e => setAuthForm({...authForm, email: e.target.value})} 
+                  className="w-full p-3 bg-gray-50 border border-gray-200 text-sm outline-none focus:border-[#675B37] transition" 
+                  placeholder="tu@email.com" 
+                />
+              </div>
+
+              <div>
+                <label className="block text-xs font-semibold text-gray-600 mb-1">Contraseña *</label>
+                <input 
+                  required 
+                  type="password" 
+                  value={authForm.password} 
+                  onChange={e => setAuthForm({...authForm, password: e.target.value})} 
+                  className="w-full p-3 bg-gray-50 border border-gray-200 text-sm outline-none focus:border-[#675B37] transition" 
+                  placeholder="••••••••" 
+                />
+              </div>
+
+              {authMode === "register" && (
+                <>
+                  <div>
+                    <label className="block text-xs font-semibold text-gray-600 mb-1">Teléfono / WhatsApp</label>
+                    <input 
+                      type="tel" 
+                      value={authForm.phone} 
+                      onChange={e => setAuthForm({...authForm, phone: e.target.value})} 
+                      className="w-full p-3 bg-gray-50 border border-gray-200 text-sm outline-none focus:border-[#675B37] transition" 
+                      placeholder="Ej: +54 9 2931 123456" 
+                    />
+                  </div>
+
+                  <div>
+                    <label className="block text-xs font-semibold text-gray-600 mb-1">Dirección de Entrega</label>
+                    <input 
+                      type="text" 
+                      value={authForm.address} 
+                      onChange={e => setAuthForm({...authForm, address: e.target.value})} 
+                      className="w-full p-3 bg-gray-50 border border-gray-200 text-sm outline-none focus:border-[#675B37] transition" 
+                      placeholder="Calle, número, piso/depto" 
+                    />
+                  </div>
+                </>
+              )}
+
+              <button 
+                type="submit" 
+                disabled={authLoading}
+                className="w-full bg-[#675B37] text-white text-xs font-bold tracking-widest uppercase py-4 hover:bg-[#2B2118] transition mt-4 flex items-center justify-center gap-2 disabled:opacity-50"
+              >
+                {authLoading ? "Procesando..." : (authMode === "login" ? "Entrar a mi Cuenta" : "Crear mi Cuenta")}
               </button>
             </form>
+          </div>
+        </div>
+      )}
+
+      {/* Orders Drawer (Mis Pedidos) */}
+      {isOrdersOpen && (
+        <div className="fixed inset-0 z-50 flex justify-end">
+          <div className="absolute inset-0 bg-black/40 backdrop-blur-sm transition-opacity" onClick={toggleOrders} />
+          
+          <div className="relative w-full max-w-md bg-white h-full flex flex-col shadow-2xl animate-in slide-in-from-right duration-300">
+            <div className="p-6 border-b border-gray-100 flex justify-between items-center bg-gray-50/50">
+              <div className="flex items-center gap-2">
+                <Package className="text-[#675B37]" size={22} />
+                <h2 className="font-serif text-2xl text-[#2B2118]">Mis Pedidos</h2>
+              </div>
+              <button onClick={toggleOrders} className="text-[#828282] hover:text-black transition">
+                <X size={20} strokeWidth={1.5} />
+              </button>
+            </div>
+            
+            <div className="flex-1 overflow-y-auto p-6 bg-white space-y-4">
+              {isLoadingOrders ? (
+                <div className="text-center py-12 text-gray-400">
+                  <Clock className="w-8 h-8 animate-spin mx-auto mb-2 text-[#675B37]" />
+                  <p className="text-sm">Cargando tus pedidos...</p>
+                </div>
+              ) : orders.length === 0 ? (
+                <div className="h-full flex flex-col items-center justify-center text-center py-16">
+                  <ShoppingBag size={48} strokeWidth={1} className="text-gray-200 mb-4" />
+                  <h3 className="font-serif text-xl text-[#2B2118] mb-1">Sin pedidos registrados</h3>
+                  <p className="text-[#828282] text-sm max-w-xs">Aún no has realizado compras con tu cuenta.</p>
+                  <button onClick={() => { toggleOrders(); document.getElementById('collection')?.scrollIntoView({ behavior: 'smooth' }); }} className="mt-6 bg-[#675B37] text-white px-6 py-3 text-xs font-bold tracking-widest uppercase hover:bg-[#2B2118] transition">
+                    Ver Catálogo
+                  </button>
+                </div>
+              ) : (
+                orders.map((order) => (
+                  <div key={order.id} className="border border-gray-200 rounded-lg p-5 hover:border-[#675B37] transition bg-white shadow-sm">
+                    <div className="flex justify-between items-start mb-3 pb-2 border-b border-gray-100">
+                      <div>
+                        <span className="font-bold text-xs text-[#675B37] uppercase tracking-wider block">{order.id}</span>
+                        <span className="text-[11px] text-gray-400">
+                          {new Date(order.createdAt).toLocaleDateString("es-AR", { day: "2-digit", month: "short", year: "numeric", hour: "2-digit", minute: "2-digit" })}
+                        </span>
+                      </div>
+                      <span className="text-[10px] font-semibold uppercase px-2.5 py-1 rounded-full bg-emerald-50 text-emerald-700 border border-emerald-200">
+                        {order.status}
+                      </span>
+                    </div>
+
+                    <ul className="space-y-2 mb-3">
+                      {order.items.map((item, idx) => (
+                        <li key={idx} className="flex justify-between text-xs text-gray-600">
+                          <span className="line-clamp-1">{item.quantity}x {item.name}</span>
+                          <span className="font-medium text-gray-900">${(item.price * item.quantity).toLocaleString("es-AR")}</span>
+                        </li>
+                      ))}
+                    </ul>
+
+                    <div className="pt-2 border-t border-gray-100 flex justify-between items-center text-sm">
+                      <span className="font-medium text-gray-500 text-xs">Total abonado</span>
+                      <span className="font-bold text-[#CE6908] text-base">${order.total.toLocaleString("es-AR")}</span>
+                    </div>
+                  </div>
+                ))
+              )}
+            </div>
           </div>
         </div>
       )}
