@@ -74,10 +74,10 @@ export async function POST(req: Request) {
       user: userProfile,
       cart: cartItems,
     });
-  } catch (error) {
+  } catch (error: any) {
     console.error('Error in login:', error);
     return NextResponse.json(
-      { error: 'Error al iniciar sesin' },
+      { error: error?.message || 'Error al iniciar sesión' },
       { status: 500 }
     );
   }

@@ -4,7 +4,9 @@ let client: Client | null = null;
 
 export function getDb(): Client {
   if (!client) {
-    const url = process.env.TURSO_DATABASE_URL || 'file:nuezapp.db';
+    const isVercel = process.env.VERCEL === '1' || !!process.env.VERCEL || process.env.NODE_ENV === 'production';
+    const fallbackDb = isVercel ? 'file:/tmp/nuezapp.db' : 'file:nuezapp.db';
+    const url = process.env.TURSO_DATABASE_URL || fallbackDb;
     const authToken = process.env.TURSO_AUTH_TOKEN;
     
     client = createClient({

@@ -84,10 +84,10 @@ export async function POST(req: Request) {
       user: userProfile,
       cart: cartItems,
     });
-  } catch (error) {
+  } catch (error: any) {
     console.error('Error in SSO route:', error);
     return NextResponse.json(
-      { error: 'Error al procesar autenticación SSO' },
+      { error: error?.message || 'Error al procesar autenticación SSO' },
       { status: 500 }
     );
   }

@@ -58,10 +58,10 @@ export async function POST(req: Request) {
       token,
       user: userProfile,
     });
-  } catch (error) {
+  } catch (error: any) {
     console.error('Error in register:', error);
     return NextResponse.json(
-      { error: 'Error al registrar usuario' },
+      { error: error?.message || 'Error al registrar usuario' },
       { status: 500 }
     );
   }
