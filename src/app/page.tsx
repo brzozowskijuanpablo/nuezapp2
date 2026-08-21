@@ -70,23 +70,26 @@ export default function Home() {
     });
     message += `\n*Total:* $${getCartTotal().toLocaleString("es-AR")}`;
     
-    const whatsappUrl = `https://wa.me/5491112345678?text=${encodeURIComponent(message)}`;
+    // Updated WhatsApp Number
+    const whatsappUrl = `https://wa.me/542916419224?text=${encodeURIComponent(message)}`;
     window.open(whatsappUrl, '_blank');
   };
 
   return (
     <div className="min-h-screen bg-gray-50 text-gray-900 pb-20 font-sans">
       {/* Header */}
-      <header className="bg-orange-500 text-white p-4 flex justify-between items-center sticky top-0 z-40 shadow-md">
-        <h1 className="text-2xl font-bold tracking-tight">NuezApp</h1>
+      <header className="bg-white p-4 flex justify-between items-center sticky top-0 z-40 shadow-sm border-b">
+        <div className="flex items-center">
+          <img src="/logo.png" alt="NuezApp" className="h-12 object-contain" />
+        </div>
         <button 
           onClick={toggleCart}
-          className="relative flex items-center gap-2 bg-orange-600 px-4 py-2 rounded-full text-sm font-semibold hover:bg-orange-700 transition"
+          className="relative flex items-center gap-2 bg-orange-100 text-orange-700 px-4 py-2 rounded-full text-sm font-semibold hover:bg-orange-200 transition"
         >
           <ShoppingCart size={18} />
-          <span>Mis Compras</span>
+          <span className="hidden sm:inline">Mis Compras</span>
           {getCartCount() > 0 && (
-            <span className="absolute -top-1 -right-1 bg-white text-orange-600 text-xs font-bold w-5 h-5 flex items-center justify-center rounded-full shadow">
+            <span className="absolute -top-1 -right-1 bg-orange-600 text-white text-xs font-bold w-5 h-5 flex items-center justify-center rounded-full shadow">
               {getCartCount()}
             </span>
           )}
@@ -94,7 +97,7 @@ export default function Home() {
       </header>
 
       {/* Hero / Búsqueda */}
-      <div className="p-4 bg-orange-500">
+      <div className="p-4 bg-white border-b shadow-sm">
         <div className="relative max-w-4xl mx-auto">
           <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" size={20} />
           <input 
@@ -102,13 +105,24 @@ export default function Home() {
             placeholder="Busca en NuezApp..." 
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
-            className="w-full p-3 pl-10 rounded-xl shadow-inner outline-none text-gray-700 focus:ring-2 focus:ring-orange-300 transition"
+            className="w-full p-3 pl-10 rounded-xl bg-gray-100 border-none outline-none text-gray-700 focus:ring-2 focus:ring-orange-300 transition"
+          />
+        </div>
+      </div>
+
+      {/* Banner Publicitario (Menos invasivo) */}
+      <div className="max-w-4xl mx-auto px-4 mt-4">
+        <div className="w-full h-24 sm:h-32 rounded-2xl overflow-hidden shadow-sm relative">
+          <img 
+            src="https://img.milocal.app/4340/8acc2f16-02be-3122-93bd-15064be00e02.jpg" 
+            alt="Promoción NuezApp" 
+            className="w-full h-full object-cover object-center"
           />
         </div>
       </div>
 
       {/* Categories */}
-      <div className="p-4 overflow-x-auto whitespace-nowrap bg-white shadow-sm border-b sticky top-[68px] z-30 scrollbar-hide">
+      <div className="p-4 overflow-x-auto whitespace-nowrap bg-gray-50 sticky top-[72px] sm:top-[76px] z-30 scrollbar-hide">
         <div className="max-w-4xl mx-auto flex gap-3">
           {categories.map((cat, idx) => (
             <button 
@@ -117,7 +131,7 @@ export default function Home() {
               className={`px-4 py-2 rounded-full text-sm font-medium transition shrink-0 border ${
                 activeCategory === cat 
                   ? 'bg-orange-500 text-white border-orange-500 shadow-md' 
-                  : 'bg-orange-50 text-orange-700 border-orange-100 hover:bg-orange-100'
+                  : 'bg-white text-gray-600 border-gray-200 hover:bg-gray-100'
               }`}
             >
               {cat}
