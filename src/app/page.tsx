@@ -166,7 +166,7 @@ export default function Home() {
           
           {/* Logo Minimalista */}
           <div className="hidden sm:flex items-center gap-2">
-            <img src="/logo.png" alt="Logo" className="h-12 object-contain" />
+            <img src="/icon.png" alt="Logo" className="h-12 object-contain" />
             <div className="flex flex-col justify-center">
               <span className="font-serif font-bold text-[#675B37] text-xl leading-none">Nuez App</span>
               <span className="font-sans text-[10px] tracking-[0.2em] text-[#675B37] uppercase mt-0.5">Shopp</span>
@@ -176,7 +176,7 @@ export default function Home() {
 
         {/* Logo Mobile */}
         <div className="flex sm:hidden items-center gap-2">
-          <img src="/logo.png" alt="Logo" className="h-10 object-contain" />
+          <img src="/icon.png" alt="Logo" className="h-10 object-contain" />
           <div className="flex flex-col justify-center">
             <span className="font-serif font-bold text-[#675B37] text-lg leading-none">Nuez App</span>
             <span className="font-sans text-[9px] tracking-[0.2em] text-[#675B37] uppercase mt-0.5">Shopp</span>
@@ -327,22 +327,22 @@ export default function Home() {
                             <div className="w-full h-full flex items-center justify-center text-2xl">🌰</div>
                           )}
                           
-                          {/* Hover overlay buy button */}
-                          <div className="absolute inset-x-0 bottom-0 p-4 translate-y-full opacity-0 group-hover:translate-y-0 group-hover:opacity-100 transition-all duration-300 ease-out z-10">
+                          {/* Always visible buy button */}
+                          <div className="absolute inset-x-0 bottom-0 p-3 z-10">
                             {cartItem ? (
-                              <div className="flex items-center justify-between bg-white/95 backdrop-blur shadow-lg rounded-full px-2 py-1.5 border border-gray-100">
-                                <button onClick={() => updateQuantity(p.id, cartItem.quantity - 1)} className="p-2 hover:bg-gray-100 rounded-full transition">
+                              <div className="flex items-center justify-between bg-[#675B37] text-white shadow-lg rounded-full px-2 py-1.5 border border-[#675B37]">
+                                <button onClick={() => updateQuantity(p.id, cartItem.quantity - 1)} className="p-2 hover:bg-white/20 rounded-full transition">
                                   <Minus size={14} />
                                 </button>
                                 <span className="text-sm font-bold w-6 text-center">{cartItem.quantity}</span>
-                                <button onClick={() => addItem(p)} className="p-2 hover:bg-gray-100 rounded-full transition">
+                                <button onClick={() => addItem(p)} className="p-2 hover:bg-white/20 rounded-full transition">
                                   <Plus size={14} />
                                 </button>
                               </div>
                             ) : (
                               <button 
                                 onClick={() => addItem(p)}
-                                className="w-full bg-[#2B2118] text-white py-3 rounded-full text-xs font-semibold tracking-wider hover:opacity-90 transition shadow-lg flex items-center justify-center gap-2"
+                                className="w-full bg-[#675B37] text-white py-3 rounded-full text-xs font-semibold tracking-wider hover:bg-[#2B2118] transition shadow-lg flex items-center justify-center gap-2"
                               >
                                 COMPRAR <ShoppingCart size={14} />
                               </button>
@@ -442,7 +442,7 @@ export default function Home() {
       <footer className="bg-white border-t border-gray-100 py-12 px-6">
         <div className="max-w-7xl mx-auto flex flex-col md:flex-row justify-between items-center gap-6">
           <div className="flex items-center gap-2">
-            <img src="/logo.png" alt="Logo" className="h-14 object-contain" />
+            <img src="/icon.png" alt="Logo" className="h-14 object-contain" />
             <div className="flex flex-col justify-center">
               <span className="font-serif font-bold text-[#675B37] text-2xl leading-none">Nuez App</span>
               <span className="font-sans text-[11px] tracking-[0.2em] text-[#675B37] uppercase mt-1">Shopp</span>
@@ -464,7 +464,7 @@ export default function Home() {
           <div className="relative w-[300px] max-w-[85vw] bg-white h-full flex flex-col shadow-2xl animate-in slide-in-from-left duration-300">
             <div className="p-6 border-b border-gray-100 flex justify-between items-center">
               <div className="flex items-center gap-2">
-                <img src="/logo.png" alt="Logo" className="h-10 object-contain" />
+                <img src="/icon.png" alt="Logo" className="h-10 object-contain" />
                 <div className="flex flex-col justify-center">
                   <span className="font-serif font-bold text-[#675B37] text-lg leading-none">Nuez App</span>
                   <span className="font-sans text-[9px] tracking-[0.2em] text-[#675B37] uppercase mt-0.5">Shopp</span>
