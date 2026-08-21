@@ -56,6 +56,7 @@ interface CartStore {
 
   login: (email: string, password: string) => Promise<{ success: boolean; error?: string }>;
   register: (data: { name: string; email: string; password: string; phone?: string; address?: string }) => Promise<{ success: boolean; error?: string }>;
+  loginWithSSO: (provider: 'google' | 'microsoft', ssoData: { email: string; name?: string; phone?: string; address?: string }) => Promise<{ success: boolean; error?: string }>;
   restoreSession: () => Promise<void>;
   logout: () => Promise<void>;
   syncCartWithDb: () => Promise<void>;
@@ -221,7 +222,46 @@ export const useCartStore = create<CartStore>()(
           get().syncCartWithDb();
           return { success: true };
         } catch (err) {
-          return { success: false, error: 'Error de conexin' };
+          return { success: false, error: 'Error de conexión' };
+        }
+      },
+
+      loginWithSSO: async (provider, ssoData) => {
+        try {
+          const res = await fetch('/api/auth/sso', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+              provider,
+              email: ssoData.email,
+              name: ssoData.name,
+              phone: ssoData.phone,
+              address: ssoData.address
+            })
+          });
+
+          const data = await res.json();
+          if (!res.ok) {
+            return { success: false, error: data.error || 'Error al autenticar con SSO' };
+          }
+
+          const currentItems = get().items;
+          let finalItems = currentItems;
+          if (data.cart && data.cart.length > 0 && currentItems.length === 0) {
+            finalItems = data.cart;
+          }
+
+          set({
+            token: data.token,
+            user: data.user,
+            items: finalItems
+          });
+
+          get().syncCartWithDb();
+          get().fetchOrders();
+          return { success: true };
+        } catch (err) {
+          return { success: false, error: 'Error de conexión con el proveedor' };
         }
       },
 
