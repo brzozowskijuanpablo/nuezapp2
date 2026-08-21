@@ -299,7 +299,7 @@ export default function Home() {
                             <img 
                               src={p.image} 
                               alt={p.name} 
-                              className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700 ease-out"
+                              className={`w-full h-full group-hover:scale-105 transition-transform duration-700 ease-out ${p.image === '/logo.png' ? 'object-contain p-10 opacity-30 grayscale' : 'object-cover'}`}
                               loading="lazy"
                             />
                           ) : (
@@ -516,7 +516,7 @@ export default function Home() {
                   {items.map(item => (
                     <li key={item.id} className="flex gap-4 items-center">
                       <div className="w-20 h-24 bg-gray-100 overflow-hidden shrink-0">
-                        <img src={item.image} alt={item.name} className="w-full h-full object-cover" />
+                        <img src={item.image} alt={item.name} className={`w-full h-full ${item.image === '/logo.png' ? 'object-contain p-2 opacity-30 grayscale' : 'object-cover'}`} />
                       </div>
                       <div className="flex-1 min-w-0">
                         <h4 className="font-medium text-sm leading-tight text-[#2B2118] mb-1 line-clamp-2">{item.name}</h4>
