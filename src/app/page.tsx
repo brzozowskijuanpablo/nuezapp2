@@ -7,7 +7,7 @@ import Autoplay from 'embla-carousel-autoplay';
 import { 
   X, Plus, Minus, Trash2, ShoppingCart, Search, 
   MapPin, Menu, ShoppingBag, Store, User, 
-  LogOut, Phone, Map, ChevronRight
+  LogOut, Phone, Map, ChevronRight, Infinity
 } from "lucide-react";
 
 // Mocks & Constants
@@ -357,12 +357,12 @@ export default function Home() {
             </nav>
 
             <div className="p-6 border-t border-gray-100 space-y-4">
-              <p className="text-xs text-gray-400 font-semibold uppercase tracking-wider">Creado con milocal.app</p>
+              <p className="text-xs text-gray-400 font-semibold uppercase tracking-wider">Creado con Infinity</p>
               <button className="w-full flex items-center justify-between p-4 bg-gray-50 hover:bg-gray-100 rounded-2xl transition group">
                 <div className="flex items-center gap-4 text-gray-700 font-bold">
-                  <div className="bg-white p-2 rounded-xl shadow-sm"><Store size={22} className="text-amber-700" /></div>
+                  <div className="bg-white p-2 rounded-xl shadow-sm"><Infinity size={22} className="text-amber-700" /></div>
                   <div className="text-left">
-                    <p className="text-[15px]">Acerca de milocal.app</p>
+                    <p className="text-[15px]">Acerca de Infinity</p>
                     <p className="text-xs font-normal text-gray-500">Digitaliza tu negocio hoy</p>
                   </div>
                 </div>
