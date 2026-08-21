@@ -148,25 +148,58 @@ export default function Home() {
     }));
   }, [displayedProducts]);
 
-  const getUserLocation = (): Promise<string | null> => {
-    return new Promise((resolve) => {
-      if (typeof window === "undefined" || !navigator.geolocation) {
-        resolve(null);
-        return;
-      }
+  const getUserLocation = async (): Promise<string | null> => {
+    if (typeof window === "undefined") return null;
 
-      navigator.geolocation.getCurrentPosition(
-        (position) => {
-          const { latitude, longitude } = position.coords;
-          resolve(`https://maps.google.com/?q=${latitude},${longitude}`);
-        },
-        (err) => {
-          console.warn("Geolocation not available or denied:", err);
+    // 1. Verificar si ya tenemos la ubicación en caché de sesión
+    const cached = sessionStorage.getItem("nuezapp_user_gps");
+    if (cached) return cached;
+
+    // 2. Intentar obtener coordenadas GPS del dispositivo
+    const getGps = (): Promise<string | null> => {
+      return new Promise((resolve) => {
+        if (!navigator.geolocation) {
           resolve(null);
-        },
-        { enableHighAccuracy: true, timeout: 4000, maximumAge: 60000 }
-      );
-    });
+          return;
+        }
+
+        navigator.geolocation.getCurrentPosition(
+          (position) => {
+            const { latitude, longitude } = position.coords;
+            const url = `https://maps.google.com/?q=${latitude},${longitude}`;
+            try {
+              sessionStorage.setItem("nuezapp_user_gps", url);
+            } catch (e) {}
+            resolve(url);
+          },
+          (err) => {
+            console.warn("GPS error or timeout:", err);
+            resolve(null);
+          },
+          { enableHighAccuracy: false, timeout: 5000, maximumAge: 300000 }
+        );
+      });
+    };
+
+    const gpsUrl = await getGps();
+    if (gpsUrl) return gpsUrl;
+
+    // 3. Fallback: Geolocalización por IP
+    try {
+      const ipRes = await fetch("https://ipwho.is/", { signal: AbortSignal.timeout(3000) });
+      if (ipRes.ok) {
+        const ipData = await ipRes.json();
+        if (ipData.latitude && ipData.longitude) {
+          const url = `https://maps.google.com/?q=${ipData.latitude},${ipData.longitude}`;
+          try {
+            sessionStorage.setItem("nuezapp_user_gps", url);
+          } catch (e) {}
+          return url;
+        }
+      }
+    } catch (e) {}
+
+    return null;
   };
 
   const executeCheckout = async () => {
@@ -174,7 +207,7 @@ export default function Home() {
     
     setIsProcessingOrder(true);
     try {
-      // Obtener ubicación GPS fija actual
+      // Obtener ubicación fija de entrega
       const locationUrl = await getUserLocation();
 
       // Guardar pedido en base de datos
@@ -190,9 +223,10 @@ export default function Home() {
       });
       message += `\n*Total:* $${getCartTotal().toLocaleString("es-AR")}\n\n`;
       
-      if (user.isLoggedIn) {
-        message += `*Mis datos para el envío:*\nNombre: ${user.name}\nDirección: ${user.address}\nTeléfono: ${user.phone}\n`;
-      }
+      message += `*Mis datos para el envío:*\n`;
+      if (user.name) message += `Nombre: ${user.name}\n`;
+      if (user.address) message += `Dirección: ${user.address}\n`;
+      if (user.phone) message += `Teléfono: ${user.phone}\n`;
 
       if (locationUrl) {
         message += `📍 *Ubicación de entrega:*\n${locationUrl}\n`;
