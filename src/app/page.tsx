@@ -16,22 +16,7 @@ const categories = [
   "CONFIT/GOLOSINAS", "CONDIMENTOS", "COSMETICA"
 ];
 
-const mockProducts: Product[] = [
-  { id: 1, name: "Almendras peladas GUARA CHIQUITA 0.075g", price: 2100, category: "FRUTOS SECOS", image: "https://img.milocal.app/4340/a21985cf-3e50-3f26-adc4-f20aafb2000a.jpg" },
-  { id: 2, name: "Almendras peladas GUARA CHIQUITA 0.125g", price: 3200, category: "FRUTOS SECOS", image: "https://img.milocal.app/4340/a21985cf-3e50-3f26-adc4-f20aafb2000a.jpg" },
-  { id: 3, name: "Almendras peladas GUARA CHIQUITA 0.250g", price: 6250, category: "FRUTOS SECOS", image: "https://img.milocal.app/4340/a21985cf-3e50-3f26-adc4-f20aafb2000a.jpg" },
-  { id: 4, name: "Almendras peladas GUARA CHIQUITA 0.500g", price: 12350, category: "FRUTOS SECOS", image: "https://img.milocal.app/4340/a21985cf-3e50-3f26-adc4-f20aafb2000a.jpg" },
-  { id: 5, name: "Almendras peladas GUARA CHIQUITA 1kg", price: 24500, category: "FRUTOS SECOS", image: "https://img.milocal.app/4340/a21985cf-3e50-3f26-adc4-f20aafb2000a.jpg" },
-  { id: 6, name: "Almendras peladas NONPAREIL 25/27 0.075g", price: 2800, category: "FRUTOS SECOS", image: "https://img.milocal.app/4340/e7862f6c-c508-3744-8ce4-cd314fcd7839.jpg" },
-  { id: 7, name: "Almendras peladas NONPAREIL 25/27 0.125g", price: 4500, category: "FRUTOS SECOS", image: "https://img.milocal.app/4340/aade86d6-19a2-3bef-89b0-884428da2623.jpg" },
-  { id: 8, name: "Almendras peladas NONPAREIL 25/27 0.250g", price: 8850, category: "FRUTOS SECOS", image: "https://img.milocal.app/4340/83e4e4f2-b51f-3e4e-be81-0df56532b242.jpg" },
-  { id: 9, name: "Almendras peladas NONPAREIL 25/27 0.500g", price: 17500, category: "FRUTOS SECOS", image: "https://img.milocal.app/4340/83e4e4f2-b51f-3e4e-be81-0df56532b242.jpg" },
-  { id: 10, name: "Almendras peladas NONPAREIL 25/27 1kg", price: 34800, category: "FRUTOS SECOS", image: "https://img.milocal.app/4340/83e4e4f2-b51f-3e4e-be81-0df56532b242.jpg" },
-  { id: 11, name: "Avellanas con cascara 0.125g", price: 1900, category: "FRUTOS SECOS", image: "https://img.milocal.app/4340/419d3e74-1829-35f2-b8f4-31bdea6a0fb9.jpg" },
-  { id: 12, name: "Avellanas con cascara 0.250g", price: 3700, category: "FRUTOS SECOS", image: "https://img.milocal.app/4340/23d0dbc6-3bff-3464-a360-8647145083ca.jpg" },
-  { id: 13, name: "Avellanas peladas 0.075g", price: 3600, category: "FRUTOS SECOS", image: "https://img.milocal.app/4340/1e94ac29-d7ff-3129-8143-0bdcaf13a6b9.jpg" },
-  { id: 14, name: "Avellanas peladas 0.125g", price: 5900, category: "FRUTOS SECOS", image: "https://img.milocal.app/4340/6266b361-240a-38b0-b3f6-4ebd72513698.jpg" }
-];
+import mockProducts from "@/data/products.json";
 
 const bannerImages = [
   "https://images.unsplash.com/photo-1596040033229-a9821ebd058d?auto=format&fit=crop&w=1200&q=80",
