@@ -7,7 +7,7 @@ import Autoplay from 'embla-carousel-autoplay';
 import { 
   X, Plus, Minus, Trash2, ShoppingCart, Search, 
   MapPin, Menu, ShoppingBag, User, 
-  LogOut, Map, ChevronRight, Infinity
+  LogOut, Map, ChevronRight, Infinity, PlayCircle
 } from "lucide-react";
 
 // Mocks & Constants
@@ -53,6 +53,19 @@ const instagramFeed = [
   "https://images.unsplash.com/photo-1563636544-7744391696df?auto=format&fit=crop&w=400&q=80",
   "https://images.unsplash.com/photo-1560155016-bd4879ae8f21?auto=format&fit=crop&w=400&q=80",
   "https://images.unsplash.com/photo-1620600100793-19965d96a7eb?auto=format&fit=crop&w=400&q=80"
+];
+
+const videoRecetas = [
+  { id: "1", title: "Desayuno Avena y Nueces", img: "https://images.unsplash.com/photo-1517673132405-a56a62b18caf?auto=format&fit=crop&w=400&q=80", tag: "Desayuno Sano" },
+  { id: "2", title: "Pan Keto de Almendras", img: "https://images.unsplash.com/photo-1584314777558-86d3897bc09c?auto=format&fit=crop&w=400&q=80", tag: "Keto" },
+  { id: "3", title: "Infusión de Hierbas Medicinales", img: "https://images.unsplash.com/photo-1597481499750-3e6b22687e12?auto=format&fit=crop&w=400&q=80", tag: "Medicinal" },
+  { id: "4", title: "Granola Casera Saludable", img: "https://images.unsplash.com/photo-1512152272829-e3139592d56f?auto=format&fit=crop&w=400&q=80", tag: "Receta" },
+  { id: "5", title: "Beneficios de la Chía", img: "https://images.unsplash.com/photo-1593309605333-e7f0d0bd1c7b?auto=format&fit=crop&w=400&q=80", tag: "Nutrición" },
+  { id: "6", title: "Snack de Frutos Secos", img: "https://images.unsplash.com/photo-1536599018102-9f803c140fc1?auto=format&fit=crop&w=400&q=80", tag: "Snack" },
+  { id: "7", title: "Pudín de Chía y Frutos Rojos", img: "https://images.unsplash.com/photo-1490474504059-bf2dbf3f9b17?auto=format&fit=crop&w=400&q=80", tag: "Desayuno Sano" },
+  { id: "8", title: "Propiedades del Romero", img: "https://images.unsplash.com/photo-1590004953392-5aba2e72269a?auto=format&fit=crop&w=400&q=80", tag: "Medicinal" },
+  { id: "9", title: "Galletas Keto sin Harina", img: "https://images.unsplash.com/photo-1558961363-fa8fdf82db35?auto=format&fit=crop&w=400&q=80", tag: "Keto" },
+  { id: "10", title: "Leche de Almendras Casera", img: "https://images.unsplash.com/photo-1563636619-e9143da7973b?auto=format&fit=crop&w=400&q=80", tag: "Receta" }
 ];
 
 const WHATSAPP_NUMBER = "542916419224";
@@ -296,7 +309,7 @@ export default function Home() {
       </div>
 
       {/* Instagram Feed Section */}
-      <div className="max-w-4xl mx-auto px-4 mt-8 mb-12">
+      <div className="max-w-4xl mx-auto px-4 mt-8">
         <div className="bg-white rounded-3xl p-6 sm:p-8 shadow-sm">
           <div className="text-center mb-8">
             <h2 className="text-2xl font-extrabold text-amber-900 flex items-center justify-center gap-2 mb-2">
@@ -337,6 +350,61 @@ export default function Home() {
             >
               Ver más en @nuezapprio <ChevronRight size={18} />
             </a>
+          </div>
+        </div>
+      </div>
+
+      {/* Recetas y Salud (Videos) Section */}
+      <div className="max-w-4xl mx-auto px-4 mt-8 mb-12">
+        <div className="bg-amber-900 rounded-3xl p-6 sm:p-8 shadow-xl text-white relative overflow-hidden">
+          <div className="absolute top-0 right-0 w-64 h-64 bg-amber-800 rounded-full blur-3xl opacity-50 -translate-y-1/2 translate-x-1/3"></div>
+          
+          <div className="relative z-10 mb-8 flex flex-col sm:flex-row sm:items-end justify-between gap-4">
+            <div>
+              <h2 className="text-2xl font-extrabold flex items-center gap-2 mb-2 text-white">
+                <PlayCircle className="text-amber-400" size={28} /> Recetas y Salud
+              </h2>
+              <p className="text-amber-100/80 max-w-md">Descubre cómo preparar desayunos saludables, alimentación keto y los mejores usos de nuestras semillas.</p>
+            </div>
+          </div>
+
+          <div className="relative z-10 flex gap-4 overflow-x-auto pb-4 scrollbar-hide snap-x">
+            {videoRecetas.map((video) => (
+              <a 
+                key={video.id} 
+                href={`https://www.youtube.com/results?search_query=${encodeURIComponent(video.title)}`}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="snap-start shrink-0 w-40 sm:w-48 group cursor-pointer"
+              >
+                <div className="relative aspect-[9/16] rounded-2xl overflow-hidden bg-amber-800 shadow-md border border-amber-800/50">
+                  <img 
+                    src={video.img} 
+                    alt={video.title} 
+                    className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700 opacity-90 group-hover:opacity-100"
+                    loading="lazy"
+                  />
+                  <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent"></div>
+                  
+                  {/* Play Button Overlay */}
+                  <div className="absolute inset-0 flex items-center justify-center">
+                    <div className="w-12 h-12 rounded-full bg-white/20 backdrop-blur-md flex items-center justify-center group-hover:bg-amber-500 transition-colors border border-white/30">
+                      <PlayCircle className="text-white ml-1" size={24} />
+                    </div>
+                  </div>
+
+                  {/* Content Overlay */}
+                  <div className="absolute bottom-0 left-0 right-0 p-3">
+                    <span className="inline-block bg-amber-500/90 backdrop-blur-sm text-white text-[10px] font-bold px-2 py-0.5 rounded-full mb-1.5 uppercase tracking-wide">
+                      {video.tag}
+                    </span>
+                    <h3 className="text-white font-bold text-sm leading-tight line-clamp-2 shadow-black drop-shadow-md">
+                      {video.title}
+                    </h3>
+                  </div>
+                </div>
+              </a>
+            ))}
           </div>
         </div>
       </div>
