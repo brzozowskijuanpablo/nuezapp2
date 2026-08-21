@@ -153,14 +153,14 @@ export default function Home() {
           </button>
           
           {/* Logo Minimalista */}
-          <div className="hidden sm:flex font-serif text-2xl tracking-widest font-bold">
-            INFINITY
+          <div className="hidden sm:flex items-center">
+            <img src="/logo.png" alt="NuezApp" className="h-12 object-contain" />
           </div>
         </div>
 
         {/* Logo Mobile */}
-        <div className="flex sm:hidden font-serif text-xl tracking-widest font-bold">
-          INFINITY
+        <div className="flex sm:hidden items-center">
+          <img src="/logo.png" alt="NuezApp" className="h-10 object-contain" />
         </div>
 
         <div className="flex items-center gap-6">
@@ -419,13 +419,13 @@ export default function Home() {
       {/* Footer Minimalista */}
       <footer className="bg-white border-t border-gray-100 py-12 px-6">
         <div className="max-w-7xl mx-auto flex flex-col md:flex-row justify-between items-center gap-6">
-          <div className="font-serif text-2xl tracking-widest font-bold">INFINITY</div>
+          <img src="/logo.png" alt="NuezApp" className="h-14 object-contain" />
           <div className="flex gap-6 text-sm text-[#828282]">
-            <button onClick={() => setIsContactOpen(true)} className="hover:text-gray-900 transition">Ubicación</button>
-            <a href="https://www.instagram.com/nuezapprio/" className="hover:text-gray-900 transition">Instagram</a>
-            <button onClick={handleContactWhatsApp} className="hover:text-gray-900 transition">Soporte</button>
+            <button onClick={() => setIsContactOpen(true)} className="hover:text-[#2B2118] transition">Ubicación</button>
+            <a href="https://www.instagram.com/nuezapprio/" className="hover:text-[#2B2118] transition">Instagram</a>
+            <button onClick={handleContactWhatsApp} className="hover:text-[#2B2118] transition">Soporte</button>
           </div>
-          <p className="text-xs text-[#828282]">&copy; 2026 Infinity. Todos los derechos reservados.</p>
+          <p className="text-xs text-[#828282]">&copy; 2026 NuezApp. Todos los derechos reservados.</p>
         </div>
       </footer>
 
@@ -435,7 +435,7 @@ export default function Home() {
           <div className="absolute inset-0 bg-black/40 backdrop-blur-sm transition-opacity" onClick={() => setIsMenuOpen(false)} />
           <div className="relative w-[300px] max-w-[85vw] bg-white h-full flex flex-col shadow-2xl animate-in slide-in-from-left duration-300">
             <div className="p-6 border-b border-gray-100 flex justify-between items-center">
-              <div className="font-serif text-xl font-bold tracking-widest">INFINITY</div>
+              <img src="/logo.png" alt="NuezApp" className="h-10 object-contain" />
               <button onClick={() => setIsMenuOpen(false)} className="text-[#828282] hover:text-black transition">
                 <X size={20} strokeWidth={1.5} />
               </button>

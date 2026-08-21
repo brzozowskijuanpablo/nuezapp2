@@ -14,7 +14,7 @@ const prata = Prata({
 });
 
 export const metadata: Metadata = {
-  title: "Infinity - NuezApp",
+  title: "NuezApp",
   description: "Digitaliza tu negocio hoy",
 };
 
