@@ -8,8 +8,10 @@ import {
   X, Plus, Minus, Trash2, ShoppingCart, Search, 
   MapPin, Menu, User, LogOut, ChevronRight, PlayCircle,
   Package, Clock, CheckCircle2, AlertCircle, ShoppingBag,
-  Settings, Edit3, RotateCcw
+  Settings, Edit3, RotateCcw, Sparkles, Heart, Activity,
+  ShieldCheck, Check, Info
 } from "lucide-react";
+import { getProductBenefits } from "@/utils/productBenefits";
 
 // Mocks & Constants
 const categories = [
@@ -98,6 +100,7 @@ export default function Home() {
   const [profileSuccess, setProfileSuccess] = useState(false);
   const [isProcessingOrder, setIsProcessingOrder] = useState(false);
   const [activeMainTab, setActiveMainTab] = useState<'products' | 'nuezapp'>('products');
+  const [selectedProduct, setSelectedProduct] = useState<Product | null>(null);
 
   useEffect(() => {
     if (user.isLoggedIn) {
@@ -720,8 +723,12 @@ export default function Home() {
                     {group.products.map((p) => {
                       const cartItem = items.find(i => i.id === p.id);
                       return (
-                        <div key={p.id} className="group relative">
-                          <div className="aspect-[3/4] bg-gray-100 rounded-lg overflow-hidden mb-4 relative transition-all">
+                        <div 
+                          key={p.id} 
+                          onClick={() => setSelectedProduct(p)}
+                          className="group relative cursor-pointer"
+                        >
+                          <div className="aspect-[3/4] bg-gray-100 rounded-lg overflow-hidden mb-4 relative transition-all shadow-sm group-hover:shadow-md">
                             {p.image ? (
                               <img 
                                 src={p.image} 
@@ -732,9 +739,19 @@ export default function Home() {
                             ) : (
                               <div className="w-full h-full flex items-center justify-center text-2xl">🌰</div>
                             )}
+
+                            {/* Badge "Ver Propiedades" on hover */}
+                            <div className="absolute top-2 right-2 opacity-0 group-hover:opacity-100 transition-opacity z-10">
+                              <span className="bg-white/90 backdrop-blur-sm text-[#675B37] text-[10px] font-bold px-2 py-1 rounded-full shadow flex items-center gap-1">
+                                <Sparkles size={11} className="text-[#CE6908]" /> Propiedades
+                              </span>
+                            </div>
                             
                             {/* Always visible buy button */}
-                            <div className="absolute inset-x-0 bottom-0 p-3 z-10">
+                            <div 
+                              className="absolute inset-x-0 bottom-0 p-3 z-10"
+                              onClick={(e) => e.stopPropagation()}
+                            >
                               {user.isLoggedIn && cartItem ? (
                                 <div className="flex items-center justify-between bg-[#675B37] text-white shadow-lg rounded-full px-2 py-1.5 border border-[#675B37]">
                                   <button onClick={() => updateQuantity(p.id, cartItem.quantity - 1)} className="p-2 hover:bg-white/20 rounded-full transition">
@@ -758,7 +775,7 @@ export default function Home() {
                           
                           <div>
                             <p className="text-xs text-[#828282] mb-1">{p.category}</p>
-                            <h3 className="font-medium text-[13px] leading-relaxed text-[#2B2118] line-clamp-2 pr-2" title={p.name}>
+                            <h3 className="font-medium text-[13px] leading-relaxed text-[#2B2118] line-clamp-2 pr-2 group-hover:text-[#CE6908] transition-colors" title={p.name}>
                               {p.name}
                             </h3>
                             <div className="mt-2 flex items-center justify-between">
@@ -1646,6 +1663,200 @@ export default function Home() {
           </div>
         </div>
       )}
+
+      {/* Product Detail & Health Properties Modal */}
+      {selectedProduct && (() => {
+        const benefits = getProductBenefits(selectedProduct.name, selectedProduct.category);
+        const cartItem = items.find(i => i.id === selectedProduct.id);
+
+        return (
+          <div className="fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-6">
+            <div 
+              className="absolute inset-0 bg-black/50 backdrop-blur-sm transition-opacity" 
+              onClick={() => setSelectedProduct(null)} 
+            />
+            
+            <div className="relative bg-white w-full max-w-3xl shadow-2xl animate-in fade-in zoom-in-95 duration-200 rounded-3xl overflow-hidden max-h-[90vh] flex flex-col z-10 border border-gray-100">
+              
+              {/* Header */}
+              <div className="px-6 py-4 border-b border-gray-100 flex justify-between items-center bg-gray-50/70">
+                <div className="flex items-center gap-2">
+                  <span className="text-[11px] font-bold text-[#CE6908] uppercase tracking-wider bg-[#CE6908]/10 px-2.5 py-1 rounded-full">
+                    {selectedProduct.category}
+                  </span>
+                  <span className="text-xs text-gray-400">·</span>
+                  <span className="text-xs text-gray-500 font-medium">Información & Propiedades</span>
+                </div>
+                <button 
+                  onClick={() => setSelectedProduct(null)} 
+                  className="text-gray-400 hover:text-gray-900 transition p-1.5 rounded-full hover:bg-gray-100"
+                >
+                  <X size={20} strokeWidth={1.5} />
+                </button>
+              </div>
+
+              {/* Modal Body Scrollable */}
+              <div className="flex-1 overflow-y-auto p-6 space-y-6 custom-scrollbar">
+                
+                {/* Main Product Card Header */}
+                <div className="flex flex-col sm:flex-row gap-6 items-center sm:items-start bg-[#FAF7F2] p-5 rounded-2xl border border-gray-100/80">
+                  <div className="w-36 h-36 sm:w-44 sm:h-44 shrink-0 bg-white rounded-xl overflow-hidden shadow-sm border border-gray-200 flex items-center justify-center relative">
+                    {selectedProduct.image ? (
+                      <img 
+                        src={selectedProduct.image} 
+                        alt={selectedProduct.name} 
+                        className={`w-full h-full object-cover ${selectedProduct.image === '/logo.png' ? 'object-contain p-6 opacity-30 grayscale' : ''}`}
+                      />
+                    ) : (
+                      <div className="text-4xl">🌰</div>
+                    )}
+                  </div>
+
+                  <div className="flex-1 flex flex-col justify-between self-stretch text-center sm:text-left">
+                    <div>
+                      <h2 className="font-serif text-2xl sm:text-3xl text-[#2B2118] font-bold leading-snug mb-2">
+                        {selectedProduct.name}
+                      </h2>
+                      <p className="text-[#675B37] text-xs sm:text-sm font-semibold italic mb-3">
+                        ✨ "{benefits.tagline}"
+                      </p>
+                      <p className="text-gray-600 text-xs sm:text-sm leading-relaxed">
+                        {benefits.summary}
+                      </p>
+                    </div>
+
+                    <div className="mt-4 pt-3 border-t border-gray-200/60 flex items-center justify-between">
+                      <div>
+                        <span className="text-[11px] text-gray-400 block uppercase font-medium">Precio</span>
+                        <span className="text-2xl font-bold text-[#CE6908]">
+                          ${selectedProduct.price.toLocaleString("es-AR")}
+                        </span>
+                      </div>
+
+                      <div>
+                        {user.isLoggedIn && cartItem ? (
+                          <div className="flex items-center gap-3 bg-[#675B37] text-white rounded-full px-3 py-1.5 shadow">
+                            <button onClick={() => updateQuantity(selectedProduct.id, cartItem.quantity - 1)} className="p-1 hover:bg-white/20 rounded-full transition">
+                              <Minus size={14} />
+                            </button>
+                            <span className="text-sm font-bold w-6 text-center">{cartItem.quantity}</span>
+                            <button onClick={() => addItem(selectedProduct)} className="p-1 hover:bg-white/20 rounded-full transition">
+                              <Plus size={14} />
+                            </button>
+                          </div>
+                        ) : (
+                          <button 
+                            onClick={() => handleAddToCart(selectedProduct)}
+                            className="bg-[#675B37] hover:bg-[#2B2118] text-white px-5 py-2.5 rounded-full text-xs font-bold tracking-wider uppercase transition shadow flex items-center gap-2"
+                          >
+                            <ShoppingCart size={14} />
+                            <span>Comprar</span>
+                          </button>
+                        )}
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                {/* Section: Propiedades Beneficiosas */}
+                <div>
+                  <div className="flex items-center gap-2 mb-3">
+                    <Sparkles className="text-[#CE6908]" size={18} />
+                    <h3 className="font-serif text-lg text-[#2B2118] font-bold">
+                      Propiedades y Nutrientes Clave
+                    </h3>
+                  </div>
+
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                    {benefits.nutrients.map((nutr, idx) => (
+                      <div key={idx} className="bg-gray-50 border border-gray-100 rounded-xl p-3.5 flex flex-col justify-between">
+                        <div className="flex items-center justify-between mb-1.5">
+                          <span className="font-bold text-xs text-[#2B2118]">{nutr.name}</span>
+                          <span className="text-[10px] font-semibold bg-emerald-50 text-emerald-700 border border-emerald-200 px-2 py-0.5 rounded-full">
+                            {nutr.badge}
+                          </span>
+                        </div>
+                        <p className="text-[12px] text-gray-500 leading-relaxed">
+                          {nutr.description}
+                        </p>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+
+                {/* Section: Afecciones en que ayuda / Terapéutico */}
+                <div>
+                  <div className="flex items-center gap-2 mb-3">
+                    <Heart className="text-red-500" size={18} />
+                    <h3 className="font-serif text-lg text-[#2B2118] font-bold">
+                      ¿En qué afecciones o molestias corporales ayuda?
+                    </h3>
+                  </div>
+
+                  <div className="space-y-2.5">
+                    {benefits.affections.map((aff, idx) => (
+                      <div key={idx} className="bg-amber-50/40 border border-amber-200/60 rounded-xl p-3.5 flex items-start gap-3">
+                        <span className="text-2xl shrink-0 mt-0.5">{aff.icon}</span>
+                        <div>
+                          <h4 className="text-xs font-bold text-[#2B2118] mb-0.5">
+                            {aff.condition}
+                          </h4>
+                          <p className="text-[12px] text-gray-600 leading-relaxed">
+                            {aff.benefit}
+                          </p>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+
+                {/* Tip de Consumo */}
+                <div className="bg-blue-50/50 border border-blue-100 rounded-xl p-4 flex items-start gap-3">
+                  <Info className="text-blue-600 shrink-0 mt-0.5" size={18} />
+                  <div>
+                    <span className="text-xs font-bold text-blue-900 block mb-0.5">Consejo de consumo consciente</span>
+                    <p className="text-xs text-blue-800 leading-relaxed">
+                      {benefits.consumptionTip}
+                    </p>
+                  </div>
+                </div>
+
+              </div>
+
+              {/* Modal Bottom Sticky Footer */}
+              <div className="px-6 py-4 bg-gray-50 border-t border-gray-100 flex flex-col sm:flex-row gap-3 justify-between items-center">
+                <span className="text-xs text-gray-500">
+                  {user.isLoggedIn ? "Producto listo para agregar a tu pedido de WhatsApp" : "Inicia sesión para completar tu compra"}
+                </span>
+
+                <div className="flex items-center gap-3 w-full sm:w-auto">
+                  <button 
+                    onClick={() => setSelectedProduct(null)}
+                    className="flex-1 sm:flex-initial px-5 py-2.5 border border-gray-300 text-gray-700 text-xs font-bold rounded-full hover:bg-white transition"
+                  >
+                    Cerrar
+                  </button>
+
+                  <button 
+                    onClick={() => {
+                      handleAddToCart(selectedProduct);
+                      if (user.isLoggedIn) {
+                        setSelectedProduct(null);
+                        setTimeout(() => toggleCart(), 200);
+                      }
+                    }}
+                    className="flex-1 sm:flex-initial bg-[#675B37] hover:bg-[#2B2118] text-white px-6 py-2.5 rounded-full text-xs font-bold uppercase tracking-wider transition shadow flex items-center justify-center gap-2"
+                  >
+                    <ShoppingCart size={15} />
+                    <span>{user.isLoggedIn ? "Agregar y Ver Bolsa" : "Comprar Producto"}</span>
+                  </button>
+                </div>
+              </div>
+
+            </div>
+          </div>
+        );
+      })()}
     </div>
   );
 }
