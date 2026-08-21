@@ -344,7 +344,7 @@ export default function Home() {
               }
             },
           });
-          client.requestAccessToken({ prompt: 'consent select_account' });
+          client.requestAccessToken({ prompt: '' });
           return;
         } catch (e) {
           console.warn("Google GIS init fallback:", e);
@@ -361,10 +361,10 @@ export default function Home() {
 
     let oauthUrl = "";
     if (provider === "google") {
-      oauthUrl = `https://accounts.google.com/o/oauth2/v2/auth?client_id=${GOOGLE_CLIENT_ID}&redirect_uri=${redirectUri}&response_type=token&scope=email%20profile%20openid&prompt=consent%20select_account`;
+      oauthUrl = `https://accounts.google.com/o/oauth2/v2/auth?client_id=${GOOGLE_CLIENT_ID}&redirect_uri=${redirectUri}&response_type=token&scope=email%20profile%20openid`;
     } else {
       const msClientId = process.env.NEXT_PUBLIC_MICROSOFT_CLIENT_ID || "common";
-      oauthUrl = `https://login.microsoftonline.com/common/oauth2/v2.0/authorize?client_id=${msClientId}&response_type=token&redirect_uri=${redirectUri}&scope=user.read%20openid%20profile%20email&prompt=select_account`;
+      oauthUrl = `https://login.microsoftonline.com/common/oauth2/v2.0/authorize?client_id=${msClientId}&response_type=token&redirect_uri=${redirectUri}&scope=user.read%20openid%20profile%20email`;
     }
 
     const popup = window.open(
