@@ -297,17 +297,17 @@ export default function Home() {
     return () => window.removeEventListener('message', handleMessage);
   }, [isPendingCheckout, loginWithSSO]);
 
+  const GOOGLE_CLIENT_ID = "165694210780-3jtmfc1ae3b77e1vhl059c7jinouhkdi.apps.googleusercontent.com";
+
   const handleSSOClick = async (provider: 'google' | 'microsoft') => {
     setAuthError("");
 
     if (provider === "google") {
       // Usar Google Identity Services oficial
       if (typeof window !== "undefined" && (window as any).google?.accounts?.oauth2) {
-        const googleClientId = process.env.NEXT_PUBLIC_GOOGLE_CLIENT_ID || "1058474268710-v6q8k1882u03hqu1365g73r10o18h929.apps.googleusercontent.com";
-        
         try {
           const client = (window as any).google.accounts.oauth2.initTokenClient({
-            client_id: googleClientId,
+            client_id: GOOGLE_CLIENT_ID,
             scope: 'email profile openid',
             callback: async (tokenResponse: any) => {
               if (tokenResponse.error) {
@@ -361,8 +361,7 @@ export default function Home() {
 
     let oauthUrl = "";
     if (provider === "google") {
-      const googleClientId = process.env.NEXT_PUBLIC_GOOGLE_CLIENT_ID || "1058474268710-v6q8k1882u03hqu1365g73r10o18h929.apps.googleusercontent.com";
-      oauthUrl = `https://accounts.google.com/o/oauth2/v2/auth?client_id=${googleClientId}&redirect_uri=${redirectUri}&response_type=token&scope=email%20profile%20openid&prompt=consent%20select_account`;
+      oauthUrl = `https://accounts.google.com/o/oauth2/v2/auth?client_id=${GOOGLE_CLIENT_ID}&redirect_uri=${redirectUri}&response_type=token&scope=email%20profile%20openid&prompt=consent%20select_account`;
     } else {
       const msClientId = process.env.NEXT_PUBLIC_MICROSOFT_CLIENT_ID || "common";
       oauthUrl = `https://login.microsoftonline.com/common/oauth2/v2.0/authorize?client_id=${msClientId}&response_type=token&redirect_uri=${redirectUri}&scope=user.read%20openid%20profile%20email&prompt=select_account`;
