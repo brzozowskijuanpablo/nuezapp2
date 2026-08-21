@@ -79,6 +79,12 @@ export default function Home() {
     setMounted(true);
   }, []);
 
+  const [visibleCount, setVisibleCount] = useState(24);
+
+  useEffect(() => {
+    setVisibleCount(24);
+  }, [activeCategory, searchQuery]);
+
   const filteredProducts = useMemo(() => {
     return mockProducts.filter(p => {
       const matchesCategory = activeCategory === "Todos" || p.category === activeCategory;
@@ -87,8 +93,12 @@ export default function Home() {
     });
   }, [activeCategory, searchQuery]);
 
+  const displayedProducts = useMemo(() => {
+    return filteredProducts.slice(0, visibleCount);
+  }, [filteredProducts, visibleCount]);
+
   const productsByCategory = useMemo(() => {
-    const grouped = filteredProducts.reduce((acc, product) => {
+    const grouped = displayedProducts.reduce((acc, product) => {
       if (!acc[product.category]) {
         acc[product.category] = [];
       }
@@ -100,7 +110,7 @@ export default function Home() {
       category,
       products: grouped[category]
     }));
-  }, [filteredProducts]);
+  }, [displayedProducts]);
 
   const handleCheckout = () => {
     if (items.length === 0) return;
@@ -278,6 +288,17 @@ export default function Home() {
           </div>
 
           {/* Product Grid (Editorial Style) */}
+          <div 
+            className="h-[800px] max-h-[75vh] overflow-y-auto pr-2 custom-scrollbar"
+            onScroll={(e) => {
+              const target = e.currentTarget;
+              if (target.scrollHeight - target.scrollTop <= target.clientHeight + 200) {
+                if (visibleCount < filteredProducts.length) {
+                  setVisibleCount(prev => prev + 24);
+                }
+              }
+            }}
+          >
           {productsByCategory.length === 0 ? (
             <div className="text-center py-20 text-[#828282]">
               <p className="text-lg">No encontramos resultados</p>
@@ -345,6 +366,7 @@ export default function Home() {
               </div>
             ))
           )}
+          </div>
         </section>
 
         {/* Promo Banner Split */}
