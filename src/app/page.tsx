@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useMemo, useEffect } from "react";
+import { useState, useMemo, useEffect, useRef } from "react";
 import { useCartStore, Product } from "@/store/cartStore";
 import useEmblaCarousel from 'embla-carousel-react';
 import Autoplay from 'embla-carousel-autoplay';
@@ -117,10 +117,8 @@ export default function Home() {
   }, [restoreSession]);
 
   const [visibleCount, setVisibleCount] = useState(24);
-
-  useEffect(() => {
-    setVisibleCount(24);
-  }, [activeCategory, searchQuery]);
+  const [loadingMore, setLoadingMore] = useState(false);
+  const loadMoreRef = useRef<HTMLDivElement | null>(null);
 
   const filteredProducts = useMemo(() => {
     return mockProducts.filter(p => {
@@ -133,6 +131,50 @@ export default function Home() {
   const displayedProducts = useMemo(() => {
     return filteredProducts.slice(0, visibleCount);
   }, [filteredProducts, visibleCount]);
+
+  useEffect(() => {
+    setVisibleCount(24);
+  }, [activeCategory, searchQuery, activeMainTab]);
+
+  // Infinite Scroll via IntersectionObserver
+  useEffect(() => {
+    if (activeMainTab !== 'products') return;
+
+    const observer = new IntersectionObserver(
+      (entries) => {
+        if (entries[0].isIntersecting && visibleCount < filteredProducts.length && !loadingMore) {
+          setLoadingMore(true);
+          setTimeout(() => {
+            setVisibleCount((prev) => Math.min(prev + 24, filteredProducts.length));
+            setLoadingMore(false);
+          }, 100);
+        }
+      },
+      { rootMargin: '400px' }
+    );
+
+    if (loadMoreRef.current) {
+      observer.observe(loadMoreRef.current);
+    }
+
+    return () => observer.disconnect();
+  }, [activeMainTab, visibleCount, filteredProducts.length, loadingMore]);
+
+  // Window scroll fallback for maximum browser support
+  useEffect(() => {
+    if (activeMainTab !== 'products') return;
+
+    const handleScroll = () => {
+      if (window.innerHeight + window.scrollY >= document.body.offsetHeight - 700) {
+        if (visibleCount < filteredProducts.length && !loadingMore) {
+          setVisibleCount((prev) => Math.min(prev + 24, filteredProducts.length));
+        }
+      }
+    };
+
+    window.addEventListener('scroll', handleScroll, { passive: true });
+    return () => window.removeEventListener('scroll', handleScroll);
+  }, [activeMainTab, visibleCount, filteredProducts.length, loadingMore]);
 
   const productsByCategory = useMemo(() => {
     const grouped = displayedProducts.reduce((acc, product) => {
@@ -662,17 +704,7 @@ export default function Home() {
             </div>
 
             {/* Product Grid (Editorial Style) */}
-            <div 
-              className="min-h-[400px] overflow-y-auto pr-2 custom-scrollbar"
-              onScroll={(e) => {
-                const target = e.currentTarget;
-                if (target.scrollHeight - target.scrollTop <= target.clientHeight + 200) {
-                  if (visibleCount < filteredProducts.length) {
-                    setVisibleCount(prev => prev + 24);
-                  }
-                }
-              }}
-            >
+            <div className="min-h-[300px]">
             {productsByCategory.length === 0 ? (
               <div className="text-center py-20 text-[#828282]">
                 <p className="text-lg">No encontramos resultados para tu búsqueda</p>
@@ -739,6 +771,14 @@ export default function Home() {
                   </div>
                 </div>
               ))
+            )}
+
+            {/* Infinite Scroll Sentinel / Indicator */}
+            {visibleCount < filteredProducts.length && (
+              <div ref={loadMoreRef} className="py-12 flex flex-col items-center justify-center text-center">
+                <div className="w-8 h-8 border-2 border-[#675B37] border-t-transparent rounded-full animate-spin mb-3" />
+                <span className="text-xs text-gray-500 font-medium tracking-wider uppercase">Cargando más productos...</span>
+              </div>
             )}
             </div>
           </section>
