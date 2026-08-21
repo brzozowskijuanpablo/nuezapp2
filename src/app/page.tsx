@@ -259,6 +259,7 @@ export default function Home() {
           </div>
         </div>
 
+        <section id="collection" className="mb-16">
           {/* Categorías Clean Tabs */}
           <div className="flex gap-6 overflow-x-auto whitespace-nowrap pb-4 scrollbar-hide justify-start md:justify-center border-b border-gray-100 mb-8 mt-12">
             {categories.map((cat, idx) => (
