@@ -70,6 +70,7 @@ export default function Home() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [isLoginModalOpen, setIsLoginModalOpen] = useState(false);
   const [isContactOpen, setIsContactOpen] = useState(false);
+  const [isBannerVisible, setIsBannerVisible] = useState(true);
   
   const [formData, setFormData] = useState({ name: "", email: "", phone: "", address: "" });
 
@@ -141,9 +142,17 @@ export default function Home() {
     <div className="min-h-screen text-[#2B2118] bg-white font-sans selection:bg-[#CE6908] selection:text-white">
       
       {/* Top Banner */}
-      <div className="bg-[#2B2118] text-white text-xs font-semibold py-2 px-4 text-center tracking-wider">
-        DISFRUTÁ DE UN 10% OFF EN TU PRIMERA COMPRA — ENVÍOS A TODO EL PAÍS
-      </div>
+      {isBannerVisible && (
+        <div className="bg-[#675B37] text-white text-xs font-semibold py-2 px-4 text-center tracking-wider relative flex items-center justify-center">
+          <span>DISFRUTÁ DE UN 10% OFF EN TU PRIMERA COMPRA — ENVÍOS A TODO EL PAÍS</span>
+          <button 
+            onClick={() => setIsBannerVisible(false)} 
+            className="absolute right-4 text-white/80 hover:text-white transition p-1"
+          >
+            <X size={14} strokeWidth={2} />
+          </button>
+        </div>
+      )}
 
       {/* Header Minimalista */}
       <header className="bg-white px-6 py-4 flex justify-between items-center sticky top-0 z-40 border-b border-gray-100/50 shadow-[0_4px_20px_-15px_rgba(0,0,0,0.05)]">
