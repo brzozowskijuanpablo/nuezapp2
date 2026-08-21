@@ -21,7 +21,10 @@ import mockProducts from "@/data/products.json";
 const bannerImages = [
   "https://images.unsplash.com/photo-1596040033229-a9821ebd058d?auto=format&fit=crop&w=1200&q=80",
   "https://img.milocal.app/4340/8acc2f16-02be-3122-93bd-15064be00e02.jpg",
-  "https://img.milocal.app/4340/966d9b72-557c-3fbb-a183-dabab8fc8d88.jpg"
+  "https://img.milocal.app/4340/966d9b72-557c-3fbb-a183-dabab8fc8d88.jpg",
+  "https://img.milocal.app/4340/572b0cd3-b157-3e7c-a5a1-3322c5a0288c.jpg",
+  "https://img.milocal.app/4340/f5222bdc-d7ba-3651-b46c-eaabfc9e8149.jpg",
+  "https://img.milocal.app/4340/919c98ad-0fee-33e9-9b16-26a8f3c29bf1.jpg"
 ];
 
 const INITIAL_INSTAGRAM_FEED = [
