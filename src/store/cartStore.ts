@@ -51,6 +51,7 @@ interface CartStore {
   toggleOrders: () => void;
   toggleProfile: () => void;
   isProfileOpen: boolean;
+  sessionExpiresAt: number | null;
   getCartTotal: () => number;
   getCartCount: () => number;
   setUser: (user: Partial<UserProfile>) => void;
@@ -75,6 +76,7 @@ export const useCartStore = create<CartStore>()(
       isOrdersOpen: false,
       isProfileOpen: false,
       token: null,
+      sessionExpiresAt: null,
       user: {
         id: '',
         name: '',
@@ -189,9 +191,13 @@ export const useCartStore = create<CartStore>()(
             finalItems = data.cart;
           }
 
+          const ONE_DAY_MS = 24 * 60 * 60 * 1000;
+          const expiresAt = Date.now() + ONE_DAY_MS;
+
           set({
             token: data.token,
-            user: data.user,
+            sessionExpiresAt: expiresAt,
+            user: { ...data.user, isLoggedIn: true },
             items: finalItems
           });
 
@@ -202,7 +208,7 @@ export const useCartStore = create<CartStore>()(
 
           return { success: true };
         } catch (err) {
-          return { success: false, error: 'Error de conexin' };
+          return { success: false, error: 'Error de conexión' };
         }
       },
 
@@ -219,9 +225,13 @@ export const useCartStore = create<CartStore>()(
             return { success: false, error: data.error || 'Error al registrar usuario' };
           }
 
+          const ONE_DAY_MS = 24 * 60 * 60 * 1000;
+          const expiresAt = Date.now() + ONE_DAY_MS;
+
           set({
             token: data.token,
-            user: data.user
+            sessionExpiresAt: expiresAt,
+            user: { ...data.user, isLoggedIn: true }
           });
 
           get().syncCartWithDb();
@@ -256,9 +266,13 @@ export const useCartStore = create<CartStore>()(
             finalItems = data.cart;
           }
 
+          const ONE_DAY_MS = 24 * 60 * 60 * 1000;
+          const expiresAt = Date.now() + ONE_DAY_MS;
+
           set({
             token: data.token,
-            user: data.user,
+            sessionExpiresAt: expiresAt,
+            user: { ...data.user, isLoggedIn: true },
             items: finalItems
           });
 
@@ -311,7 +325,26 @@ export const useCartStore = create<CartStore>()(
       },
 
       restoreSession: async () => {
-        const { token } = get();
+        const { token, user, sessionExpiresAt } = get();
+
+        // Si la sesión expiró (pasaron más de 24 horas), limpiar
+        if (sessionExpiresAt && Date.now() > sessionExpiresAt) {
+          set({
+            token: null,
+            sessionExpiresAt: null,
+            user: { id: '', name: '', email: '', phone: '', address: '', isLoggedIn: false },
+            orders: []
+          });
+          return;
+        }
+
+        // Si el usuario ya está logueado localmente y la sesión sigue vigente (< 24h)
+        if (user.isLoggedIn) {
+          if (!sessionExpiresAt) {
+            set({ sessionExpiresAt: Date.now() + 24 * 60 * 60 * 1000 });
+          }
+        }
+
         if (!token) return;
 
         try {
@@ -321,30 +354,23 @@ export const useCartStore = create<CartStore>()(
             }
           });
 
-          if (!res.ok) {
-            // Invalid session
-            set({
-              token: null,
-              user: { name: '', email: '', phone: '', address: '', isLoggedIn: false }
-            });
-            return;
+          if (res.ok) {
+            const data = await res.json();
+            const currentItems = get().items;
+            let finalItems = currentItems;
+            if (data.cart && data.cart.length > 0 && currentItems.length === 0) {
+              finalItems = data.cart;
+            }
+
+            set((state) => ({
+              user: { ...state.user, ...data.user, isLoggedIn: true },
+              items: finalItems
+            }));
+
+            get().fetchOrders();
           }
-
-          const data = await res.json();
-          const currentItems = get().items;
-          let finalItems = currentItems;
-          if (data.cart && data.cart.length > 0 && currentItems.length === 0) {
-            finalItems = data.cart;
-          }
-
-          set({
-            user: data.user,
-            items: finalItems
-          });
-
-          get().fetchOrders();
         } catch (err) {
-          console.error('Error restoring session:', err);
+          console.warn('Background session sync:', err);
         }
       },
 
@@ -363,7 +389,8 @@ export const useCartStore = create<CartStore>()(
 
         set({
           token: null,
-          user: { name: '', email: '', phone: '', address: '', isLoggedIn: false },
+          sessionExpiresAt: null,
+          user: { id: '', name: '', email: '', phone: '', address: '', isLoggedIn: false },
           orders: []
         });
       },
@@ -391,7 +418,7 @@ export const useCartStore = create<CartStore>()(
 
       saveOrder: async (orderDetails) => {
         const { token, items, getCartTotal, user } = get();
-        if (items.length === 0) return { success: false, error: 'Carrito vaco' };
+        if (items.length === 0) return { success: false, error: 'Carrito vacio' };
 
         try {
           const headers: Record<string, string> = { 'Content-Type': 'application/json' };
@@ -434,6 +461,7 @@ export const useCartStore = create<CartStore>()(
       name: 'nuezapp-storage',
       partialize: (state) => ({
         token: state.token,
+        sessionExpiresAt: state.sessionExpiresAt,
         user: state.user,
         items: state.items
       })
