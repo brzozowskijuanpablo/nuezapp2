@@ -24,7 +24,7 @@ const bannerImages = [
   "https://img.milocal.app/4340/966d9b72-557c-3fbb-a183-dabab8fc8d88.jpg"
 ];
 
-const instagramFeed = [
+const INITIAL_INSTAGRAM_FEED = [
   "/instagram/insta_0.jpg",
   "/instagram/insta_1.jpg",
   "/instagram/insta_2.jpg",
@@ -45,6 +45,19 @@ const WHATSAPP_NUMBER = "542916419224";
 
 export default function Home() {
   const [mounted, setMounted] = useState(false);
+  const [instagramFeed, setInstagramFeed] = useState(INITIAL_INSTAGRAM_FEED);
+  
+  useEffect(() => {
+    fetch('/api/instagram')
+      .then(res => res.json())
+      .then(data => {
+        if (Array.isArray(data) && data.length > 0) {
+          setInstagramFeed(data);
+        }
+      })
+      .catch(err => console.error("Error fetching instagram", err));
+  }, []);
+  
   const [activeCategory, setActiveCategory] = useState("Todos");
   const [searchQuery, setSearchQuery] = useState("");
   const [isMenuOpen, setIsMenuOpen] = useState(false);
