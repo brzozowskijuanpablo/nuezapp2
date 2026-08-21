@@ -6,7 +6,7 @@ import useEmblaCarousel from 'embla-carousel-react';
 import Autoplay from 'embla-carousel-autoplay';
 import { 
   X, Plus, Minus, Trash2, ShoppingCart, Search, 
-  MapPin, Menu, ShoppingBag, Store, User, Instagram, 
+  MapPin, Menu, ShoppingBag, Store, User, 
   LogOut, Phone, Map, ChevronRight
 } from "lucide-react";
 
@@ -282,7 +282,7 @@ export default function Home() {
       <div className="max-w-4xl mx-auto px-4 mt-8 pb-8 space-y-6">
         <div className="bg-white rounded-3xl p-6 shadow-sm">
           <h2 className="text-xl font-bold text-amber-900 mb-4 flex items-center gap-2">
-            <Instagram className="text-pink-600" /> Síguenos en Instagram
+            <img src="https://upload.wikimedia.org/wikipedia/commons/e/e7/Instagram_logo_2016.svg" alt="Instagram" className="w-6 h-6" /> Síguenos en Instagram
           </h2>
           <p className="text-gray-600 text-sm mb-4">Entérate de todas nuestras novedades, sorteos y nuevos ingresos.</p>
           <a 
