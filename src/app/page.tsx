@@ -253,21 +253,25 @@ export default function Home() {
     
     setIsProcessingOrder(true);
     try {
-      // Obtener ubicación fija de entrega
+      const orderItems = [...items];
+      const orderTotal = getCartTotal();
+
+      // 1. Obtener ubicación fija de entrega
       const locationUrl = await getUserLocation();
 
-      // Guardar pedido en base de datos
+      // 2. Guardar pedido en historial y base de datos, y vaciar el carrito
       await saveOrder({
         shippingAddress: user.address,
         phone: user.phone,
         notes: locationUrl ? `Ubicación: ${locationUrl}` : undefined
       });
 
+      // 3. Armar mensaje de WhatsApp con los productos adquiridos
       let message = "Hola NuezApp! Quiero hacer el siguiente pedido:\n\n";
-      items.forEach(item => {
+      orderItems.forEach(item => {
         message += `- ${item.quantity}x ${item.name} ($${(item.price * item.quantity).toLocaleString("es-AR")})\n`;
       });
-      message += `\n*Total:* $${getCartTotal().toLocaleString("es-AR")}\n\n`;
+      message += `\n*Total:* $${orderTotal.toLocaleString("es-AR")}\n\n`;
       
       message += `*Mis datos para el envío:*\n`;
       if (user.name) message += `Nombre: ${user.name}\n`;
