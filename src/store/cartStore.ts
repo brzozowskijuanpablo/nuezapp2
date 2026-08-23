@@ -6,7 +6,9 @@ export interface Product {
   name: string;
   price: number;
   category: string;
-  image: string;
+  image?: string;
+  description?: string;
+  unit?: string;
 }
 
 export interface CartItem extends Product {
@@ -14,11 +16,11 @@ export interface CartItem extends Product {
 }
 
 export interface UserProfile {
-  id?: string;
+  id: string;
   name: string;
   email: string;
-  phone: string;
-  address: string;
+  phone?: string;
+  address?: string;
   isLoggedIn: boolean;
 }
 
@@ -41,6 +43,7 @@ interface CartStore {
   token: string | null;
   user: UserProfile;
   orders: Order[];
+  ordersByUser: Record<string, Order[]>;
   isLoadingOrders: boolean;
 
   addItem: (product: Product) => void;
@@ -68,6 +71,12 @@ interface CartStore {
   saveOrder: (orderDetails?: { shippingAddress?: string; phone?: string; notes?: string }) => Promise<{ success: boolean; orderId?: string; error?: string }>;
 }
 
+const getUserKey = (email?: string, id?: string) => {
+  if (email && email.trim().length > 0) return email.trim().toLowerCase();
+  if (id && id.trim().length > 0) return id.trim().toLowerCase();
+  return 'guest';
+};
+
 export const useCartStore = create<CartStore>()(
   persist(
     (set, get) => ({
@@ -86,6 +95,7 @@ export const useCartStore = create<CartStore>()(
         isLoggedIn: false
       },
       orders: [],
+      ordersByUser: {},
       isLoadingOrders: false,
       
       addItem: (product) => {
@@ -132,26 +142,46 @@ export const useCartStore = create<CartStore>()(
         set({ items: [] });
         get().syncCartWithDb();
       },
-      
-      toggleCart: () => set((state) => ({ isCartOpen: !state.isCartOpen })),
-      toggleOrders: () => set((state) => ({ isOrdersOpen: !state.isOrdersOpen })),
-      toggleProfile: () => set((state) => ({ isProfileOpen: !state.isProfileOpen })),
-      
+
+
+      toggleCart: () => {
+        set((state) => ({ isCartOpen: !state.isCartOpen }));
+      },
+
+      toggleOrders: () => {
+        set((state) => {
+          const next = !state.isOrdersOpen;
+          if (next) {
+            get().fetchOrders();
+          }
+          return { isOrdersOpen: next };
+        });
+      },
+
+      toggleProfile: () => {
+        set((state) => ({ isProfileOpen: !state.isProfileOpen }));
+      },
+
       getCartTotal: () => {
         const { items } = get();
-        return items.reduce((total, item) => total + (item.price * item.quantity), 0);
+        return items.reduce((total, item) => total + item.price * item.quantity, 0);
       },
-      
+
       getCartCount: () => {
         const { items } = get();
-        return items.reduce((count, item) => count + item.quantity, 0);
+        return items.reduce((total, item) => total + item.quantity, 0);
       },
 
-      setUser: (userData) => set((state) => ({ 
-        user: { ...state.user, ...userData, isLoggedIn: true } 
-      })),
+      setUser: (userData) => {
+        set((state) => ({
+          user: { ...state.user, ...userData }
+        }));
+      },
 
-      setToken: (token) => set({ token }),
+
+      setToken: (token) => {
+        set({ token });
+      },
 
       syncCartWithDb: async () => {
         const { token, items, user } = get();
@@ -171,6 +201,7 @@ export const useCartStore = create<CartStore>()(
         }
       },
 
+
       login: async (email, password) => {
         try {
           const res = await fetch('/api/auth/login', {
@@ -181,29 +212,30 @@ export const useCartStore = create<CartStore>()(
 
           const data = await res.json();
           if (!res.ok) {
-            return { success: false, error: data.error || 'Error al iniciar sesin' };
+            return { success: false, error: data.error || 'Error al iniciar sesión' };
           }
 
           const currentItems = get().items;
-          // Merge items or use DB items if local is empty
           let finalItems = currentItems;
           if (data.cart && data.cart.length > 0 && currentItems.length === 0) {
             finalItems = data.cart;
           }
 
+
           const ONE_DAY_MS = 24 * 60 * 60 * 1000;
           const expiresAt = Date.now() + ONE_DAY_MS;
+          const userKey = getUserKey(data.user?.email || email, data.user?.id);
+          const existingOrders = (get().ordersByUser[userKey] || []).slice(0, 50);
 
           set({
             token: data.token,
             sessionExpiresAt: expiresAt,
             user: { ...data.user, isLoggedIn: true },
-            items: finalItems
+            items: finalItems,
+            orders: existingOrders
           });
 
-          // Sync merged cart
           get().syncCartWithDb();
-          // Fetch user orders
           get().fetchOrders();
 
           return { success: true };
@@ -225,13 +257,18 @@ export const useCartStore = create<CartStore>()(
             return { success: false, error: data.error || 'Error al registrar usuario' };
           }
 
+
           const ONE_DAY_MS = 24 * 60 * 60 * 1000;
           const expiresAt = Date.now() + ONE_DAY_MS;
+          const userKey = getUserKey(registerData.email);
+          const existingOrders = (get().ordersByUser[userKey] || []).slice(0, 50);
+
 
           set({
             token: data.token,
             sessionExpiresAt: expiresAt,
-            user: { ...data.user, isLoggedIn: true }
+            user: { ...data.user, isLoggedIn: true },
+            orders: existingOrders
           });
 
           get().syncCartWithDb();
@@ -260,6 +297,7 @@ export const useCartStore = create<CartStore>()(
             return { success: false, error: data.error || 'Error al autenticar con SSO' };
           }
 
+
           const currentItems = get().items;
           let finalItems = currentItems;
           if (data.cart && data.cart.length > 0 && currentItems.length === 0) {
@@ -268,12 +306,15 @@ export const useCartStore = create<CartStore>()(
 
           const ONE_DAY_MS = 24 * 60 * 60 * 1000;
           const expiresAt = Date.now() + ONE_DAY_MS;
+          const userKey = getUserKey(data.user?.email || ssoData.email, data.user?.id);
+          const existingOrders = (get().ordersByUser[userKey] || []).slice(0, 50);
 
           set({
             token: data.token,
             sessionExpiresAt: expiresAt,
             user: { ...data.user, isLoggedIn: true },
-            items: finalItems
+            items: finalItems,
+            orders: existingOrders
           });
 
           get().syncCartWithDb();
@@ -303,7 +344,6 @@ export const useCartStore = create<CartStore>()(
 
           const data = await res.json();
           if (!res.ok) {
-            // If server error, update locally
             set((state) => ({
               user: { ...state.user, ...profileData }
             }));
@@ -316,7 +356,6 @@ export const useCartStore = create<CartStore>()(
 
           return { success: true };
         } catch (err) {
-          // Fallback update locally
           set((state) => ({
             user: { ...state.user, ...profileData }
           }));
@@ -324,22 +363,29 @@ export const useCartStore = create<CartStore>()(
         }
       },
 
-      restoreSession: async () => {
-        const { token, user, sessionExpiresAt } = get();
 
-        // Si la sesión expiró (pasaron más de 24 horas), limpiar
+      restoreSession: async () => {
+        const { token, user, sessionExpiresAt, orders, ordersByUser } = get();
+
         if (sessionExpiresAt && Date.now() > sessionExpiresAt) {
+          const userKey = getUserKey(user.email, user.id);
           set({
             token: null,
             sessionExpiresAt: null,
             user: { id: '', name: '', email: '', phone: '', address: '', isLoggedIn: false },
-            orders: []
+            orders: [],
+            ordersByUser: userKey !== 'guest' && orders.length > 0
+              ? { ...ordersByUser, [userKey]: orders.slice(0, 50) }
+              : ordersByUser
           });
           return;
         }
 
-        // Si el usuario ya está logueado localmente y la sesión sigue vigente (< 24h)
         if (user.isLoggedIn) {
+          const userKey = getUserKey(user.email, user.id);
+          if (orders.length === 0 && ordersByUser[userKey]) {
+            set({ orders: ordersByUser[userKey].slice(0, 50) });
+          }
           if (!sessionExpiresAt) {
             set({ sessionExpiresAt: Date.now() + 24 * 60 * 60 * 1000 });
           }
@@ -362,9 +408,14 @@ export const useCartStore = create<CartStore>()(
               finalItems = data.cart;
             }
 
+            const userKey = getUserKey(data.user?.email || user.email, data.user?.id || user.id);
+            const userOrders = (get().ordersByUser[userKey] || get().orders || []).slice(0, 50);
+
+
             set((state) => ({
               user: { ...state.user, ...data.user, isLoggedIn: true },
-              items: finalItems
+              items: finalItems,
+              orders: userOrders
             }));
 
             get().fetchOrders();
@@ -374,8 +425,11 @@ export const useCartStore = create<CartStore>()(
         }
       },
 
+
       logout: async () => {
-        const { token } = get();
+        const { token, user, orders, ordersByUser } = get();
+        const userKey = getUserKey(user.email, user.id);
+
         if (token) {
           try {
             await fetch('/api/auth/logout', {
@@ -387,40 +441,61 @@ export const useCartStore = create<CartStore>()(
           }
         }
 
+
+        // Preservar los pedidos de este usuario en el historial permanente ordersByUser
+        const updatedOrdersByUser = userKey !== 'guest' && orders.length > 0
+          ? { ...ordersByUser, [userKey]: orders.slice(0, 50) }
+          : ordersByUser;
+
+
         set({
           token: null,
           sessionExpiresAt: null,
           user: { id: '', name: '', email: '', phone: '', address: '', isLoggedIn: false },
-          orders: []
+          orders: [],
+          ordersByUser: updatedOrdersByUser
         });
       },
 
+
       fetchOrders: async () => {
-        const { token, user } = get();
+        const { token, user, ordersByUser } = get();
         if (!user.isLoggedIn) return;
 
+
+        const userKey = getUserKey(user.email, user.id);
         set({ isLoadingOrders: true });
+
+
         try {
           const headers: Record<string, string> = {};
           if (token) headers['Authorization'] = `Bearer ${token}`;
 
           const query = user.email ? `?email=${encodeURIComponent(user.email)}` : '';
-          const res = await fetch(`/api/orders${query}`, { headers });
+          const res = await fetch(`/api/orders$query`, { headers });
 
           if (res.ok) {
             const data = await res.json();
             if (data.orders) {
               set((state) => {
-                // Merge DB orders with local orders without duplicates, capped at 100
                 const map = new Map<string, Order>();
                 data.orders.forEach((o: Order) => map.set(o.id, o));
-                state.orders.forEach((o: Order) => {
+                const localOrders = state.ordersByUser[userKey] || state.orders || [];
+                localOrders.forEach((o: Order) => {
                   if (!map.has(o.id)) map.set(o.id, o);
                 });
+
                 const combined = Array.from(map.values()).sort(
                   (a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
-                );
-                return { orders: combined.slice(0, 100) };
+                ).slice(0, 50);
+
+                return {
+                  orders: combined,
+                  ordersByUser: {
+                    ...state.ordersByUser,
+                    [userKey]: combined
+                  }
+                };
               });
             }
           }
@@ -438,6 +513,7 @@ export const useCartStore = create<CartStore>()(
         const currentItems = [...items];
         const total = getCartTotal();
         const generatedOrderId = `ORD-${Date.now().toString().slice(-6)}-${Math.floor(1000 + Math.random() * 9000)}`;
+        const userKey = getUserKey(user.email, user.id);
 
         const newOrder: Order = {
           id: generatedOrderId,
@@ -451,16 +527,26 @@ export const useCartStore = create<CartStore>()(
           createdAt: new Date().toISOString()
         };
 
-        // 1. Registrar pedido inmediatamente en el historial local (hasta 100)
-        set((state) => ({
-          orders: [newOrder, ...state.orders.filter(o => o.id !== newOrder.id)].slice(0, 100),
-          isCartOpen: false
-        }));
+        // 1. Guardar de forma inmediata e infalible en el historial (máximo 50 pedidos, eliminando el más antiguo si supera 50)
+        set((state) => {
+          const prevUserOrders = state.ordersByUser[userKey] || state.orders || [];
+          const updatedOrders = [newOrder, ...prevUserOrders.filter(o => o.id !== newOrder.id)].slice(0, 50);
+
+          return {
+            orders: updatedOrders,
+            ordersByUser: {
+              ...state.ordersByUser,
+              [userKey]: updatedOrders
+            },
+            isCartOpen: false
+          };
+        });
 
         // 2. Vaciar el carrito de inmediato
         clearCart();
 
-        // 3. Sincronizar con el backend
+
+        // 3. Sincronizar en segundo plano con la base de datos
         try {
           const headers: Record<string, string> = { 'Content-Type': 'application/json' };
           if (token) {
@@ -485,17 +571,26 @@ export const useCartStore = create<CartStore>()(
             })
           });
 
+
           if (res.ok) {
             const data = await res.json();
             if (data.orderId && data.orderId !== generatedOrderId) {
-              set((state) => ({
-                orders: state.orders.map(o => o.id === generatedOrderId ? { ...o, id: data.orderId } : o)
-              }));
+              set((state) => {
+                const mapUpdated = (list: Order[]) => list.map(o => o.id === generatedOrderId ? { ...o, id: data.orderId } : o);
+                return {
+                  orders: mapUpdated(state.orders),
+                  ordersByUser: {
+                    ...state.ordersByUser,
+                    [userKey]: mapUpdated(state.ordersByUser[userKey] || [])
+                  }
+                };
+              });
             }
           }
         } catch (err) {
           console.warn('Backend sync for order completed locally:', err);
         }
+
 
         return { success: true, orderId: generatedOrderId };
       }
@@ -507,7 +602,8 @@ export const useCartStore = create<CartStore>()(
         sessionExpiresAt: state.sessionExpiresAt,
         user: state.user,
         items: state.items,
-        orders: state.orders.slice(0, 100)
+        orders: state.orders.slice(0, 50),
+        ordersByUser: state.ordersByUser
       })
     }
   )

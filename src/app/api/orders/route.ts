@@ -42,7 +42,7 @@ export async function GET(req: Request) {
     }
 
     const res = await db.execute({
-      sql: 'SELECT id, items, total, status, shipping_address, phone, payment_method, notes, created_at FROM orders WHERE user_id = ? ORDER BY created_at DESC LIMIT 100',
+      sql: 'SELECT id, items, total, status, shipping_address, phone, payment_method, notes, created_at FROM orders WHERE user_id = ? ORDER BY created_at DESC LIMIT 50',
       args: [userId],
     });
 
@@ -119,10 +119,10 @@ export async function POST(req: Request) {
       args: [orderId, userId, itemsJson, total || 0, shippingAddress || '', phone || '', paymentMethod || 'Efectivo/Transferencia', notes || ''],
     });
 
-    // Mantener un historial máximo de 100 pedidos por usuario en la base de datos
+    // Mantener un historial máximo de 50 pedidos por usuario en la base de datos
     await db.execute({
       sql: `DELETE FROM orders WHERE user_id = ? AND id NOT IN (
-              SELECT id FROM orders WHERE user_id = ? ORDER BY created_at DESC LIMIT 100
+              SELECT id FROM orders WHERE user_id = ? ORDER BY created_at DESC LIMIT 50
             )`,
       args: [userId, userId],
     });
